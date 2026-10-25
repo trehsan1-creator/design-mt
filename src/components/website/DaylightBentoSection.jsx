@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { Award, Activity } from 'lucide-react';
+import { Award, Activity, Sun, Moon } from 'lucide-react';
 import { Button, Card, Capsule, Gauge, StatusChip } from '../../ds/index.js';
 import { toFa } from '../../utils/faDigits.js';
 
 export default function DaylightBentoSection() {
   const [theftTest, setTheftTest] = useState(false);
   const [outsideFence, setOutsideFence] = useState(false);
+  const [sectionPolarity, setSectionPolarity] = useState('daylight');
 
   return (
-    <section id="smart-features" className="daylight-sand-section" data-polarity="daylight">
+    <section id="smart-features" className="daylight-sand-section" data-polarity={sectionPolarity}>
       <div className="site-container">
         <div className="ds-between-wrap">
           <div className="ds-stack-xs">
@@ -23,9 +24,31 @@ export default function DaylightBentoSection() {
             </h2>
           </div>
 
-          <p className="section-subtitle">
-            چیدمان ۲×۲ زیر ترکیب کارت‌های بالشتکی روشن و کارت‌های پخ‌خورده سرمه‌ای را نمایش می‌دهد.
-          </p>
+          <div className="ds-stack-xs">
+            <p className="section-subtitle">
+              چیدمان ۲×۲ زیر ترکیب کارت‌های بالشتکی روشن و کارت‌های پخ‌خورده سرمه‌ای را نمایش می‌دهد.
+            </p>
+            <div className="ds-row-wrap">
+              <Button
+                variant="pill"
+                size="sm"
+                active={sectionPolarity === 'daylight'}
+                onClick={() => setSectionPolarity('daylight')}
+              >
+                <Sun size={14} aria-hidden="true" />
+                <span>قطبیت روز شنی</span>
+              </Button>
+              <Button
+                variant="pill"
+                size="sm"
+                active={sectionPolarity === 'nocturnal'}
+                onClick={() => setSectionPolarity('nocturnal')}
+              >
+                <Moon size={14} aria-hidden="true" />
+                <span>آزمون قطبیت شب</span>
+              </Button>
+            </div>
+          </div>
         </div>
 
         <div className="bento-golden-grid">

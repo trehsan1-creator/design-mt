@@ -4,6 +4,7 @@ import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 import { LOGO_PARTS } from '../data/geometryData.js';
 import { DESIGN_TOKENS } from '../../tokens/tokens.js';
+import { setupClearcoatEnvironment, createClearcoatMaterial } from '../utils/pbrMaterials.js';
 import { Button, Card, Capsule } from '../ds/index.js';
 import { toFa } from '../utils/faDigits.js';
 
@@ -83,6 +84,8 @@ export default function ScrollFilmStage() {
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
 
+    const envRT = setupClearcoatEnvironment(renderer, scene);
+
     const partsGroup = new THREE.Group();
     scene.add(partsGroup);
 
@@ -110,10 +113,8 @@ export default function ScrollFilmStage() {
       });
       geo.translate(-117.105, -162.38, -depth / 2);
 
-      const mat = new THREE.MeshStandardMaterial({
+      const mat = createClearcoatMaterial({
         color: new THREE.Color(part.color),
-        roughness: DESIGN_TOKENS.material3d.pbr.roughness,
-        metalness: DESIGN_TOKENS.material3d.pbr.metalness,
         emissive: cOrange,
         emissiveIntensity: 0,
       });
@@ -177,6 +178,7 @@ export default function ScrollFilmStage() {
         m.geo.dispose();
         m.mat.dispose();
       });
+      envRT.dispose();
       renderer.dispose();
     };
   }, []);

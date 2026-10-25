@@ -4,6 +4,11 @@ import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { LOGO_PATH_D } from '../data/geometryData.js';
 import { DESIGN_TOKENS } from '../../tokens/tokens.js';
+import {
+  setupClearcoatEnvironment,
+  createClearcoatMaterial,
+  createInflateCushionMaps,
+} from '../utils/pbrMaterials.js';
 
 export default function Logo3DInspector({ mode = 'inflate', showWireframe = false, showLightRig = true }) {
   const mountRef = useRef(null);
@@ -24,9 +29,11 @@ export default function Logo3DInspector({ mode = 'inflate', showWireframe = fals
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(width, height);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.08;
+    renderer.toneMappingExposure = 1.1;
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
+
+    const envRT = setupClearcoatEnvironment(renderer, scene);
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
@@ -44,17 +51,21 @@ export default function Logo3DInspector({ mode = 'inflate', showWireframe = fals
       SVGLoader.createShapes(p).forEach((s) => shapes.push(s));
     });
 
+    // Mode A (Cushion / Inflate 76%): Signed-distance blurred heightmap dome + normal/bump map
+    const cushionMaps = createInflateCushionMaps(LOGO_PATH_D);
     const geoInflate = new THREE.ExtrudeGeometry(shapes, {
-      depth: 6,
+      depth: 8,
       bevelEnabled: true,
-      bevelThickness: 26,
-      bevelSize: 13.5,
-      bevelOffset: -4,
-      bevelSegments: 20,
-      curveSegments: 40,
+      bevelThickness: 18,
+      bevelSize: 11,
+      bevelOffset: -3,
+      bevelSegments: 18,
+      curveSegments: 42,
     });
     geoInflate.center();
+    cushionMaps.applyDomeToGeometry(geoInflate, 20);
 
+    // Mode B (Chisel / Bevel 60%): Crisp 1-segment bevel
     const geoChisel = new THREE.ExtrudeGeometry(shapes, {
       depth: 38,
       bevelEnabled: true,
@@ -67,10 +78,12 @@ export default function Logo3DInspector({ mode = 'inflate', showWireframe = fals
     geoChisel.center();
 
     const cOrange = new THREE.Color(DESIGN_TOKENS.color.signalOrange);
-    const matMesh = new THREE.MeshStandardMaterial({
+    const matMesh = createClearcoatMaterial({
       color: new THREE.Color(DESIGN_TOKENS.color.navy['400']),
-      roughness: DESIGN_TOKENS.material3d.pbr.roughness,
-      metalness: DESIGN_TOKENS.material3d.pbr.metalness,
+      normalMap: cushionMaps.normalMap,
+      normalScale: new THREE.Vector2(0.85, 0.85),
+      bumpMap: cushionMaps.bumpMap,
+      bumpScale: 3.5,
     });
 
     const mesh = new THREE.Mesh(geoInflate, matMesh);
@@ -87,7 +100,10 @@ export default function Logo3DInspector({ mode = 'inflate', showWireframe = fals
     wireMesh.scale.set(1.003, -1.003, 1.003);
     scene.add(wireMesh);
 
-    const ambient = new THREE.AmbientLight(new THREE.Color(DESIGN_TOKENS.color.sand['50']), 0.85);
+    const ambient = new THREE.AmbientLight(
+      new THREE.Color(DESIGN_TOKENS.color.sand['50']),
+      DESIGN_TOKENS.material3d.pbr.ambientIntensity + 0.25
+    );
     scene.add(ambient);
 
     const hemi = new THREE.HemisphereLight(
@@ -124,6 +140,7 @@ export default function Logo3DInspector({ mode = 'inflate', showWireframe = fals
       geoInflate,
       geoChisel,
       matMesh,
+      cushionMaps,
       sun,
       ambient,
       rigGroup,
@@ -157,11 +174,14 @@ export default function Logo3DInspector({ mode = 'inflate', showWireframe = fals
       geoInflate.dispose();
       geoChisel.dispose();
       matMesh.dispose();
+      cushionMaps.normalMap.dispose();
+      cushionMaps.bumpMap.dispose();
       wireMat.dispose();
       arrowGeo.dispose();
       arrowMat.dispose();
       sunDotGeo.dispose();
       sunDotMat.dispose();
+      envRT.dispose();
       renderer.dispose();
     };
   }, []);
@@ -194,6 +214,8 @@ export default function Logo3DInspector({ mode = 'inflate', showWireframe = fals
     s.matMesh.color.set(
       isInflate ? DESIGN_TOKENS.color.navy['400'] : DESIGN_TOKENS.color.sand['200']
     );
+    s.matMesh.normalMap = isInflate ? s.cushionMaps.normalMap : null;
+    s.matMesh.bumpMap = isInflate ? s.cushionMaps.bumpMap : null;
     s.matMesh.roughness = DESIGN_TOKENS.material3d.pbr.roughness;
     s.matMesh.needsUpdate = true;
 
@@ -215,8 +237,8 @@ export default function Logo3DInspector({ mode = 'inflate', showWireframe = fals
         <span className="ds-muted">چرخش ۳۶۰ درجه با ماوس · بزرگ‌نمایی با اسکرول</span>
         <span className="ltr-code ds-accent-soft-text">
           {mode === 'inflate'
-            ? 'Inflate 76% · El 71° · Az -124.7°'
-            : 'Extrude 175.5pt · Bevel 60% · El 43.08°'}
+            ? 'Inflate 76% (Heightmap Dome + Clearcoat) · El 71°'
+            : 'Extrude 175.5pt · Bevel 60% · Clearcoat 0.35 · El 43.08°'}
         </span>
       </div>
     </div>

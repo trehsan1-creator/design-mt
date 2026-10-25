@@ -5,6 +5,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Cpu, Layers, ShieldCheck, BatteryCharging, Wifi } from 'lucide-react';
 import { LOGO_PATH_D } from '../../data/geometryData.js';
 import { DESIGN_TOKENS } from '../../../tokens/tokens.js';
+import { setupClearcoatEnvironment, createClearcoatMaterial } from '../../utils/pbrMaterials.js';
 import { Button, Card, Capsule } from '../../ds/index.js';
 import { toFa } from '../../utils/faDigits.js';
 
@@ -89,6 +90,8 @@ export default function Hardware3DTracker() {
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
 
+    const envRT = setupClearcoatEnvironment(renderer, scene);
+
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.07;
@@ -115,10 +118,8 @@ export default function Hardware3DTracker() {
       curveSegments: 32,
     });
     shellGeo.rotateX(Math.PI / 2);
-    const shellMat = new THREE.MeshStandardMaterial({
+    const shellMat = createClearcoatMaterial({
       color: new THREE.Color(DESIGN_TOKENS.color.navy['400']),
-      roughness: DESIGN_TOKENS.material3d.pbr.roughness,
-      metalness: DESIGN_TOKENS.material3d.pbr.metalness,
     });
     topLayer.add(new THREE.Mesh(shellGeo, shellMat));
     disposables.push(shellGeo, shellMat);
@@ -299,6 +300,7 @@ export default function Hardware3DTracker() {
       ro.disconnect();
       controls.dispose();
       disposables.forEach((d) => d.dispose());
+      envRT.dispose();
       renderer.dispose();
     };
   }, []);

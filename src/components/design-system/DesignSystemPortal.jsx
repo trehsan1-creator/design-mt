@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { DESIGN_TOKENS } from '../../../tokens/tokens.js';
 import { PEYDA_WEIGHTS } from '../../data/geometryData.js';
-import { Button, Card, Capsule, Gauge, IranPlate, StatusChip } from '../../ds/index.js';
+import { Button, Card, Capsule, Gauge, IranPlate, MapPin, StatusChip } from '../../ds/index.js';
 import { toFa } from '../../utils/faDigits.js';
 
 const CORE_SWATCHES = [
@@ -305,10 +305,11 @@ export default function DesignSystemPortal({ onBackToWebsite, onOpenLab }) {
                 </Card>
 
                 <Card variant="glass" className="ds-stack-md">
-                  <h3>۲. پلاک ملی ایران (IranPlate) و وضعیت‌ها (StatusChip)</h3>
+                  <h3>۲. پلاک ملی (IranPlate)، پین ۱۳۶.۵۴° (MapPin) و وضعیت‌ها</h3>
                   <div className="ds-row-wrap">
                     <IranPlate left2="۴۸" letter="ع" mid3="۷۹۲" iranCode="۱۱" variant="public" />
                     <IranPlate left2="۷۳" letter="ط" mid3="۱۶۹" iranCode="۲۲" variant="private" />
+                    <MapPin speed={86} heading={45} status="moving" selected className="ds-map-pin--static" />
                   </div>
                   <div className="ds-row-wrap">
                     <StatusChip status="moving" label="در حرکت پایدار" />

@@ -415,6 +415,15 @@
   pointer-events: none;
 }
 
+.radar-pin-pos {
+  position: absolute;
+  direction: ltr;
+  inset-inline-start: var(--pin-x, 50%);
+  inset-block-start: var(--pin-y, 50%);
+  transform: translate(-50%, -50%);
+  z-index: var(--ds-z-tactile);
+}
+
 .radar-pin-btn {
   position: absolute;
   direction: ltr;
@@ -796,7 +805,7 @@
   border-radius: var(--ds-radius-squircle);
   border: 2.5px solid var(--ds-accent);
   transform: translate(-50%, -50%);
-  animation: radarSquirclePing 1.1s var(--ds-ease-shockwave) forwards;
+  animation: radarSquirclePing var(--ds-dur-sonar) var(--ds-ease-shockwave) forwards;
   pointer-events: none;
 }
 

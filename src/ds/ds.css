@@ -397,7 +397,95 @@
   box-shadow: var(--ds-shadow-glow-segment);
 }
 
-/* --- 7. Reusable Layout & Typography Primitives (replaces inline styles) --- */
+/* --- 7. Aerodynamic 136.54deg MapPin (ds-map-pin) --- */
+.ds-map-pin {
+  --pin-accent: var(--ds-status-moving);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  padding: 4px 8px 4px 4px;
+  border-radius: var(--ds-radius-capsule);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: transform var(--ds-dur-tactile) var(--ds-ease-spring-lock);
+}
+
+.ds-map-pin[data-status="moving"]     { --pin-accent: var(--ds-status-moving); }
+.ds-map-pin[data-status="signal"]     { --pin-accent: var(--ds-status-signal); }
+.ds-map-pin[data-status="cold-chain"] { --pin-accent: var(--ds-status-cold-chain); }
+.ds-map-pin[data-status="idle"]       { --pin-accent: var(--ds-status-idle); }
+.ds-map-pin[data-status="critical"]   { --pin-accent: var(--ds-status-critical); }
+
+.ds-map-pin:hover,
+.ds-map-pin.is-selected {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.ds-map-pin--static,
+.ds-map-pin--static:hover,
+.ds-map-pin--static.is-selected {
+  transform: none;
+}
+
+.ds-map-pin__glyph {
+  inline-size: 34px;
+  block-size: 39px;
+  display: inline-flex;
+  flex-shrink: 0;
+  filter: drop-shadow(0 6px 12px color-mix(in srgb, var(--ds-neutral-black) 48%, transparent));
+}
+
+.ds-map-pin__svg {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.ds-map-pin__body {
+  fill: var(--ds-navy-600);
+  stroke: var(--pin-accent);
+  stroke-width: 2.2;
+  transition: fill var(--ds-dur-tactile) var(--ds-ease-clothoid-cruise);
+}
+
+.ds-map-pin.is-selected .ds-map-pin__body {
+  fill: var(--ds-accent);
+  stroke: var(--ds-sand-50);
+}
+
+.ds-map-pin__core {
+  fill: color-mix(in srgb, var(--ds-navy-900) 75%, transparent);
+}
+
+.ds-map-pin__arrow {
+  fill: var(--pin-accent);
+}
+
+.ds-map-pin.is-selected .ds-map-pin__arrow {
+  fill: var(--ds-sand-50);
+}
+
+.ds-map-pin__badge {
+  direction: rtl;
+  padding-block: 4px;
+  padding-inline: var(--ds-space-0_5s);
+  border-radius: var(--ds-radius-sm);
+  background: var(--ds-surface-glass);
+  border: 1px solid var(--ds-border);
+  color: var(--ds-on-surface);
+  font-size: var(--ds-text-xs);
+  font-weight: var(--ds-weight-extrabold);
+  white-space: nowrap;
+}
+
+.ds-map-pin.is-selected .ds-map-pin__badge {
+  background: color-mix(in srgb, var(--ds-accent) 24%, var(--ds-surface));
+  border-color: var(--ds-accent);
+}
+
+/* --- 8. Reusable Layout & Typography Primitives (replaces inline styles) --- */
 .ds-stack-xs { display: flex; flex-direction: column; gap: var(--ds-space-0_25s); }
 .ds-stack-sm { display: flex; flex-direction: column; gap: var(--ds-space-0_5s); }
 .ds-stack-md { display: flex; flex-direction: column; gap: var(--ds-space-1s); }

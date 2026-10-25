@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Radar, Truck, LocateFixed, Thermometer } from 'lucide-react';
-import { Button, Capsule, Gauge, IranPlate, StatusChip } from '../../ds/index.js';
+import { Radar, LocateFixed, Thermometer } from 'lucide-react';
+import { Button, Capsule, Gauge, IranPlate, MapPin, StatusChip } from '../../ds/index.js';
 import { toFa } from '../../utils/faDigits.js';
 
 const FLEET_UNITS = [
@@ -227,25 +227,24 @@ export default function LiveFleetRadarSection() {
               </div>
             ))}
 
-            {FLEET_UNITS.map((u) => {
+            {FLEET_UNITS.map((u, idx) => {
               const isSel = selected.id === u.id;
+              const headings = [152, -52, 84, 0];
               return (
-                <button
+                <MapPin
                   key={u.id}
-                  type="button"
-                  className={`radar-pin-btn ${isSel ? 'is-selected' : ''}`}
+                  speed={u.speed}
+                  heading={headings[idx] || 0}
+                  status={u.status}
+                  selected={isSel}
+                  label={`انتخاب ${u.title} با سرعت ${toFa(u.speed)} کیلومتر بر ساعت`}
+                  className="radar-pin-pos"
                   style={{ '--pin-x': `${u.x}%`, '--pin-y': `${u.y}%` }}
-                  aria-label={`انتخاب ${u.title} با سرعت ${toFa(u.speed)} کیلومتر بر ساعت`}
                   onClick={() => {
                     setSelected(u);
                     triggerPing();
                   }}
-                >
-                  <span className="radar-pin-tag ds-row">
-                    <Truck size={14} className="ds-accent-text" aria-hidden="true" />
-                    <span className="ds-tabular">{toFa(u.speed)} km/h</span>
-                  </span>
-                </button>
+                />
               );
             })}
 

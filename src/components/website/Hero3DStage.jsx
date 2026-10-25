@@ -4,6 +4,7 @@ import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js';
 import { Play, Pause, Navigation, ArrowLeft, Radio } from 'lucide-react';
 import { LOGO_PARTS } from '../../data/geometryData.js';
 import { DESIGN_TOKENS } from '../../../tokens/tokens.js';
+import { setupClearcoatEnvironment, createClearcoatMaterial } from '../../utils/pbrMaterials.js';
 import { Button, Card, Capsule, IranPlate, StatusChip } from '../../ds/index.js';
 import { toFa } from '../../utils/faDigits.js';
 
@@ -149,6 +150,8 @@ export default function Hero3DStage() {
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
 
+    const envRT = setupClearcoatEnvironment(renderer, scene);
+
     const orangeColor = new THREE.Color(DESIGN_TOKENS.color.signalOrange);
     const gridNavyColor = new THREE.Color(DESIGN_TOKENS.color.navy['200']);
     const gridHelper = new THREE.GridHelper(1100, 26, orangeColor, gridNavyColor);
@@ -183,10 +186,8 @@ export default function Hero3DStage() {
       });
       geo.translate(-117.105, -162.38, -depth / 2);
 
-      const mat = new THREE.MeshStandardMaterial({
+      const mat = createClearcoatMaterial({
         color: new THREE.Color(part.color),
-        roughness: DESIGN_TOKENS.material3d.pbr.roughness,
-        metalness: DESIGN_TOKENS.material3d.pbr.metalness,
         emissive: orangeColor,
         emissiveIntensity: 0,
       });
@@ -306,6 +307,7 @@ export default function Hero3DStage() {
       });
       pGeo.dispose();
       pMat.dispose();
+      envRT.dispose();
       renderer.dispose();
     };
   }, []);
