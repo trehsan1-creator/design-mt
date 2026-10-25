@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Suspense, lazy, useState } from 'react';
 import { ArrowRight, Compass, Layers, Radar, Type, Palette } from 'lucide-react';
 import { Button } from './ds/index.js';
 
@@ -12,12 +12,11 @@ import RoiCalculatorSection from './components/website/RoiCalculatorSection.jsx'
 import PricingAndFooter from './components/website/PricingAndFooter.jsx';
 import ArchitectureModal from './components/website/ArchitectureModal.jsx';
 
-import DesignSystemPortal from './components/design-system/DesignSystemPortal.jsx';
-
-import ScrollFilmStage from './components/ScrollFilmStage.jsx';
-import PeydaShowcase from './components/PeydaShowcase.jsx';
-import DerivedPatternsLab from './components/DerivedPatternsLab.jsx';
-import CoreGeometryStep1 from './components/CoreGeometryStep1.jsx';
+const DesignSystemPortal = lazy(() => import('./components/design-system/DesignSystemPortal.jsx'));
+const ScrollFilmStage = lazy(() => import('./components/ScrollFilmStage.jsx'));
+const PeydaShowcase = lazy(() => import('./components/PeydaShowcase.jsx'));
+const DerivedPatternsLab = lazy(() => import('./components/DerivedPatternsLab.jsx'));
+const CoreGeometryStep1 = lazy(() => import('./components/CoreGeometryStep1.jsx'));
 
 export default function App({ initialView = 'website', onBackToWebsite = true }) {
   const [viewMode, setViewMode] = useState(initialView);
@@ -31,10 +30,12 @@ export default function App({ initialView = 'website', onBackToWebsite = true })
 
   if (viewMode === 'design-system') {
     return (
-      <DesignSystemPortal
-        onBackToWebsite={() => goTopAndSet('website')}
-        onOpenLab={() => goTopAndSet('lab')}
-      />
+      <Suspense fallback={<div className="fleet-site" />}>
+        <DesignSystemPortal
+          onBackToWebsite={onBackToWebsite ? () => goTopAndSet('website') : undefined}
+          onOpenLab={() => goTopAndSet('lab')}
+        />
+      </Suspense>
     );
   }
 
@@ -50,7 +51,7 @@ export default function App({ initialView = 'website', onBackToWebsite = true })
         <a href="#main-content" className="skip-link">پرش به محتوای اصلی</a>
         <header className="topbar">
           <div className="ds-row-wrap">
-            {onBackToWebsite !== false && (
+            {onBackToWebsite && (
               <Button variant="primary" size="sm" onClick={() => goTopAndSet('website')}>
                 <ArrowRight size={16} aria-hidden="true" />
                 <span>بازگشت به وب‌سایت ناوگان</span>
@@ -104,18 +105,20 @@ export default function App({ initialView = 'website', onBackToWebsite = true })
         </header>
 
         <main id="main-content">
-          <div id="lab-tabpanel" role="tabpanel" aria-labelledby={`lab-tab-${labTab}`}>
-            <ScrollFilmStage />
-            {labTab === 'overview' && (
-              <>
-                <PeydaShowcase />
-                <DerivedPatternsLab />
-              </>
-            )}
-            {labTab === 'peyda' && <PeydaShowcase />}
-            {labTab === 'patterns' && <DerivedPatternsLab />}
-            {labTab === 'geometry' && <CoreGeometryStep1 />}
-          </div>
+          <Suspense fallback={<div className="fleet-section" />}>
+            <div id="lab-tabpanel" role="tabpanel" aria-labelledby={`lab-tab-${labTab}`}>
+              <ScrollFilmStage />
+              {labTab === 'overview' && (
+                <>
+                  <PeydaShowcase />
+                  <DerivedPatternsLab />
+                </>
+              )}
+              {labTab === 'peyda' && <PeydaShowcase />}
+              {labTab === 'patterns' && <DerivedPatternsLab />}
+              {labTab === 'geometry' && <CoreGeometryStep1 />}
+            </div>
+          </Suspense>
         </main>
       </div>
     );

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Radar, LocateFixed, Thermometer } from 'lucide-react';
 import { Button, Capsule, Gauge, IranPlate, MapPin, StatusChip } from '../../ds/index.js';
 import { usePrefersReducedMotion } from '../../utils/usePrefersReducedMotion.js';
@@ -91,17 +91,36 @@ export default function LiveFleetRadarSection() {
   const reducedMotion = usePrefersReducedMotion();
   const [filter, setFilter] = useState('all');
   const [selected, setSelected] = useState(FLEET_UNITS[0]);
-  const [radarAngle, setRadarAngle] = useState(28);
   const [pingBurst, setPingBurst] = useState(false);
+  const sweepConeRef = useRef(null);
+  const mapStageRef = useRef(null);
+  const inViewRef = useRef(false);
+
+  useEffect(() => {
+    const el = mapStageRef.current;
+    if (!el) return undefined;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        inViewRef.current = entry.isIntersecting;
+      },
+      { threshold: 0.05 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   useEffect(() => {
     if (reducedMotion) return undefined;
     let raf;
+    let angle = 28;
     let last = performance.now();
     const tick = (now) => {
       const dt = (now - last) / 1000;
       last = now;
-      setRadarAngle((a) => (a + dt * 52) % 360);
+      if (inViewRef.current && sweepConeRef.current) {
+        angle = (angle + dt * 52) % 360;
+        sweepConeRef.current.style.setProperty('--radar-deg', `${angle.toFixed(1)}deg`);
+      }
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -213,11 +232,11 @@ export default function LiveFleetRadarSection() {
             })}
           </div>
 
-          <div className="radar-map-stage">
+          <div ref={mapStageRef} className="radar-map-stage">
             {[160, 290, 430].map((sz) => (
               <div key={sz} className="radar-ring" style={{ '--ring-size': `${sz}px` }} />
             ))}
-            <div className="radar-sweep-cone" style={{ '--radar-deg': `${radarAngle}deg` }} />
+            <div ref={sweepConeRef} className="radar-sweep-cone" />
 
             <svg viewBox="0 0 800 500" className="radar-map-svg" aria-hidden="true">
               <path

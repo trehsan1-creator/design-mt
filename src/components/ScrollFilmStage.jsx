@@ -86,7 +86,7 @@ export default function ScrollFilmStage() {
     camera.position.set(0, 0, 680);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.innerWidth <= 768 ? 1.5 : 2));
     renderer.setSize(width, height);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.12;
@@ -189,6 +189,7 @@ export default function ScrollFilmStage() {
       });
       envRT.dispose();
       renderer.dispose();
+      renderer.forceContextLoss();
     };
   }, []);
 

@@ -34,7 +34,7 @@ export default function Logo3DInspector({ mode = 'inflate', showWireframe = fals
     camera.position.set(0, 0, 620);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.innerWidth <= 768 ? 1.5 : 2));
     renderer.setSize(width, height);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.1;
@@ -192,6 +192,7 @@ export default function Logo3DInspector({ mode = 'inflate', showWireframe = fals
       sunDotMat.dispose();
       envRT.dispose();
       renderer.dispose();
+      renderer.forceContextLoss();
     };
   }, []);
 
