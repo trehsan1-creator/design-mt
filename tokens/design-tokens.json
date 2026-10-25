@@ -1,0 +1,231 @@
+{
+  "$schema": "https://tr.designtokens.org/format/",
+  "$metadata": {
+    "name": "سامانه طراحی سه‌بعدی ردیابی خودرو، GPS و مدیریت ناوگان",
+    "version": "1.0.0",
+    "direction": "rtl",
+    "locale": "fa-IR",
+    "derivedFrom": [
+      "COLORS.md",
+      "logo.svg",
+      "typography.svg",
+      "3d_front.pdf",
+      "gradiant.pdf",
+      "peyda/*.ttf (v2.000, 9 weights)"
+    ]
+  },
+  "color": {
+    "brand": {
+      "signalOrange": {
+        "$value": "#FF742E",
+        "$type": "color",
+        "$description": "نارنجی سیگنال زنده و انرژی حرکت — HSL(20.1°, 100%, 59%) | OKLCH(71.6%, 0.187, 43.8°)"
+      },
+      "deepNavy": {
+        "$value": "#102333",
+        "$type": "color",
+        "$description": "سرمه‌ای عمیق راداری (قطب مکمل ۱۸۷.۳° در برابر نارنجی) — HSL(207.4°, 52.2%, 13.1%) | OKLCH(24.8%, 0.040, 245.7°)"
+      },
+      "warmSand": {
+        "$value": "#E8DECD",
+        "$type": "color",
+        "$description": "بژ گرم خاکی برای قطبیت روز و خوانایی فوق‌العاده ۱۲.۰۳:۱ (AAA) با سرمه‌ای — HSL(37.8°, 37%, 85.7%) | OKLCH(90.4%, 0.025, 81.1°)"
+      }
+    },
+    "scale": {
+      "orange": {
+        "100": { "$value": "#FFE4D4", "$type": "color" },
+        "200": { "$value": "#FFC5A6", "$type": "color" },
+        "300": { "$value": "#FFB085", "$type": "color" },
+        "400": { "$value": "#FF8B4D", "$type": "color" },
+        "500": { "$value": "#FF742E", "$type": "color" },
+        "600": { "$value": "#E05612", "$type": "color" },
+        "700": { "$value": "#B84309", "$type": "color" },
+        "800": { "$value": "#9E3805", "$type": "color" }
+      },
+      "navy": {
+        "50":  { "$value": "#58768B", "$type": "color" },
+        "100": { "$value": "#3D5768", "$type": "color", "$description": "ایستگاه ۰٪ گرادیان افق در gradiant.pdf" },
+        "200": { "$value": "#2D4658", "$type": "color", "$description": "رنگ ریل بزرگراه پایه پیش از عبور سیگنال" },
+        "300": { "$value": "#213D4F", "$type": "color", "$description": "ایستگاه ۷۸.۶۱٪ بازتاب ثانویه در gradiant.pdf" },
+        "400": { "$value": "#132D3F", "$type": "color", "$description": "ایستگاه ۱۰۰٪ گرادیان افق در gradiant.pdf" },
+        "500": { "$value": "#112835", "$type": "color", "$description": "ایستگاه ۴۱.۵۸٪ شکم تاریک S-Curve در gradiant.pdf" },
+        "600": { "$value": "#102333", "$type": "color", "$description": "سرمه‌ای اصلی برند از COLORS.md" },
+        "700": { "$value": "#0B1926", "$type": "color" },
+        "800": { "$value": "#08141F", "$type": "color" },
+        "900": { "$value": "#060E16", "$type": "color", "$description": "بوم پایه اتاق فرمان شبانه" },
+        "950": { "$value": "#050B12", "$type": "color" }
+      },
+      "sand": {
+        "50":  { "$value": "#F7F5F0", "$type": "color", "$description": "زمینه پلاک خودرو و کارت‌های روشن برجسته" },
+        "100": { "$value": "#F6EFE4", "$type": "color" },
+        "200": { "$value": "#EDE4D5", "$type": "color" },
+        "300": { "$value": "#E8DECD", "$type": "color", "$description": "بژ گرم اصلی برند از COLORS.md" },
+        "400": { "$value": "#DFD2BC", "$type": "color" },
+        "500": { "$value": "#C8B89E", "$type": "color" }
+      }
+    },
+    "telemetry": {
+      "moving":    { "$value": "#4ADE80", "$type": "color", "$description": "خودرو در حرکت پایدار / اتصال آنلاین ماهواره" },
+      "signal":    { "$value": "#FF742E", "$type": "color", "$description": "پالس فعال GPS / هشدار انحراف و سرقت سوخت" },
+      "corridor":  { "$value": "#38BDF8", "$type": "color", "$description": "مسیر فعال و کریدور ترانزیتی" },
+      "coldChain": { "$value": "#22D3EE", "$type": "color", "$description": "سنسور برودتی زنجیره سرد یخچالی" },
+      "idle":      { "$value": "#FACC15", "$type": "color", "$description": "توقف روشن / درجا کار کردن موتور" },
+      "critical":  { "$value": "#EF4444", "$type": "color", "$description": "خروج اضطراری از ژئوفنس / قطع باطری" }
+    },
+    "contrast": {
+      "navyOnSand":   { "$value": "12.03:1", "$type": "string", "$description": "WCAG AAA — مناسب همه اندازه‌های متن فارسی" },
+      "orangeOnNavy": { "$value": "5.95:1",  "$type": "string", "$description": "WCAG AA — مناسب تیتر، اعداد تله‌متری و آیکن فعال" },
+      "orangeOnSand": { "$value": "2.02:1",  "$type": "string", "$description": "صرفاً برای احجام سه‌بعدی و گرافیک؛ ممنوع برای متن ریز بدون پس‌زمینه سرمه‌ای" }
+    }
+  },
+  "gradient": {
+    "clearcoatHorizon": {
+      "$value": "linear-gradient(140.24deg, #3D5768 0%, #112835 41.58%, #213D4F 78.61%, #132D3F 100%)",
+      "$type": "gradient",
+      "$description": "گرادیان دقیق /Sh0 استخراج‌شده از gradiant.pdf با زاویه ۱۴۰.۲۴ درجه و منحنی روشنایی بدنه خودرو"
+    },
+    "signalFlare": {
+      "$value": "linear-gradient(155deg, #FF8B4D 0%, #FF742E 52%, #E05612 100%)",
+      "$type": "gradient",
+      "$description": "گرادیان حجمی دکمه‌های عملیاتی اصلی با لبه برجسته"
+    },
+    "daylightSand": {
+      "$value": "linear-gradient(180deg, #EDE4D5 0%, #E8DECD 55%, #DFD2BC 100%)",
+      "$type": "gradient",
+      "$description": "بوم روز شنی برای بخش‌های تحلیلی و استراحت چشمی"
+    },
+    "cushionLight": {
+      "$value": "linear-gradient(145deg, #F6EFE4 0%, #E6DAC6 100%)",
+      "$type": "gradient",
+      "$description": "گرادیان کارت‌های بالشتکی روز (مشتق از مد Inflate 76%)"
+    }
+  },
+  "typography": {
+    "fontFamily": {
+      "primary": {
+        "$value": "'Peyda', Tahoma, sans-serif",
+        "$type": "fontFamily",
+        "$description": "خانواده تایپوگرافی هندسی-ایرانی پیدا نسخه ۲.۰۰۰ در ۹ وزن کامل"
+      },
+      "monoLtr": {
+        "$value": "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+        "$type": "fontFamily",
+        "$description": "مختصات فنی، کدهای سنسور و زوایای هندسی"
+      }
+    },
+    "metrics": {
+      "unitsPerEm": { "$value": 1000, "$type": "number" },
+      "xHeight":    { "$value": 500,  "$type": "number" },
+      "capHeight":  { "$value": 700,  "$type": "number" },
+      "ratioXToCap":{ "$value": "5:7 (0.7143)", "$type": "string", "$description": "هم‌خوان با نسبت طلایی قاب لوگو ۰.۷۲۱۲" },
+      "stemCutAngle":{ "$value": "0deg", "$type": "dimension", "$description": "برش کاملاً افقی و تیز ستون‌های الف و ل" },
+      "nuqtaRatio": { "$value": "1:1", "$type": "string", "$description": "نقطه مربعی خالص ۸۵×۸۵ در وزن Regular و ۱۱۵×۱۱۵ در Bold" }
+    },
+    "weights": {
+      "thin":       { "$value": 100, "$type": "fontWeight", "$description": "لایه واترمارک و محورهای مختصات پس‌زمینه" },
+      "extraLight": { "$value": 200, "$type": "fontWeight", "$description": "توضیحات ظریف زیرنمودارهای تله‌متری" },
+      "light":      { "$value": 300, "$type": "fontWeight", "$description": "متون مکمل و زیرنویس کارت‌های ثانویه" },
+      "regular":    { "$value": 400, "$type": "fontWeight", "$description": "متن بدنه اصلی گزارش‌ها و پاراگراف‌ها" },
+      "medium":     { "$value": 500, "$type": "fontWeight", "$description": "متن رابط کاربری، فیلترها و برچسب‌های جدول" },
+      "semiBold":   { "$value": 600, "$type": "fontWeight", "$description": "لینک‌های ناوبری، چیپ‌های وضعیت و سرتیتر کارت" },
+      "bold":       { "$value": 700, "$type": "fontWeight", "$description": "تیترهای بخش فرعی، دکمه‌های ثانویه و برچسب‌های هشدار" },
+      "extraBold":  { "$value": 800, "$type": "fontWeight", "$description": "پلاک خودرو، کدهای واحد ناوگان و تیترهای کارت" },
+      "black":      { "$value": 900, "$type": "fontWeight", "$description": "تیتر قهرمان (Hero)، شاخص‌های سرعت/سوخت و دکمه‌های اصلی سه‌بعدی" }
+    },
+    "scale": {
+      "heroDisplay": { "$value": "clamp(2.125rem, 3.8vw, 3.375rem)", "$type": "dimension", "lineHeight": 1.24, "weight": 900 },
+      "h1":          { "$value": "clamp(1.75rem, 3.2vw, 2.625rem)",  "$type": "dimension", "lineHeight": 1.28, "weight": 900 },
+      "h2":          { "$value": "clamp(1.5rem, 2.6vw, 2.125rem)",   "$type": "dimension", "lineHeight": 1.32, "weight": 800 },
+      "h3":          { "$value": "1.375rem",                         "$type": "dimension", "lineHeight": 1.4,  "weight": 800 },
+      "bodyLg":      { "$value": "1rem",                             "$type": "dimension", "lineHeight": 1.85, "weight": 400 },
+      "bodyMd":      { "$value": "0.90625rem",                       "$type": "dimension", "lineHeight": 1.8,  "weight": 400 },
+      "bodySm":      { "$value": "0.8125rem",                        "$type": "dimension", "lineHeight": 1.7,  "weight": 500 },
+      "hudMicro":    { "$value": "0.75rem",                          "$type": "dimension", "lineHeight": 1.45, "weight": 700 }
+    }
+  },
+  "geometry": {
+    "logoModuleS":       { "$value": "23.145px",  "$type": "dimension", "$description": "ضخامت پایه نوار لوگو (S)" },
+    "logotypeUnitU":     { "$value": "23.86px",   "$type": "dimension", "$description": "واحد شبکه ۲۰.۸۳×۷ لوگوتایپ (U ≈ S)" },
+    "capRadius":         { "$value": "11.57px",   "$type": "dimension", "$description": "نیم‌دایره دقیق پایانه‌های مسیر (0.50S)" },
+    "goldenFillet":      { "$value": "14.54px",   "$type": "dimension", "$description": "فیلت طلایی گوشه‌های داخلی لوگو و دکمه‌ها (0.628S ≈ S/φ)" },
+    "squircleRadius":    { "$value": "31.25%",    "$type": "dimension", "$description": "نسبت اسکوئیرکل قاب آیکن و سونار استخراج‌شده از gradiant.pdf (5/16)" },
+    "zeroCounterRadius": { "$value": "43.4%",     "$type": "dimension", "$description": "اسکوئیرکل حفره رقم ۰ فونت پیدا (۳۷۸×۳۷۹)" },
+    "goldenSplitRatio":  { "$value": "38.06%",    "$type": "dimension", "$description": "محور زین طلایی لوگو (1/φ²) برای چیدمان ۳۸.۱٪ به ۶۱.۹٪" },
+    "kafShearAngle":     { "$value": "-26.84deg", "$type": "dimension", "$description": "زاویه مورب سرکش «ک» فونت پیدا برای گیج‌های سرعت و سوخت" },
+    "radarConeAperture": { "$value": "30.6deg",   "$type": "dimension", "$description": "دهانه مخروط رادار مشتق از دهانه رقم «۷» فونت پیدا" },
+    "pinBladeAngle":     { "$value": "136.54deg", "$type": "dimension", "$description": "بردار فرود تیغه لوکیشن در ربع چهارم لوگو" },
+    "clothoidCurvature": { "$value": 0.5,         "$type": "number",    "$description": "پیوستگی قوس کلوتوئیدی بزرگراه‌ها (κ = 0.50, n = 1.85)" },
+    "nuqtaGridStep":     { "$value": "24px",      "$type": "dimension", "$description": "گام ماتریس نقطه‌های مربعی پس‌زمینه پارالاکس" }
+  },
+  "material3d": {
+    "pbrShared": {
+      "roughness":        { "$value": 0.4,  "$type": "number", "$description": "مات ابریشمی صنعتی مشترک در 3d_front.pdf و gradiant.pdf" },
+      "metalness":        { "$value": 0.08, "$type": "number", "$description": "پلیمر مهندسی با پوشش Clearcoat غیرآینه‌ای" },
+      "ambientIntensity": { "$value": 0.5,  "$type": "number" }
+    },
+    "modeACushion": {
+      "inflate":    { "$value": "76%",       "$type": "dimension" },
+      "bevelWidth": { "$value": "50%",       "$type": "dimension" },
+      "elevation":  { "$value": "71deg",     "$type": "dimension" },
+      "azimuth":    { "$value": "-124.70deg","$type": "dimension" }
+    },
+    "modeBChisel": {
+      "extrudeDepth": { "$value": "175.5pt",   "$type": "dimension" },
+      "bevelWidth":   { "$value": "60%",       "$type": "dimension" },
+      "elevation":    { "$value": "43.08deg",  "$type": "dimension" },
+      "azimuth":      { "$value": "-149.74deg","$type": "dimension" }
+    },
+    "zLayers": {
+      "z0Nuqta":     { "$value": 0,  "$type": "number", "$description": "بوم پایه ماتریس نقطه ۲۴px" },
+      "z1Corridor":  { "$value": 10, "$type": "number", "$description": "صفحه بزرگراه کلوتوئیدی و رادار" },
+      "z2Clearcoat": { "$value": 20, "$type": "number", "$description": "پنل‌های Clearcoat ۱۴۰.۲۴°" },
+      "z3Tactile":   { "$value": 30, "$type": "number", "$description": "کارت‌های بالشتکی و پخ‌خورده با پرسپکتیو ماوس" },
+      "z4Webgl":     { "$value": 40, "$type": "number", "$description": "احجام سه‌بعدی WebGL و سیگنال‌های زنده #FF742E" },
+      "z5Navbar":    { "$value": 60, "$type": "number", "$description": "نوار فرماندهی کپسولی شناور" }
+    }
+  },
+  "motion": {
+    "easing": {
+      "springLock":    { "$value": "cubic-bezier(0.34, 1.45, 0.64, 1)", "$type": "cubicBezier", "$description": "جهش قفل‌شدن مکانیکی ۴ قطعه لوگو و هاور کارت‌ها" },
+      "clothoidCruise":{ "$value": "cubic-bezier(0.65, 0, 0.35, 1)",    "$type": "cubicBezier", "$description": "حرکت پیوسته سیگنال ناوگان روی مسیر" },
+      "shockwaveOut":  { "$value": "cubic-bezier(0.16, 1, 0.3, 1)",     "$type": "cubicBezier", "$description": "انتشار موج ضربه ۰.۵× به ۳.۷× پس از اتصال" },
+      "tiltFollow":    { "$value": "cubic-bezier(0.22, 1, 0.36, 1)",    "$type": "cubicBezier", "$description": "تعقیب نرم زاویه ماوس در پرسپکتیو سه‌بعدی" }
+    },
+    "duration": {
+      "instant":   { "$value": "120ms",  "$type": "duration" },
+      "tactile":   { "$value": "180ms",  "$type": "duration" },
+      "cardMorph": { "$value": "280ms",  "$type": "duration" },
+      "routeStep": { "$value": "550ms",  "$type": "duration" },
+      "sonarLoop": { "$value": "1800ms", "$type": "duration" }
+    }
+  },
+  "radius": {
+    "nuqta":    { "$value": "3px",    "$type": "dimension", "$description": "میکروپخ نقطه مربعی پیدا" },
+    "plate":    { "$value": "7px",    "$type": "dimension", "$description": "شعاع قاب پلاک استاندارد ایران" },
+    "cap":      { "$value": "12px",   "$type": "dimension", "$description": "معادل Cap Radius لوگو (11.57px)" },
+    "fillet":   { "$value": "15px",   "$type": "dimension", "$description": "فیلت طلایی دکمه‌های سه‌بعدی (14.54px)" },
+    "cardMd":   { "$value": "22px",   "$type": "dimension" },
+    "cardLg":   { "$value": "30px",   "$type": "dimension", "$description": "کارت‌های بالشتکی و پخ‌خورده اصلی" },
+    "squircle": { "$value": "31.25%", "$type": "dimension", "$description": "اسکوئیرکل اختصاصی آیکن‌ها و نودهای رادار" },
+    "capsule":  { "$value": "9999px", "$type": "dimension", "$description": "نوار فرماندهی شناور و تگ‌های تله‌متری" }
+  },
+  "elevation": {
+    "buttonOrange3d": {
+      "$value": "0 5px 0 #9E3805, 0 14px 30px rgba(255, 116, 46, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.6)",
+      "$type": "shadow"
+    },
+    "buttonNavy3d": {
+      "$value": "0 5px 0 #07111A, 0 14px 28px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.22)",
+      "$type": "shadow"
+    },
+    "cardCushionDaylight": {
+      "$value": "14px 18px 38px rgba(16, 35, 51, 0.13), -8px -8px 24px rgba(255, 255, 255, 0.65), inset 0 1px 2px rgba(255, 255, 255, 0.9)",
+      "$type": "shadow"
+    },
+    "cardChiselClearcoat": {
+      "$value": "0 24px 52px rgba(16, 35, 51, 0.34), inset 0 2px 2px rgba(255, 255, 255, 0.22), inset 0 -3px 6px rgba(0, 0, 0, 0.45)",
+      "$type": "shadow"
+    }
+  }
+}

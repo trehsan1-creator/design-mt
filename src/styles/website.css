@@ -1,0 +1,295 @@
+html {
+  scroll-behavior: smooth;
+}
+
+.site-root {
+  background-color: #060E16;
+  color: #E8DECD;
+  font-family: 'Peyda', Tahoma, sans-serif;
+  direction: rtl;
+  overflow-x: hidden;
+  position: relative;
+}
+
+.site-container {
+  max-width: 1340px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Floating Clearcoat Navbar */
+.nav-floating-wrap {
+  position: sticky;
+  top: 16px;
+  z-index: 60;
+  padding: 0 20px;
+  margin-bottom: -76px;
+}
+
+.nav-capsule {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: rgba(11, 25, 38, 0.78);
+  border: 1px solid rgba(232, 222, 205, 0.18);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.nav-link {
+  color: rgba(232, 222, 205, 0.78);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.nav-link:hover {
+  color: #FF742E;
+}
+
+/* Tactile 3D Chiseled Primary CTA Button */
+.btn-3d-orange {
+  position: relative;
+  padding: 12px 26px;
+  border-radius: 15px; /* Golden fillet R=14.54! */
+  border: 1px solid rgba(255, 225, 205, 0.55);
+  background: linear-gradient(155deg, #FF8B4D 0%, #FF742E 52%, #E05612 100%);
+  color: #102333;
+  font-weight: 900;
+  font-size: 14.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  box-shadow:
+    0 5px 0 #9E3805,
+    0 14px 30px rgba(255, 116, 46, 0.42),
+    inset 0 1px 1px rgba(255, 255, 255, 0.6);
+  transition: transform 0.18s cubic-bezier(0.34, 1.45, 0.64, 1), box-shadow 0.18s ease;
+  overflow: hidden;
+}
+
+.btn-3d-orange:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 7px 0 #9E3805,
+    0 20px 38px rgba(255, 116, 46, 0.55),
+    inset 0 1px 2px rgba(255, 255, 255, 0.75);
+}
+
+.btn-3d-orange:active {
+  transform: translateY(3px);
+  box-shadow:
+    0 2px 0 #9E3805,
+    0 8px 18px rgba(255, 116, 46, 0.35);
+}
+
+/* Tactile Satin Clearcoat Secondary Button */
+.btn-3d-navy {
+  padding: 12px 24px;
+  border-radius: 15px;
+  border: 1px solid rgba(232, 222, 205, 0.24);
+  background: linear-gradient(140.24deg, #3D5768 0%, #112835 45%, #213D4F 82%, #132D3F 100%);
+  color: #E8DECD;
+  font-weight: 700;
+  font-size: 14.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  box-shadow:
+    0 5px 0 #07111A,
+    0 14px 28px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transition: transform 0.18s cubic-bezier(0.34, 1.45, 0.64, 1), border-color 0.2s ease;
+}
+
+.btn-3d-navy:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 116, 46, 0.55);
+}
+
+.btn-3d-navy:active {
+  transform: translateY(3px);
+}
+
+/* Hero Golden Split (38.1% Copy <-> 61.9% 3D Stage) */
+.hero-section {
+  position: relative;
+  padding: 132px 0 84px;
+  background:
+    radial-gradient(circle at 78% 18%, rgba(61, 87, 104, 0.42), transparent 48%),
+    radial-gradient(circle at 22% 62%, rgba(255, 116, 46, 0.14), transparent 46%),
+    linear-gradient(180deg, #08141F 0%, #0A1826 60%, #060E16 100%);
+  overflow: hidden;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 0.92fr 1.28fr;
+  gap: 34px;
+  align-items: center;
+}
+
+/* Authentic Iranian License Plate Component */
+.iran-plate {
+  display: inline-flex;
+  align-items: stretch;
+  direction: ltr;
+  background: #F7F5F0;
+  color: #102333;
+  border: 2px solid #102333;
+  border-radius: 7px;
+  overflow: hidden;
+  font-weight: 800;
+  font-size: 13px;
+  height: 30px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.28);
+}
+
+.iran-plate-blue {
+  background: #123B7A;
+  color: #fff;
+  padding: 0 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 7px;
+  line-height: 1.1;
+}
+
+.iran-plate-main {
+  padding: 0 9px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13.5px;
+  letter-spacing: 0.02em;
+}
+
+.iran-plate-city {
+  border-left: 1.5px solid #102333;
+  padding: 0 7px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 9px;
+  line-height: 1;
+}
+
+/* Daylight Warm Beige Section (#E8DECD) */
+.daylight-section {
+  position: relative;
+  background: linear-gradient(180deg, #EDE4D5 0%, #E8DECD 55%, #DFD2BC 100%);
+  color: #102333;
+  padding: 96px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid rgba(16, 35, 51, 0.14);
+}
+
+/* Cushion 3D Card on Daylight Sand */
+.cushion-card-light {
+  background: linear-gradient(145deg, #F6EFE4 0%, #E6DAC6 100%);
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 30px;
+  padding: 28px;
+  box-shadow:
+    14px 18px 38px rgba(16, 35, 51, 0.13),
+    -8px -8px 24px rgba(255, 255, 255, 0.65),
+    inset 0 1px 2px rgba(255, 255, 255, 0.9);
+  transition: transform 0.25s cubic-bezier(0.34, 1.35, 0.64, 1), box-shadow 0.25s ease;
+}
+
+/* Chiseled Dark Navy Card on Daylight Sand */
+.chisel-card-navy {
+  background: linear-gradient(140.24deg, #3D5768 0%, #112835 41.58%, #213D4F 78.61%, #132D3F 100%);
+  color: #E8DECD;
+  border: 1px solid rgba(232, 222, 205, 0.24);
+  border-radius: 30px;
+  padding: 28px;
+  box-shadow:
+    0 24px 52px rgba(16, 35, 51, 0.34),
+    inset 0 2px 2px rgba(255, 255, 255, 0.22),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.45);
+}
+
+/* Section Spacing */
+.dark-section {
+  padding: 96px 0;
+  position: relative;
+}
+
+/* Section Eyebrow with 26.84 deg Kaf Sarkesh Accent */
+.eyebrow-kaf {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: rgba(255, 116, 46, 0.14);
+  border: 1px solid rgba(255, 116, 46, 0.35);
+  color: #FF9861;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.eyebrow-kaf.on-light {
+  background: #102333;
+  color: #FF9861;
+  border-color: #102333;
+}
+
+/* Responsive Grids */
+.radar-command-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.hardware-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 28px;
+  align-items: center;
+}
+
+.bento-golden-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 22px;
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  align-items: stretch;
+}
+
+@media (max-width: 1060px) {
+  .nav-links {
+    display: none;
+  }
+  .hero-grid,
+  .radar-command-grid,
+  .hardware-grid,
+  .bento-golden-grid,
+  .pricing-grid {
+    grid-template-columns: 1fr;
+  }
+}
