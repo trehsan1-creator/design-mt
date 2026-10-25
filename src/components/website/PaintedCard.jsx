@@ -1,156 +1,166 @@
 import React, { useEffect, useRef } from 'react';
 import { usePrefersReducedMotion } from '../../utils/usePrefersReducedMotion.js';
 
-function clamp(v, min = 0, max = 1) {
+function clamp(v, min, max) {
   return Math.max(min, Math.min(max, v));
 }
 
-function easeOutCubic(t) {
-  return 1 - Math.pow(1 - t, 3);
-}
-
 /**
- * کارتی که ابتدا توسط خط نارنجی نقاش دورگیری می‌شود و سپس به صورت سه‌بعدی از بوم بیرون می‌آید
+ * گره مدار نقاش با سوکت ورودی بالا، انشعاب دوطرفه هم‌زمان دور کادر و سوکت خروجی پایین
+ * پیشرفت رسم کادر مستقیماً توسط موتور مرکزی StoryPainterRibbon هدایت می‌شود تا هماهنگی صددرصد باشد.
  */
 export default function PaintedCard({
   children,
-  tone = 'alabaster', // 'alabaster' | 'horizon'
-  delay = 0,
+  nodeId,
   className = '',
+  tone = 'alabaster',
+  hasBottomPort = true,
+  interactiveTilt = true,
+  onProgressRef,
 }) {
   const reducedMotion = usePrefersReducedMotion();
-  const wrapRef = useRef(null);
-  const strokeRef = useRef(null);
-  const sparkRef = useRef(null);
+  const rootRef = useRef(null);
+  const svgRef = useRef(null);
+  const leftSplitRef = useRef(null);
+  const rightSplitRef = useRef(null);
+  const leftSparkRef = useRef(null);
+  const rightSparkRef = useRef(null);
 
+  // ساخت دو مسیر متقارن چپ و راست دقیقاً منطبق بر ابعاد پیکسلی واقعی کارت (شروع از سوکت بالا، تلاقی در سوکت پایین)
   useEffect(() => {
-    const el = wrapRef.current;
+    const el = rootRef.current;
     if (!el) return undefined;
 
-    if (reducedMotion) {
-      el.style.setProperty('--card-build', '1');
-      el.style.setProperty('--card-tilt-in', '0deg');
-      el.style.setProperty('--card-shift-y', '0px');
-      if (strokeRef.current) strokeRef.current.setAttribute('stroke-dashoffset', '0');
-      if (sparkRef.current) sparkRef.current.setAttribute('opacity', '0');
-      return undefined;
-    }
+    const rebuildPerimeter = () => {
+      const w = Math.max(120, el.offsetWidth);
+      const h = Math.max(80, el.offsetHeight);
+      const r = Math.min(28, w * 0.12, h * 0.22);
+      const s = 1.5;
+      const cx = w * 0.5;
 
-    let raf = 0;
-    const update = () => {
-      raf = 0;
-      const rect = el.getBoundingClientRect();
-      const vh = window.innerHeight || 800;
-      // شروع نقاشی وقتی کارت وارد ۸۸٪ ارتفاع دید می‌شود و تکمیل در ۴۲٪
-      const raw = (vh * 0.9 - rect.top) / (vh * 0.48);
-      const p = clamp(raw - delay, 0, 1);
+      if (svgRef.current) {
+        svgRef.current.setAttribute('viewBox', `0 0 ${w} ${h}`);
+      }
 
-      // فاز ۱: کشیده شدن دورکادر نارنجی (0..0.62)
-      const strokeP = easeOutCubic(clamp(p / 0.62, 0, 1));
-      // فاز ۲: بیرون آمدن حجم سه‌بعدی کارت از دل بوم (0.28..1.0)
-      const bodyP = easeOutCubic(clamp((p - 0.24) / 0.76, 0, 1));
+      // نیم‌مسیر راست: از مرکز بالا (cx, s) -> گوشه بالا راست -> پایین راست -> مرکز پایین (cx, h-s)
+      const dRight = [
+        `M ${cx},${s}`,
+        `L ${w - r},${s}`,
+        `A ${r - s},${r - s} 0 0 1 ${w - s},${r}`,
+        `L ${w - s},${h - r}`,
+        `A ${r - s},${r - s} 0 0 1 ${w - r},${h - s}`,
+        `L ${cx},${h - s}`,
+      ].join(' ');
 
-      el.style.setProperty('--card-build', bodyP.toFixed(3));
-      el.style.setProperty('--card-tilt-in', `${((1 - bodyP) * 18).toFixed(2)}deg`);
-      el.style.setProperty('--card-shift-y', `${((1 - bodyP) * 34).toFixed(1)}px`);
+      // نیم‌مسیر چپ: از مرکز بالا (cx, s) -> گوشه بالا چپ -> پایین چپ -> مرکز پایین (cx, h-s)
+      const dLeft = [
+        `M ${cx},${s}`,
+        `L ${r},${s}`,
+        `A ${r - s},${r - s} 0 0 0 ${s},${r}`,
+        `L ${s},${h - r}`,
+        `A ${r - s},${r - s} 0 0 0 ${r},${h - s}`,
+        `L ${cx},${h - s}`,
+      ].join(' ');
 
-      if (strokeRef.current) {
-        strokeRef.current.setAttribute('stroke-dashoffset', `${(1 - strokeP).toFixed(3)}`);
-        strokeRef.current.setAttribute('opacity', strokeP > 0.01 ? (bodyP > 0.95 ? '0.42' : '1') : '0');
+      if (rightSplitRef.current) rightSplitRef.current.setAttribute('d', dRight);
+      if (leftSplitRef.current) leftSplitRef.current.setAttribute('d', dLeft);
 
-        if (strokeRef.current.getTotalLength && sparkRef.current) {
-          if (strokeP > 0.02 && strokeP < 0.98) {
-            const total = strokeRef.current.getTotalLength();
-            const pt = strokeRef.current.getPointAtLength(total * strokeP);
-            sparkRef.current.setAttribute('transform', `translate(${pt.x.toFixed(1)}, ${pt.y.toFixed(1)})`);
-            sparkRef.current.setAttribute('opacity', '1');
-          } else {
-            sparkRef.current.setAttribute('opacity', '0');
-          }
-        }
+      const railRight = el.querySelector('[data-rail-right]');
+      const railLeft = el.querySelector('[data-rail-left]');
+      if (railRight) railRight.setAttribute('d', dRight);
+      if (railLeft) railLeft.setAttribute('d', dLeft);
+    };
+
+    rebuildPerimeter();
+    const ro = new ResizeObserver(rebuildPerimeter);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!onProgressRef || !rootRef.current) return undefined;
+    const el = rootRef.current;
+    const handler = (e) => {
+      if (typeof onProgressRef.current === 'function') {
+        onProgressRef.current(e.detail.progress);
       }
     };
-
-    const requestTick = () => {
-      if (!raf) raf = requestAnimationFrame(update);
-    };
-
-    update();
-    window.addEventListener('scroll', requestTick, { passive: true });
-    window.addEventListener('resize', requestTick, { passive: true });
-    return () => {
-      if (raf) cancelAnimationFrame(raf);
-      window.removeEventListener('scroll', requestTick);
-      window.removeEventListener('resize', requestTick);
-    };
-  }, [delay, reducedMotion]);
+    el.addEventListener('circuit-progress', handler);
+    return () => el.removeEventListener('circuit-progress', handler);
+  }, [onProgressRef]);
 
   const handlePointerMove = (e) => {
-    if (reducedMotion || !wrapRef.current) return;
-    const rect = wrapRef.current.getBoundingClientRect();
-    const ux = (e.clientX - rect.left) / rect.width;
-    const uy = (e.clientY - rect.top) / rect.height;
-    const rx = (0.5 - uy) * 10;
-    const ry = (ux - 0.5) * 12;
-    wrapRef.current.style.setProperty('--hover-rx', `${rx.toFixed(2)}deg`);
-    wrapRef.current.style.setProperty('--hover-ry', `${ry.toFixed(2)}deg`);
-    wrapRef.current.style.setProperty('--glare-x', `${(ux * 100).toFixed(1)}%`);
-    wrapRef.current.style.setProperty('--glare-y', `${(uy * 100).toFixed(1)}%`);
+    if (reducedMotion || !interactiveTilt || !rootRef.current) return;
+    const rect = rootRef.current.getBoundingClientRect();
+    const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    const ny = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+    rootRef.current.style.setProperty('--card-rx', `${(-ny * 4.2).toFixed(2)}deg`);
+    rootRef.current.style.setProperty('--card-ry', `${(nx * 5.2).toFixed(2)}deg`);
+    rootRef.current.style.setProperty('--glare-x', `${((nx * 0.5 + 0.5) * 100).toFixed(1)}%`);
+    rootRef.current.style.setProperty('--glare-y', `${((ny * 0.5 + 0.5) * 100).toFixed(1)}%`);
   };
 
   const handlePointerLeave = () => {
-    if (!wrapRef.current) return;
-    wrapRef.current.style.setProperty('--hover-rx', '0deg');
-    wrapRef.current.style.setProperty('--hover-ry', '0deg');
+    if (!rootRef.current) return;
+    rootRef.current.style.setProperty('--card-rx', '0deg');
+    rootRef.current.style.setProperty('--card-ry', '0deg');
   };
 
   return (
     <div
-      ref={wrapRef}
-      className={`painted-card painted-card--${tone} ${className}`.trim()}
+      ref={rootRef}
+      data-circuit-node={nodeId}
+      data-tone={tone}
+      className={`painted-card ${className}`}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
     >
-      {/* قاب SVG نقاش که دور کارت را زنده رسم می‌کند */}
+      {/* سوکت ورودی سیگنال در مرکز دقیق لبه بالایی */}
+      <span className="circuit-socket circuit-socket--in" data-port-in aria-hidden="true">
+        <span className="circuit-socket__core" />
+      </span>
+
+      {/* دو شاخه متقارن نوار نقاش که از سوکت بالا شکافته شده و در سوکت پایین به هم می‌رسند */}
       <svg
-        viewBox="0 0 400 280"
+        ref={svgRef}
+        viewBox="0 0 400 260"
         preserveAspectRatio="none"
-        className="painted-card__sketch-svg"
+        className="painted-card__sketch"
         aria-hidden="true"
       >
-        <rect
-          x="3"
-          y="3"
-          width="394"
-          height="274"
-          rx="28"
-          ry="28"
-          className="painted-card__sketch-rail"
-        />
-        <rect
-          ref={strokeRef}
-          x="3"
-          y="3"
-          width="394"
-          height="274"
-          rx="28"
-          ry="28"
+        <path data-rail-right className="painted-card__rail" />
+        <path data-rail-left className="painted-card__rail" />
+        <path
+          ref={rightSplitRef}
+          data-split-right
           pathLength="1"
           strokeDasharray="1"
-          strokeDashoffset="1"
-          className="painted-card__sketch-stroke"
+          strokeDashoffset={reducedMotion ? '0' : '1'}
+          className="painted-card__stroke"
         />
-        <g ref={sparkRef} opacity="0">
-          <circle r="11" className="painter-spark-halo" />
-          <circle r="4.5" className="painter-spark-core" />
-        </g>
+        <path
+          ref={leftSplitRef}
+          data-split-left
+          pathLength="1"
+          strokeDasharray="1"
+          strokeDashoffset={reducedMotion ? '0' : '1'}
+          className="painted-card__stroke"
+        />
+        <circle ref={rightSparkRef} data-spark-right r="4.5" opacity="0" className="painted-card__spark" />
+        <circle ref={leftSparkRef} data-spark-left r="4.5" opacity="0" className="painted-card__spark" />
       </svg>
 
-      {/* بدنه سه‌بعدی برجسته با درخشش دنبال‌کننده موس */}
       <div className="painted-card__surface">
         <div className="painted-card__glare" aria-hidden="true" />
-        <div className="painted-card__content">{children}</div>
+        <div className="painted-card__body">{children}</div>
       </div>
+
+      {/* سوکت خروجی سیگنال در مرکز دقیق لبه پایینی */}
+      {hasBottomPort && (
+        <span className="circuit-socket circuit-socket--out" data-port-out aria-hidden="true">
+          <span className="circuit-socket__core" />
+        </span>
+      )}
     </div>
   );
 }

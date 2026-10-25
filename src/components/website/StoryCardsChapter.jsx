@@ -1,130 +1,157 @@
-import React, { useState } from 'react';
-import { IranPlate, Gauge, MapPin, StatusChip } from '../../ds/index.js';
+import React, { useRef, useState } from 'react';
+import { Gauge, IranPlate, MapPin, StatusChip } from '../../ds';
 import { toFa } from '../../utils/faDigits.js';
 import PaintedCard from './PaintedCard.jsx';
 
-const LIVE_PLATES = [
-  { left2: '۴۸', letter: 'ع', mid3: '۷۲۹', iranCode: '۱۱', variant: 'public', route: 'تهران ← بندرعباس' },
-  { left2: '۶۲', letter: 'ع', mid3: '۳۱۴', iranCode: '۴۳', variant: 'public', route: 'اصفهان ← شیراز' },
-  { left2: '۲۴', letter: 'د', mid3: '۸۵۱', iranCode: '۶۸', variant: 'private', route: 'تبریز ← قزوین' },
+const FLEET_PLATES = [
+  { digitsLeft: '۴۸', letter: 'ع', digitsRight: '۷۲۹', iranCode: '۱۱', route: 'تهران — بندرعباس', speed: '۸۴' },
+  { digitsLeft: '۶۲', letter: 'د', digitsRight: '۳۱۵', iranCode: '۲۱', route: 'تبریز — قزوین', speed: '۷۹' },
+  { digitsLeft: '۱۹', letter: 'ط', digitsRight: '۸۴۶', iranCode: '۵۳', route: 'اصفهان — شیراز', speed: '۹۱' },
 ];
 
 export default function StoryCardsChapter() {
   const [plateIdx, setPlateIdx] = useState(0);
-  const [fuelPct, setFuelPct] = useState(78);
-  const [geofencePin, setGeofencePin] = useState({ x: 52, y: 48, inside: true });
+  const [plateLocked, setPlateLocked] = useState(false);
 
-  const currentPlate = LIVE_PLATES[plateIdx];
+  const [fuelEfficiency, setFuelEfficiency] = useState(76);
+  const userScrubbedFuel = useRef(false);
+
+  const [geofencePin, setGeofencePin] = useState({ x: 50, y: 50, inside: true });
+
+  const activePlate = FLEET_PLATES[plateIdx];
+  const savedPercent = Math.max(9, Math.round((fuelEfficiency - 40) * 0.48));
+
+  // هم‌گام‌سازی خودکار پلاک‌خوان با رسیدن خط سیگنال به کارت اول
+  const plateProgressRef = useRef((p) => {
+    setPlateLocked(p > 0.45);
+  });
+
+  // هم‌گام‌سازی خودکار گیج سوخت با پیشرفت خط سیگنال دور کارت دوم (تا قبل از تعامل دستی موس)
+  const fuelProgressRef = useRef((p) => {
+    if (!userScrubbedFuel.current && p > 0.05) {
+      setFuelEfficiency(Math.round(46 + p * 42));
+    }
+  });
 
   const handleGaugeScrub = (e) => {
+    userScrubbedFuel.current = true;
     const rect = e.currentTarget.getBoundingClientRect();
-    // در چیدمان راست‌به‌چپ حرکت از راست به چپ مقدار را پر می‌کند
-    const ratio = 1 - (e.clientX - rect.left) / Math.max(1, rect.width);
-    const next = Math.max(14, Math.min(100, Math.round(ratio * 100)));
-    setFuelPct(next);
+    const ratio = Math.max(0, Math.min(1, 1 - (e.clientX - rect.left) / rect.width));
+    setFuelEfficiency(Math.round(45 + ratio * 51));
   };
 
   const handleGeofenceMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const x = Math.max(14, Math.min(86, ((e.clientX - rect.left) / rect.width) * 100));
-    const y = Math.max(18, Math.min(82, ((e.clientY - rect.top) / rect.height) * 100));
+    const x = Math.max(12, Math.min(88, ((e.clientX - rect.left) / rect.width) * 100));
+    const y = Math.max(16, Math.min(84, ((e.clientY - rect.top) / rect.height) * 100));
     const dist = Math.hypot(x - 50, y - 50);
-    setGeofencePin({ x, y, inside: dist <= 28 });
+    setGeofencePin({ x, y, inside: dist <= 29 });
   };
 
   return (
-    <section id="story-cards" data-polarity="daylight" className="story-sand-chapter">
-      <div className="site-container story-sand-chapter__inner">
-        <header className="story-chapter-head">
-          <span className="story-step-kicker ds-tabular">۰۱ · فصل اول</span>
+    <section id="story-cards" className="story-sand-chapter" data-polarity="daylight">
+      <div className="site-container">
+        <div className="story-chapter-head">
+          <span className="story-step-kicker">۰۱ · فصل اول</span>
           <h2 className="story-chapter-title">
-            خطی که کارت‌ها را می‌کشد و ناوگان را بیدار می‌کند.
+            هر ایستگاهی که خط سیگنال لمس می‌کند، زنده می‌شود.
           </h2>
-        </header>
+        </div>
 
         <div className="story-stagger-grid">
-          {/* کارت اول: دورگیری توسط نوار نقاش + تغییر هوشمند پلاک با کلیک یا لمس */}
-          <PaintedCard tone="alabaster" delay={0} className="story-stagger-item story-stagger-item--start">
+          {/* گره ۰ مدار: پلاک‌خوانی زنده */}
+          <PaintedCard
+            nodeId="node-plate"
+            tone="alabaster"
+            className="story-stagger-item story-stagger-item--start"
+            onProgressRef={plateProgressRef}
+          >
             <div className="smart-card-head">
-              <span className="smart-card-index ds-tabular">۰۱</span>
-              <StatusChip status="moving" label="قفل ۰.۰۲ ثانیه" />
+              <span className="smart-card-index">۰۱</span>
+              <StatusChip status={plateLocked ? 'moving' : 'signal'} pulse size="sm">
+                {plateLocked ? `قفل در ۰.۰۲ ثانیه · ${activePlate.speed} km/h` : 'در انتظار سیگنال'}
+              </StatusChip>
             </div>
-
-            <h3 className="smart-card-title">پلاک‌خوانی زنده در لحظه استارت</h3>
-            <p className="smart-card-sub">روی پلاک بزنید تا واحد فعال بعدی روی خط سیگنال قفل شود.</p>
+            <h3 className="smart-card-title">قفل خودکار پلاک با ورود سیگنال</h3>
+            <p className="smart-card-desc">
+              با رسیدن خط نارنجی، پلاک فعال اسکن می‌شود؛ روی پلاک کلیک کنید تا واحد بعدی ناوگان فراخوانی شود.
+            </p>
 
             <button
               type="button"
-              className="smart-plate-stage"
-              onClick={() => setPlateIdx((i) => (i + 1) % LIVE_PLATES.length)}
-              aria-label="تغییر واحد ناوگان فعال"
+              className="smart-plate-trigger"
+              onClick={() => setPlateIdx((i) => (i + 1) % FLEET_PLATES.length)}
+              aria-label="تغییر پلاک خودرو فعال در مدار"
             >
               <IranPlate
-                left2={currentPlate.left2}
-                letter={currentPlate.letter}
-                mid3={currentPlate.mid3}
-                iranCode={currentPlate.iranCode}
-                variant={currentPlate.variant}
+                digitsLeft={activePlate.digitsLeft}
+                letter={activePlate.letter}
+                digitsRight={activePlate.digitsRight}
+                iranCode={activePlate.iranCode}
+                size="md"
               />
-              <span className="smart-plate-route">{currentPlate.route}</span>
+              <span className="smart-plate-route">{activePlate.route}</span>
             </button>
           </PaintedCard>
 
-          {/* کارت دوم: تراز سوخت تعاملی فقط با حرکت موس روی تیغه‌ها */}
-          <PaintedCard tone="alabaster" delay={0.08} className="story-stagger-item story-stagger-item--end">
+          {/* گره ۱ مدار: گیج مورب سوخت */}
+          <PaintedCard
+            nodeId="node-fuel"
+            tone="alabaster"
+            className="story-stagger-item story-stagger-item--end"
+            onProgressRef={fuelProgressRef}
+          >
             <div className="smart-card-head">
-              <span className="smart-card-index ds-tabular">۰۲</span>
-              <span className="smart-card-big-num ds-tabular">{toFa(Math.round(fuelPct * 0.31))}٪</span>
+              <span className="smart-card-index">۰۲</span>
+              <span className="smart-card-metric">
+                {toFa(savedPercent)}٪ صرفه‌جویی سوخت
+              </span>
             </div>
-
-            <h3 className="smart-card-title">کاهش هوشمند هدررفت سوخت</h3>
-            <p className="smart-card-sub">موس را روی تیغه‌های مورب بکشید تا اثر پایش لحظه‌ای را ببینید.</p>
+            <h3 className="smart-card-title">کالیبراسیون مورب مصرف سوخت</h3>
+            <p className="smart-card-desc">
+              جریان سیگنال تیغه‌های `-۲۶.۸۴°` را شارژ می‌کند؛ موس را روی تیغه‌ها بکشید تا بازده ناوگان را بسنجید.
+            </p>
 
             <div
               className="smart-gauge-scrub"
               data-polarity="nocturnal"
               onPointerMove={handleGaugeScrub}
             >
-              <Gauge
-                segments={14}
-                activeCount={Math.max(1, Math.round((fuelPct / 100) * 14))}
-                label="بازده لحظه‌ای ناوگان"
-                value={`${toFa(fuelPct)}٪`}
-                tone="accent"
-              />
+              <Gauge value={fuelEfficiency} max={100} segments={14} label="بازده لحظه‌ای ناوگان" />
             </div>
           </PaintedCard>
 
-          {/* کارت سوم: ژئوفنس هوشمند که پین ۱۳۶.۵۴ درجه دنبال موس حرکت می‌کند */}
-          <PaintedCard tone="alabaster" delay={0.14} className="story-stagger-item story-stagger-item--start">
+          {/* گره ۲ مدار: رادار ژئوفنس */}
+          <PaintedCard
+            nodeId="node-geofence"
+            tone="alabaster"
+            className="story-stagger-item story-stagger-item--start"
+          >
             <div className="smart-card-head">
-              <span className="smart-card-index ds-tabular">۰۳</span>
-              <StatusChip
-                status={geofencePin.inside ? 'moving' : 'signal'}
-                label={geofencePin.inside ? 'درون مرز امن' : 'خروج از ژئوفنس'}
-              />
+              <span className="smart-card-index">۰۳</span>
+              <StatusChip status={geofencePin.inside ? 'moving' : 'critical'} pulse size="sm">
+                {geofencePin.inside ? 'درون حصار مجاز' : 'خروج از ژئوفنس'}
+              </StatusChip>
             </div>
-
-            <h3 className="smart-card-title">حصار نامرئی با واکنش آنی</h3>
-            <p className="smart-card-sub">موس را داخل و خارج حلقه ببرید؛ پین ۱۳۶.۵۴ درجه مرز را حس می‌کند.</p>
+            <h3 className="smart-card-title">حصار فضایی حساس به حرکت موس</h3>
+            <p className="smart-card-desc">
+              اشاره‌گر موس را از دایره سبز عبور دهید تا هشدار آنی خروج از مرز مجاز را ببینید.
+            </p>
 
             <div
               className={`smart-geofence-pad ${geofencePin.inside ? 'is-safe' : 'is-alert'}`}
               data-polarity="nocturnal"
               onPointerMove={handleGeofenceMove}
             >
-              <div className="smart-geofence-zone ds-squircle" aria-hidden="true" />
+              <div className="smart-geofence-ring" aria-hidden="true" />
               <div
-                className="smart-geofence-follower"
-                style={{ '--pin-x': `${geofencePin.x}%`, '--pin-y': `${geofencePin.y}%` }}
+                className="smart-geofence-cursor"
+                style={{
+                  '--pin-x': `${geofencePin.x.toFixed(1)}%`,
+                  '--pin-y': `${geofencePin.y.toFixed(1)}%`,
+                }}
               >
-                <MapPin
-                  speed={geofencePin.inside ? 82 : 108}
-                  heading={geofencePin.inside ? 40 : 135}
-                  status={geofencePin.inside ? 'moving' : 'signal'}
-                  selected
-                  label="پین تعاملی ژئوفنس"
-                />
+                <MapPin status={geofencePin.inside ? 'moving' : 'critical'} active={!geofencePin.inside} />
               </div>
             </div>
           </PaintedCard>

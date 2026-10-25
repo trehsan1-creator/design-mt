@@ -1,12 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js';
-import { LOGO_PARTS } from '../../data/geometryData.js';
 import { DESIGN_TOKENS } from '../../../tokens/tokens.js';
+import { LOGO_PATH_D } from '../../data/geometryData.js';
 import { setupClearcoatEnvironment, createClearcoatMaterial } from '../../utils/pbrMaterials.js';
-import { getPrefersReducedMotion } from '../../utils/usePrefersReducedMotion.js';
 
-function clamp(v, min = 0, max = 1) {
+function clamp(v, min, max) {
   return Math.max(min, Math.min(max, v));
 }
 
@@ -14,92 +13,112 @@ function easeOutExpo(t) {
   return t >= 1 ? 1 : 1 - Math.pow(2, -10 * t);
 }
 
-function easeOutBackGentle(t) {
-  const c1 = 1.35;
-  const c3 = c1 + 1;
-  return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
-}
+// در Three.js پلیگون نقطه‌ای زمانی حفظ می‌شود که normal.dot(p) + constant >= 0 باشد
+const P_UPPER = new THREE.Plane(new THREE.Vector3(-0.4515, 0.8923, 0), -42);
+const P_LOWER = new THREE.Plane(new THREE.Vector3(0.4515, -0.8923, 0), 42);
+const P_WING_R = new THREE.Plane(new THREE.Vector3(0.8923, 0.4515, 0), -68);
+const P_DOME_L = new THREE.Plane(new THREE.Vector3(-0.8923, -0.4515, 0), 68);
+const P_STEM_L = new THREE.Plane(new THREE.Vector3(-1, 0, 0), -42);
+const P_SHIELD_R = new THREE.Plane(new THREE.Vector3(1, 0, 0), 42);
+const P_SHIELD_TOP = new THREE.Plane(new THREE.Vector3(0.4515, 0.8923, 0), 46);
+const P_SHIELD_TIP = new THREE.Plane(new THREE.Vector3(-0.4515, -0.8923, 0), -46);
 
-// پراکنده شدن اولیه تندیس چهار تکه در فضای عمیق سه‌بعدی برای ورود باابهت
-const ENTRANCE_OFFSETS = [
-  { x: -340, y: 240, z: 260, rx: 0.95, ry: -1.15, rz: -0.55, delay: 0.0 },
-  { x: 310, y: 260, z: -240, rx: -0.85, ry: 1.05, rz: 0.62, delay: 0.08 },
-  { x: -290, y: -250, z: 210, rx: 0.78, ry: 0.92, rz: -0.48, delay: 0.16 },
-  { x: 360, y: -260, z: 290, rx: -1.05, ry: -0.88, rz: 0.72, delay: 0.24 },
+const SHARD_CONFIGS = [
+  {
+    // بال افقی بالا-راست
+    planes: [P_UPPER, P_WING_R],
+    scatter: { x: 265, y: 185, z: 245, rx: 0.68, ry: 0.85, rz: -0.34, delay: 0.12 },
+    mag: { x: 14, y: 12, z: 12, rz: -0.025 },
+  },
+  {
+    // گنبد قوسی بالا-چپ
+    planes: [P_UPPER, P_DOME_L],
+    scatter: { x: -245, y: 175, z: -185, rx: -0.62, ry: -0.8, rz: 0.32, delay: 0.0 },
+    mag: { x: -14, y: 11, z: 10, rz: 0.025 },
+  },
+  {
+    // ستون عمودی پایین-چپ
+    planes: [P_LOWER, P_STEM_L],
+    scatter: { x: -255, y: -175, z: 215, rx: 0.58, ry: -0.72, rz: -0.28, delay: 0.06 },
+    mag: { x: -15, y: -10, z: 10, rz: 0.02 },
+  },
+  {
+    // شانه سپر میانی-راست
+    planes: [P_LOWER, P_SHIELD_R, P_SHIELD_TOP],
+    scatter: { x: 270, y: 38, z: -175, rx: -0.54, ry: 0.78, rz: 0.26, delay: 0.16 },
+    mag: { x: 15, y: 4, z: 10, rz: -0.02 },
+  },
+  {
+    // نوک نیزه ۱۳۶.۵۴ درجه پایین-راست (سرچشمه خط سیگنال)
+    planes: [P_LOWER, P_SHIELD_R, P_SHIELD_TIP],
+    scatter: { x: 155, y: -245, z: 285, rx: -0.76, ry: 0.9, rz: -0.38, delay: 0.22 },
+    mag: { x: 10, y: -16, z: 18, rz: -0.03 },
+  },
 ];
 
-// بردار جدایش مغناطیسی قطعات هنگام نزدیک شدن موس به تندیس
-const MAGNETIC_SPLIT = [
-  { x: -22, y: 20, z: 34, rz: -0.05 },
-  { x: 24, y: 18, z: 22, rz: 0.04 },
-  { x: -20, y: -22, z: 28, rz: 0.04 },
-  { x: 28, y: -26, z: 46, rz: -0.06 },
-];
-
-export default function HeroEmblemCanvas({ scrollRef, pointerRef, reducedMotion = false }) {
-  const canvasWrapRef = useRef(null);
-  const inViewRef = useRef(true);
-  const reducedRef = useRef(getPrefersReducedMotion());
+export default function HeroEmblemCanvas({
+  scrollRef,
+  pointerRef,
+  reducedMotion = false,
+  onTipScreenUpdate,
+}) {
+  const mountRef = useRef(null);
+  const tipCallbackRef = useRef(onTipScreenUpdate);
+  tipCallbackRef.current = onTipScreenUpdate;
 
   useEffect(() => {
-    reducedRef.current = reducedMotion;
-  }, [reducedMotion]);
-
-  useEffect(() => {
-    const container = canvasWrapRef.current;
+    const container = mountRef.current;
     if (!container) return undefined;
 
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        inViewRef.current = entry.isIntersecting;
-      },
-      { threshold: 0.02 }
-    );
-    obs.observe(container);
-
-    const width = container.clientWidth || window.innerWidth || 1280;
-    const height = container.clientHeight || window.innerHeight || 760;
-    const isMobile = window.innerWidth <= 768;
+    let width = container.clientWidth || window.innerWidth || 1280;
+    let height = container.clientHeight || window.innerHeight || 800;
+    const isMobileInit = width <= 768;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(34, width / height, 1, 3500);
-    camera.position.set(0, 0, isMobile ? 820 : 690);
+    const camera = new THREE.PerspectiveCamera(34, width / height, 10, 3200);
+    camera.position.set(0, 0, isMobileInit ? 940 : 820);
 
     const renderer = new THREE.WebGLRenderer({
-      antialias: !isMobile,
+      antialias: true,
       alpha: true,
       powerPreference: 'high-performance',
     });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.35 : 2));
+    renderer.localClippingEnabled = true;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobileInit ? 1.5 : 2));
     renderer.setSize(width, height);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.18;
-    renderer.domElement.setAttribute('role', 'img');
-    renderer.domElement.setAttribute('aria-label', 'صحنه سه‌بعدی تعاملی نشان برند و نوار سیگنال');
+    renderer.toneMappingExposure = 1.15;
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
 
     const envRT = setupClearcoatEnvironment(renderer, scene);
 
+    const sandLight = new THREE.Color(DESIGN_TOKENS.color.sand['50']);
+    const slateCool = new THREE.Color(DESIGN_TOKENS.color.navy['200']);
     const orangeColor = new THREE.Color(DESIGN_TOKENS.color.signalOrange);
-    const porcelainColor = new THREE.Color(DESIGN_TOKENS.color.sand['100']);
-    const sandColor = new THREE.Color(DESIGN_TOKENS.color.warmSand);
-    const slateColor = new THREE.Color(DESIGN_TOKENS.color.navy['200']);
 
-    // گروه اصلی تندیس لوگو در سمت چپ صحنه (در چیدمان فارسی، مکمل تیتر سمت راست)
-    const stageRoot = new THREE.Group();
-    scene.add(stageRoot);
+    scene.add(new THREE.HemisphereLight(sandLight, slateCool, 1.08));
+
+    const keyLight = new THREE.DirectionalLight(sandLight, 2.25);
+    keyLight.position.set(-280, 360, 460);
+    scene.add(keyLight);
+
+    const rimLight = new THREE.DirectionalLight(slateCool, 1.25);
+    rimLight.position.set(320, 140, -280);
+    scene.add(rimLight);
+
+    const cursorSpot = new THREE.PointLight(orangeColor, 2.3, 920, 1.45);
+    cursorSpot.position.set(80, -40, 290);
+    scene.add(cursorSpot);
 
     const emblemGroup = new THREE.Group();
-    stageRoot.add(emblemGroup);
+    scene.add(emblemGroup);
 
-    // نور درونی گرم که هنگام باز شدن مغناطیسی قطعات از شکاف میان آن‌ها می‌تابد
-    const innerCoreLight = new THREE.PointLight(orangeColor, 0, 320, 1.4);
-    innerCoreLight.position.set(0, 0, 18);
+    const innerCoreLight = new THREE.PointLight(orangeColor, 0, 340, 1.35);
+    innerCoreLight.position.set(6, -18, 20);
     emblemGroup.add(innerCoreLight);
 
-    // حلقه موج ضربه ظریف هنگام قفل شدن باابهت قطعات در لحظه ورود
-    const ringGeo = new THREE.RingGeometry(66, 68.8, 72);
+    const ringGeo = new THREE.RingGeometry(82, 85.2, 80);
     const ringMat = new THREE.MeshBasicMaterial({
       color: orangeColor,
       side: THREE.DoubleSide,
@@ -110,195 +129,241 @@ export default function HeroEmblemCanvas({ scrollRef, pointerRef, reducedMotion 
     const shockRing = new THREE.Mesh(ringGeo, ringMat);
     emblemGroup.add(shockRing);
 
+    // ساخت مش یکپارچه مرجع برند با تصحیح دقیق جهت محور Y
     const loader = new SVGLoader();
-    const partMeshes = [];
-
-    LOGO_PARTS.forEach((part, idx) => {
-      const svgMarkup = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 234.21 324.76"><path d="${part.d}"/></svg>`;
-      const parsed = loader.parse(svgMarkup);
-      const shapes = [];
-      parsed.paths.forEach((p) => {
-        SVGLoader.createShapes(p).forEach((s) => shapes.push(s));
-      });
-
-      const depth = 42;
-      const geo = new THREE.ExtrudeGeometry(shapes, {
-        depth,
-        bevelEnabled: true,
-        bevelThickness: 5.5,
-        bevelSize: 1.35,
-        bevelOffset: 0,
-        bevelSegments: isMobile ? 3 : 5,
-        curveSegments: isMobile ? 18 : 28,
-      });
-      geo.translate(-117.105, -162.38, -depth / 2);
-
-      const isPinBlade = idx === 3;
-      const mat = createClearcoatMaterial({
-        color: isPinBlade ? sandColor.clone() : porcelainColor.clone(),
-        roughness: 0.32,
-        clearcoat: 0.55,
-        clearcoatRoughness: 0.18,
-        emissive: orangeColor,
-        emissiveIntensity: 0,
-      });
-
-      const pivot = new THREE.Group();
-      const mesh = new THREE.Mesh(geo, mat);
-      mesh.scale.set(1, -1, 1);
-      pivot.add(mesh);
-      emblemGroup.add(pivot);
-      partMeshes.push({
-        pivot,
-        geo,
-        mat,
-        enter: ENTRANCE_OFFSETS[idx],
-        mag: MAGNETIC_SPLIT[idx],
-        idx,
-      });
+    const parsed = loader.parse(
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 234.21 324.76"><path d="${LOGO_PATH_D}"/></svg>`
+    );
+    const rawShapes = [];
+    parsed.paths.forEach((p) => {
+      SVGLoader.createShapes(p).forEach((s) => rawShapes.push(s));
     });
 
-    // ذرات معلق ظریف برای حس عمق فضایی هنگام حرکت موس
-    const pCount = isMobile ? 28 : 56;
+    const basePts = rawShapes[0]
+      .getPoints(96)
+      .map((pt) => new THREE.Vector2(pt.x - 117.105, -(pt.y - 162.38)));
+    if (THREE.ShapeUtils.isClockWise(basePts)) {
+      basePts.reverse();
+    }
+
+    const gl = renderer.getContext();
+    const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+    const gpuName = dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) || '') : '';
+    const isSoftwareGpu = /SwiftShader|llvmpipe|Software/i.test(gpuName);
+    const lowDetail = isMobileInit || isSoftwareGpu;
+
+    const depth = 38;
+    const monolithShape = new THREE.Shape(basePts);
+    const monolithGeo = new THREE.ExtrudeGeometry(monolithShape, {
+      depth,
+      bevelEnabled: true,
+      bevelThickness: 7.2,
+      bevelSize: 2.2,
+      bevelOffset: -2.2,
+      bevelSegments: lowDetail ? 2 : 7,
+      curveSegments: lowDetail ? 16 : 34,
+    });
+    monolithGeo.translate(0, 0, -depth / 2);
+
+    // مش یکپارچه نهایی بدون هیچ برشی برای نمایش ۱۰۰٪ یکدست در حالت سکون (و ۵ برابر سبک‌تر روی GPU)
+    const solidMonolithMat = createClearcoatMaterial({
+      color: new THREE.Color(DESIGN_TOKENS.color.sand['50']),
+    });
+    const solidMonolithMesh = new THREE.Mesh(monolithGeo, solidMonolithMat);
+    solidMonolithMesh.visible = Boolean(reducedMotion);
+    emblemGroup.add(solidMonolithMesh);
+
+    // ۵ قطعه برش‌خورده GPU از روی همان هندسه واحد (برای ورود تیکه‌تیکه و شناوری مغناطیسی موس)
+    const shardMeshes = SHARD_CONFIGS.map((cfg, idx) => {
+      const worldPlanes = cfg.planes.map((pl) => pl.clone());
+      const mat = createClearcoatMaterial({
+        color: new THREE.Color(DESIGN_TOKENS.color.sand['50']),
+      });
+      mat.side = THREE.DoubleSide;
+      mat.clippingPlanes = worldPlanes;
+      if (idx === 4) {
+        mat.emissive = orangeColor.clone();
+        mat.emissiveIntensity = 0;
+      }
+      const mesh = new THREE.Mesh(monolithGeo, mat);
+      emblemGroup.add(mesh);
+      return { mesh, mat, cfg, localPlanes: cfg.planes, worldPlanes };
+    });
+
+    const particleCount = isMobileInit ? 18 : 34;
     const pGeo = new THREE.BufferGeometry();
-    const pPos = new Float32Array(pCount * 3);
-    for (let i = 0; i < pCount; i++) {
-      pPos[i * 3] = (Math.random() - 0.5) * 1200;
-      pPos[i * 3 + 1] = (Math.random() - 0.5) * 680;
-      pPos[i * 3 + 2] = (Math.random() - 0.5) * 420 - 80;
+    const pPos = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount; i += 1) {
+      pPos[i * 3] = (Math.random() - 0.5) * 1250;
+      pPos[i * 3 + 1] = (Math.random() - 0.5) * 720;
+      pPos[i * 3 + 2] = -240 + Math.random() * 340;
     }
     pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
     const pMat = new THREE.PointsMaterial({
-      color: sandColor,
-      size: 3.6,
+      color: sandLight,
+      size: 3.4,
       transparent: true,
-      opacity: 0.35,
+      opacity: 0.24,
     });
     const particles = new THREE.Points(pGeo, pMat);
     scene.add(particles);
 
-    // نورپردازی استودیویی روشن و حجم‌دهنده (الهام از gradiant.webp)
-    scene.add(new THREE.AmbientLight(porcelainColor, 1.05));
-    scene.add(new THREE.HemisphereLight(porcelainColor, slateColor, 0.85));
+    let inView = true;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting;
+      },
+      { threshold: 0.01 }
+    );
+    io.observe(container);
 
-    const keyLight = new THREE.DirectionalLight(porcelainColor, 2.35);
-    keyLight.position.set(-220, 240, 310);
-    scene.add(keyLight);
-
-    const cursorLight = new THREE.PointLight(orangeColor, 2.8, 760, 1.35);
-    cursorLight.position.set(120, -60, 210);
-    scene.add(cursorLight);
-
-    const rimLight = new THREE.DirectionalLight(orangeColor, 1.15);
-    rimLight.position.set(260, -190, -140);
-    scene.add(rimLight);
-
-    let animId;
-    const bootTime = performance.now();
+    const startTime = performance.now();
     let smoothPtrX = 0;
     let smoothPtrY = 0;
+    let smoothScroll = scrollRef?.current || 0;
     let smoothMag = 0;
-    let smoothScroll = 0;
+    let settledFrames = 0;
+    const tipWorldVec = new THREE.Vector3();
+    let rafId = 0;
 
-    const animate = (now) => {
-      animId = requestAnimationFrame(animate);
-      if (!inViewRef.current) return;
+    const tick = (now) => {
+      rafId = requestAnimationFrame(tick);
+      if (!inView) return;
 
-      const isReduced = reducedRef.current;
-      const elapsed = isReduced ? 4.0 : (now - bootTime) * 0.001;
+      const elapsed = (now - startTime) * 0.001;
+      const isReduced = Boolean(reducedMotion);
+      const isMob = width <= 768;
 
-      // ۱. مونتاژ باابهت اولیه در ۲.۱ ثانیه نخست ورود کاربر
-      const introDone = clamp(elapsed / 2.15, 0, 1);
-      const scrollVal = clamp(scrollRef.current || 0, 0, 1);
-      smoothScroll += (scrollVal - smoothScroll) * 0.12;
+      const targetScroll = clamp(scrollRef?.current || 0, 0, 1);
+      const rawPtr = pointerRef?.current || { x: 0, y: 0 };
 
-      const rawPtr = isReduced ? { x: 0, y: 0 } : pointerRef.current;
-      smoothPtrX += (rawPtr.x - smoothPtrX) * 0.09;
-      smoothPtrY += (rawPtr.y - smoothPtrY) * 0.09;
+      const scrollDelta = Math.abs(targetScroll - smoothScroll);
+      const ptrDelta = Math.abs(rawPtr.x - smoothPtrX) + Math.abs(rawPtr.y - smoothPtrY);
 
-      // جایگاه افقی تندیس (سمت چپ در دسکتاپ، نیمه بالایی آسمان در موبایل بدون تداخل با متن)
-      const baseX = isMobile ? 0 : -190 + smoothScroll * 160;
-      const baseY = isMobile ? 128 - smoothScroll * 36 : -18 + smoothScroll * 16;
+      if (isSoftwareGpu && elapsed > 2.25 && scrollDelta < 0.0005 && ptrDelta < 0.001 && smoothMag < 0.002) {
+        settledFrames += 1;
+        if (settledFrames > 2) return;
+      } else {
+        settledFrames = 0;
+      }
+
+      smoothScroll += (targetScroll - smoothScroll) * 0.14;
+      smoothPtrX += (rawPtr.x - smoothPtrX) * 0.085;
+      smoothPtrY += (rawPtr.y - smoothPtrY) * 0.085;
+
+      const introGlobal = isReduced ? 1 : clamp(elapsed / 2.0, 0, 1);
+
+      const baseX = isMob ? 0 : -195 * (1 - smoothScroll * 0.86);
+      const baseY = isMob ? 124 - smoothScroll * 32 : -6 + smoothScroll * 18;
+      const breatheY = isReduced || isSoftwareGpu ? 0 : Math.sin(elapsed * 1.45) * 4.5;
+
       emblemGroup.position.set(
-        baseX + smoothPtrX * 22,
-        baseY - smoothPtrY * 18 + (isReduced ? 0 : Math.sin(elapsed * 1.35) * 4.5),
-        smoothScroll * 40
+        baseX + smoothPtrX * 20,
+        baseY - smoothPtrY * 16 + breatheY,
+        smoothScroll * 36
       );
 
-      // فاصله موس تا مرکز تندیس برای افکت شناوری مغناطیسی قطعات
-      const emblemNormX = isMobile ? 0 : -0.28 + smoothScroll * 0.24;
-      const dx = rawPtr.x - emblemNormX;
-      const dy = rawPtr.y - 0.04;
-      const dist = Math.hypot(dx, dy);
-      const targetMag = !isReduced && introDone > 0.85 && dist < 0.44 ? (1 - dist / 0.44) : 0;
-      smoothMag += (targetMag - smoothMag) * 0.1;
+      const emblemNormX = isMob ? 0 : (-195 * (1 - smoothScroll * 0.86)) / (width * 0.5);
+      const dist = Math.hypot(rawPtr.x - emblemNormX, rawPtr.y - 0.02);
+      const targetMag = !isReduced && introGlobal > 0.88 && dist < 0.42 ? 1 - dist / 0.42 : 0;
+      smoothMag += (targetMag - smoothMag) * 0.11;
 
-      // موج ضربه نارنجی در لحظه قفل شدن قطعات (t ≈ 1.18..1.95s)
-      const lockPulse = !isReduced ? Math.sin(clamp((elapsed - 1.18) / 0.72, 0, 1) * Math.PI) : 0;
-      shockRing.scale.setScalar(1 + easeOutExpo(clamp((elapsed - 1.18) / 0.78, 0, 1)) * 3.4);
-      ringMat.opacity = lockPulse * 0.5;
-      innerCoreLight.intensity = smoothMag * 4.5 + lockPulse * 3.2;
+      const lockWindow = !isReduced ? clamp((elapsed - 1.2) / 0.7, 0, 1) : 0;
+      const lockPulse = lockWindow > 0 && lockWindow < 1 ? Math.sin(lockWindow * Math.PI) : 0;
+      shockRing.scale.setScalar(0.85 + easeOutExpo(lockWindow) * 2.65);
+      ringMat.opacity = lockPulse * 0.58;
+      innerCoreLight.intensity = smoothMag * 4.8 + lockPulse * 3.4;
 
-      partMeshes.forEach(({ pivot, mat, enter, mag, idx }) => {
-        const localT = isReduced ? 1 : clamp((elapsed - enter.delay) / 1.55, 0, 1);
-        const k = 1 - easeOutBackGentle(localT);
+      const introSpinY = isReduced ? 0 : (1 - easeOutExpo(introGlobal)) * -0.45;
+      emblemGroup.rotation.y = introSpinY + smoothPtrX * 0.32 - smoothScroll * 0.22;
+      emblemGroup.rotation.x = -smoothPtrY * 0.22 + smoothScroll * 0.16;
+      emblemGroup.rotation.z = smoothScroll * -0.05;
 
-        // هنگام اسکرول به انتهای هیرو، قطعه چهارم (نوک پین ۱۳۶.۵۴ درجه) به نارنجی زنده تبدیل می‌شود
-        const pinIgnite = idx === 3 ? clamp(smoothScroll * 1.6 + smoothMag * 0.65, 0, 1) : smoothMag * 0.35;
-        mat.emissiveIntensity = lockPulse * 0.42 + pinIgnite * 0.58;
+      const scaleBase = isMob ? 0.33 : 0.72;
+      emblemGroup.scale.setScalar(scaleBase * (1 + lockPulse * 0.045 - smoothScroll * 0.05));
 
-        pivot.position.set(
-          enter.x * k + mag.x * smoothMag,
-          enter.y * k + mag.y * smoothMag,
-          enter.z * k + mag.z * smoothMag
+      let maxScatter = 0;
+      shardMeshes.forEach(({ mesh, mat, cfg }, idx) => {
+        const localT = isReduced
+          ? 1
+          : clamp((elapsed - cfg.scatter.delay) / (1.62 - cfg.scatter.delay * 0.35), 0, 1);
+        const scatter = 1 - easeOutExpo(localT);
+        maxScatter = Math.max(maxScatter, scatter);
+
+        mesh.position.set(
+          cfg.scatter.x * scatter + cfg.mag.x * smoothMag,
+          cfg.scatter.y * scatter + cfg.mag.y * smoothMag,
+          cfg.scatter.z * scatter + cfg.mag.z * smoothMag
         );
-        pivot.rotation.set(
-          enter.rx * k + smoothPtrY * 0.04 * smoothMag,
-          enter.ry * k + smoothPtrX * 0.04 * smoothMag,
-          enter.rz * k + mag.rz * smoothMag
+
+        mesh.rotation.set(
+          cfg.scatter.rx * scatter,
+          cfg.scatter.ry * scatter,
+          cfg.scatter.rz * scatter + cfg.mag.rz * smoothMag
         );
+
+        if (idx === 4) {
+          mat.emissiveIntensity = smoothScroll * 0.42 + smoothMag * 0.25 + lockPulse * 0.32;
+        }
       });
 
-      // چرخش سه‌بعدی با موس + زاویه گرفتن هنگام اسکرول
-      const introTilt = (1 - easeOutExpo(introDone)) * 0.42;
-      emblemGroup.rotation.x = introTilt - smoothPtrY * 0.34 + smoothScroll * 0.24;
-      emblemGroup.rotation.y = -introTilt + smoothPtrX * 0.42 - smoothScroll * 0.18;
-      emblemGroup.rotation.z = smoothPtrX * -0.05;
+      const isFullyFused = maxScatter < 0.009 && smoothMag < 0.005;
+      solidMonolithMesh.visible = isFullyFused;
+      emblemGroup.updateMatrixWorld();
 
-      const scaleBase = isMobile ? 0.32 : 0.74;
-      emblemGroup.scale.setScalar(scaleBase * (1 + lockPulse * 0.05 - smoothScroll * 0.06));
+      shardMeshes.forEach(({ mesh, localPlanes, worldPlanes }) => {
+        mesh.visible = !isFullyFused;
+        if (!isFullyFused) {
+          mesh.updateMatrixWorld();
+          for (let i = 0; i < localPlanes.length; i += 1) {
+            worldPlanes[i].copy(localPlanes[i]).applyMatrix4(mesh.matrixWorld);
+          }
+        }
+      });
 
-      // نور نقطه‌ای دنبال‌کننده موس روی لبه‌های پخ‌خورده
-      cursorLight.position.set(smoothPtrX * 420, -smoothPtrY * 280, 240);
+      cursorSpot.position.set(smoothPtrX * 360 - 80, -smoothPtrY * 250 + 40, 310);
 
-      particles.rotation.y = elapsed * 0.025 + smoothPtrX * 0.12;
-      particles.rotation.x = -smoothPtrY * 0.08;
+      particles.rotation.y = smoothPtrX * 0.07;
+      particles.rotation.x = -smoothPtrY * 0.05;
+      particles.position.y = smoothScroll * 65;
 
       renderer.render(scene, camera);
-    };
-    animId = requestAnimationFrame(animate);
 
-    const onResize = () => {
-      if (!container) return;
-      const w = container.clientWidth || window.innerWidth;
-      const h = container.clientHeight || window.innerHeight;
-      camera.aspect = w / h;
-      camera.position.z = window.innerWidth <= 768 ? 820 : 690;
-      camera.updateProjectionMatrix();
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.innerWidth <= 768 ? 1.35 : 2));
-      renderer.setSize(w, h);
+      if (tipCallbackRef.current) {
+        tipWorldVec.set(9.4, -159.2, 6);
+        const refMesh = isFullyFused ? solidMonolithMesh : shardMeshes[4].mesh;
+        refMesh.updateMatrixWorld();
+        refMesh.localToWorld(tipWorldVec);
+        tipWorldVec.project(camera);
+        const screenX = (tipWorldVec.x * 0.5 + 0.5) * width;
+        const screenY = (-tipWorldVec.y * 0.5 + 0.5) * height;
+        const tetherReady = isReduced ? 1 : easeOutExpo(clamp((elapsed - 0.85) / 1.0, 0, 1));
+        tipCallbackRef.current(screenX, screenY, width, height, tetherReady, smoothScroll);
+      }
     };
-    const ro = new ResizeObserver(onResize);
+
+    rafId = requestAnimationFrame(tick);
+
+    const ro = new ResizeObserver(() => {
+      if (!container) return;
+      width = container.clientWidth || window.innerWidth || 1280;
+      height = container.clientHeight || window.innerHeight || 800;
+      const mob = width <= 768;
+      camera.aspect = width / height;
+      camera.position.z = mob ? 940 : 820;
+      camera.updateProjectionMatrix();
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mob ? 1.5 : 2));
+      renderer.setSize(width, height);
+    });
     ro.observe(container);
 
     return () => {
-      cancelAnimationFrame(animId);
-      obs.disconnect();
+      cancelAnimationFrame(rafId);
+      io.disconnect();
       ro.disconnect();
-      partMeshes.forEach((m) => {
-        m.geo.dispose();
-        m.mat.dispose();
-      });
+      shardMeshes.forEach(({ mat }) => mat.dispose());
+      solidMonolithMat.dispose();
+      monolithGeo.dispose();
       ringGeo.dispose();
       ringMat.dispose();
       pGeo.dispose();
@@ -307,7 +372,14 @@ export default function HeroEmblemCanvas({ scrollRef, pointerRef, reducedMotion 
       renderer.dispose();
       renderer.forceContextLoss();
     };
-  }, [pointerRef, scrollRef]);
+  }, [reducedMotion, scrollRef, pointerRef]);
 
-  return <div ref={canvasWrapRef} className="hero-fullbleed-webgl" />;
+  return (
+    <div
+      ref={mountRef}
+      className="hero-fullbleed-webgl"
+      role="img"
+      aria-label="تندیس سه‌بعدی ناوگان که در لحظه ورود از فضای سه‌بعدی هم‌گرا شده و خط سیگنال زنده را به پایین صفحه متصل می‌کند"
+    />
+  );
 }

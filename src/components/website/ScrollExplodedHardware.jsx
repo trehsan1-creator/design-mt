@@ -1,130 +1,85 @@
-import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
+import React, { Suspense, lazy, useRef, useState } from 'react';
 import { usePrefersReducedMotion } from '../../utils/usePrefersReducedMotion.js';
+import PaintedCard from './PaintedCard.jsx';
 
 const HardwareTrackerCanvas = lazy(() => import('./HardwareTrackerCanvas.jsx'));
 
-function clamp(v, min = 0, max = 1) {
-  return Math.max(min, Math.min(max, v));
-}
-
-const CALLOUTS = [
-  { step: '۰۱', title: 'پوسته صنعتی IP68', note: 'مقاوم در برابر شوک و غوطه‌وری' },
-  { step: '۰۲', title: 'تراشه دوفرکانسه GNSS', note: 'قفل هم‌زمان ۶۴ کانال ماهواره‌ای' },
-  { step: '۰۳', title: 'باتری پشتیبان ۷۲ ساعته', note: 'ثبت بی‌وقفه حتی پس از قطع برق' },
+const HARDWARE_SPECS = [
+  { id: '۰۱', threshold: 0.22, title: 'پوسته صنعتی IP68', detail: 'مقاوم در برابر شوک و گردوغبار جاده‌ای' },
+  { id: '۰۲', threshold: 0.52, title: 'تراشه دوفرکانسه GNSS', detail: 'قفل هم‌زمان ۶۴ کانال ماهواره‌ای' },
+  { id: '۰۳', threshold: 0.78, title: 'باتری پشتیبان ۷۲ ساعته', detail: 'ثبت پیوسته مسیر حتی پس از قطع برق' },
 ];
 
 export default function ScrollExplodedHardware() {
   const reducedMotion = usePrefersReducedMotion();
-  const sectionRef = useRef(null);
-  const explodeRef = useRef(0.38);
-  const lineRefs = useRef([]);
-  const [shouldMount, setShouldMount] = useState(false);
+  const explodeRef = useRef(reducedMotion ? 0.62 : 0.06);
+  const [litStage, setLitStage] = useState(0);
 
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return undefined;
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShouldMount(true);
-          obs.disconnect();
-        }
-      },
-      { rootMargin: '280px' }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return undefined;
-
-    if (reducedMotion) {
-      explodeRef.current = 0.58;
-      lineRefs.current.forEach((ln) => {
-        if (ln) ln.setAttribute('stroke-dashoffset', '0');
-      });
-      return undefined;
+  // باز شدن لایه‌به‌لایه سخت‌افزار سه‌بعدی دقیقاً هم‌زمان با عبور خط نارنجی از این گره
+  const hardwareProgressRef = useRef((p) => {
+    if (!reducedMotion) {
+      explodeRef.current = Math.max(0.06, Math.min(0.96, p * 1.04));
     }
-
-    let raf = 0;
-    const onScroll = () => {
-      if (raf) return;
-      raf = requestAnimationFrame(() => {
-        raf = 0;
-        const rect = el.getBoundingClientRect();
-        const vh = window.innerHeight || 800;
-        const p = clamp((vh * 0.85 - rect.top) / (rect.height * 0.72), 0, 1);
-        // با اسکرول، ۴ لایه سخت‌افزار در بازه نرمال ۰..۱ از هم باز می‌شوند
-        explodeRef.current = clamp(p * 1.15, 0.08, 0.96);
-
-        lineRefs.current.forEach((ln, idx) => {
-          if (!ln) return;
-          const lp = clamp((p - idx * 0.14) / 0.45, 0, 1);
-          ln.setAttribute('stroke-dashoffset', `${(1 - lp).toFixed(3)}`);
-        });
-      });
-    };
-
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => {
-      if (raf) cancelAnimationFrame(raf);
-      window.removeEventListener('scroll', onScroll);
-    };
-  }, [reducedMotion]);
+    let count = 0;
+    if (p >= 0.22) count = 1;
+    if (p >= 0.52) count = 2;
+    if (p >= 0.78) count = 3;
+    setLitStage(count);
+  });
 
   return (
-    <section
-      id="hardware-3d"
-      ref={sectionRef}
-      data-polarity="daylight"
-      className="hardware-alabaster-chapter"
-    >
-      <div className="site-container hardware-alabaster-chapter__inner">
-        <header className="story-chapter-head">
-          <span className="story-step-kicker ds-tabular">۰۳ · فصل سوم</span>
+    <section id="hardware-3d" className="hardware-alabaster-chapter" data-polarity="daylight">
+      <div className="site-container">
+        <div className="story-chapter-head">
+          <span className="story-step-kicker">۰۳ · فصل سوم</span>
           <h2 className="story-chapter-title">
-            اسکرول کنید تا کالبد سه‌بعدی ردیاب لایه‌به‌لایه باز شود.
+            خط سیگنال از دل ردیاب عبور می‌کند و چهار لایه آن را می‌شکافد.
           </h2>
-        </header>
-
-        <div className="hardware-sculpture-layout">
-          <div className="hardware-callouts-col">
-            {CALLOUTS.map((item, idx) => (
-              <div key={item.step} className="hardware-callout-item">
-                <div className="hardware-callout-item__head">
-                  <span className="smart-card-index ds-tabular">{item.step}</span>
-                  <strong>{item.title}</strong>
-                </div>
-                <p className="smart-card-sub">{item.note}</p>
-                <svg viewBox="0 0 220 16" className="hardware-leader-svg" aria-hidden="true">
-                  <path d="M 216,8 L 4,8" className="hardware-leader-svg__rail" />
-                  <path
-                    ref={(el) => {
-                      lineRefs.current[idx] = el;
-                    }}
-                    d="M 216,8 L 4,8"
-                    pathLength="1"
-                    strokeDasharray="1"
-                    strokeDashoffset="1"
-                    className="hardware-leader-svg__stroke"
-                  />
-                </svg>
-              </div>
-            ))}
-          </div>
-
-          <div className="hardware-stage-orb">
-            {shouldMount && (
-              <Suspense fallback={null}>
-                <HardwareTrackerCanvas explodeRef={explodeRef} reducedMotion={reducedMotion} />
-              </Suspense>
-            )}
-            <span className="hardware-stage-hint">با موس بچرخانید · با اسکرول باز کنید</span>
-          </div>
         </div>
+
+        {/* گره ۴ مدار: صحنه باز استودیویی بدون هیچ باکس تیره اضافه — ردیاب سه‌بعدی آزادانه در هوا شناور است */}
+        <PaintedCard
+          nodeId="node-hardware"
+          tone="alabaster"
+          hasBottomPort
+          interactiveTilt={false}
+          className="hardware-circuit-card"
+          onProgressRef={hardwareProgressRef}
+        >
+          <div className="hardware-sculpture-layout">
+            <div className="hardware-open-air-stage">
+              <div className="hardware-floor-shadow" aria-hidden="true" />
+              <Suspense fallback={<div className="hardware-stage-orb__placeholder" />}>
+                <HardwareTrackerCanvas explodeRef={explodeRef} />
+              </Suspense>
+              <span className="hardware-orbit-whisper">با موس بچرخانید · با اسکرول شکافته می‌شود</span>
+            </div>
+
+            <div className="hardware-callouts-col">
+              {HARDWARE_SPECS.map((spec, idx) => {
+                const isLit = reducedMotion || litStage > idx;
+                return (
+                  <div
+                    key={spec.id}
+                    className="hardware-callout-item"
+                    data-lit={isLit ? 'true' : 'false'}
+                  >
+                    <div className="hardware-callout-item__row">
+                      <span className="hardware-callout-item__idx">{spec.id}</span>
+                      <div className="hardware-callout-item__text">
+                        <strong>{spec.title}</strong>
+                        <span>{spec.detail}</span>
+                      </div>
+                    </div>
+                    <div className="hardware-leader-track" aria-hidden="true">
+                      <div className="hardware-leader-fill" />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </PaintedCard>
       </div>
     </section>
   );

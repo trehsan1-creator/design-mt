@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { SquircleClipDefs } from './ds/index.js';
 import Navbar3D from './components/website/Navbar3D.jsx';
 import Hero3DStage from './components/website/Hero3DStage.jsx';
@@ -9,8 +9,6 @@ import ScrollExplodedHardware from './components/website/ScrollExplodedHardware.
 import SmartFinaleChapter from './components/website/SmartFinaleChapter.jsx';
 
 export default function App() {
-  const storyWrapRef = useRef(null);
-
   return (
     <div className="fleet-site fleet-story-site">
       <SquircleClipDefs />
@@ -20,13 +18,12 @@ export default function App() {
       <main id="main-content">
         <Hero3DStage />
 
-        <div ref={storyWrapRef} className="story-painter-world">
-          <StoryPainterRibbon storyWrapRef={storyWrapRef} />
+        <StoryPainterRibbon>
           <StoryCardsChapter />
           <LivingCorridorChapter />
           <ScrollExplodedHardware />
           <SmartFinaleChapter />
-        </div>
+        </StoryPainterRibbon>
       </main>
     </div>
   );

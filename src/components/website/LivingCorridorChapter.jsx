@@ -1,168 +1,180 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { MapPin, StatusChip } from '../../ds/index.js';
-import { usePrefersReducedMotion } from '../../utils/usePrefersReducedMotion.js';
-import { toFa } from '../../utils/faDigits.js';
+import React, { useRef, useState } from 'react';
+import { IranPlate, MapPin, StatusChip } from '../../ds';
+import PaintedCard from './PaintedCard.jsx';
 
-function clamp(v, min = 0, max = 1) {
-  return Math.max(min, Math.min(max, v));
-}
+// مسیر آزادراه دقیقاً از سوکت ورودی بالا (500, 0) آغاز و به سوکت خروجی پایین (500, 500) ختم می‌شود
+const CORRIDOR_HIGHWAY_D =
+  'M 500,0 C 500,55 680,55 680,115 C 680,175 560,175 560,230 C 560,290 430,285 430,345 C 430,415 500,435 500,500';
 
 const CORRIDOR_NODES = [
-  { id: 'tabriz', name: 'تبریز', x: 24, y: 22, speed: 78, temp: '۴.۱+ °C', status: 'moving', at: 0.08 },
-  { id: 'tehran', name: 'تهران', x: 47, y: 34, speed: 86, temp: '۱۸.۲- °C', status: 'cold-chain', at: 0.3 },
-  { id: 'isfahan', name: 'اصفهان', x: 51, y: 54, speed: 84, temp: '۱۸.۴- °C', status: 'moving', at: 0.54 },
-  { id: 'shiraz', name: 'شیراز', x: 50, y: 71, speed: 79, temp: '۳.۸+ °C', status: 'corridor', at: 0.76 },
-  { id: 'bandar', name: 'بندرعباس', x: 66, y: 84, speed: 91, temp: 'مقصد نهایی', status: 'signal', at: 0.94 },
+  {
+    id: 'tabriz',
+    city: 'تبریز',
+    x: 32,
+    y: 23,
+    threshold: 0.2,
+    speed: '۷۸ km/h',
+    status: 'moving',
+    plate: { l: '۶۲', ch: 'د', r: '۳۱۵', ir: '۱۵' },
+  },
+  {
+    id: 'tehran',
+    city: 'تهران',
+    x: 44,
+    y: 46,
+    threshold: 0.45,
+    speed: '۸۶ km/h',
+    status: 'signal',
+    plate: { l: '۴۸', ch: 'ع', r: '۷۲۹', ir: '۱۱' },
+  },
+  {
+    id: 'isfahan',
+    city: 'اصفهان',
+    x: 57,
+    y: 69,
+    threshold: 0.68,
+    speed: '۹۱ km/h',
+    status: 'corridor',
+    plate: { l: '۸۳', ch: 'ط', r: '۴۱۲', ir: '۵۳' },
+  },
+  {
+    id: 'bandar',
+    city: 'بندرعباس',
+    x: 52.5,
+    y: 86,
+    threshold: 0.86,
+    speed: 'تحویل در اسکله',
+    status: 'moving',
+    plate: { l: '۲۹', ch: 'ص', r: '۶۱۸', ir: '۸۴' },
+  },
 ];
 
-const HIGHWAY_SVG_D =
-  'M 240,123 C 330,140 410,165 470,190 C 510,245 515,275 510,302 C 505,345 500,375 500,398 C 545,435 610,455 660,470';
-
 export default function LivingCorridorChapter() {
-  const reducedMotion = usePrefersReducedMotion();
-  const sectionRef = useRef(null);
-  const slabRef = useRef(null);
-  const pathRef = useRef(null);
-  const glowRef = useRef(null);
-  const cometRef = useRef(null);
+  const highwayStrokeRef = useRef(null);
+  const highwayGlowRef = useRef(null);
+  const highwayCometRef = useRef(null);
 
-  const [activeNode, setActiveNode] = useState(CORRIDOR_NODES[1]);
+  const [hoveredIdx, setHoveredIdx] = useState(null);
+  const [scrollCityIdx, setScrollCityIdx] = useState(1);
+  const [lineReach, setLineReach] = useState(0);
 
-  useEffect(() => {
-    const sec = sectionRef.current;
-    if (!sec) return undefined;
+  // اتصال مستقیم آزادراه داخلی به همان Playhead واحد مدار نقاش
+  const corridorProgressRef = useRef((p) => {
+    const dash = `${(1 - p).toFixed(4)}`;
+    if (highwayStrokeRef.current) highwayStrokeRef.current.setAttribute('stroke-dashoffset', dash);
+    if (highwayGlowRef.current) highwayGlowRef.current.setAttribute('stroke-dashoffset', dash);
 
-    if (reducedMotion) {
-      if (pathRef.current) pathRef.current.setAttribute('stroke-dashoffset', '0');
-      if (glowRef.current) glowRef.current.setAttribute('stroke-dashoffset', '0');
-      return undefined;
+    if (highwayCometRef.current && highwayStrokeRef.current?.getTotalLength) {
+      if (p > 0.01 && p < 0.99) {
+        const len = highwayStrokeRef.current.getTotalLength();
+        const pt = highwayStrokeRef.current.getPointAtLength(len * p);
+        highwayCometRef.current.setAttribute('transform', `translate(${pt.x.toFixed(1)}, ${pt.y.toFixed(1)})`);
+        highwayCometRef.current.setAttribute('opacity', '1');
+      } else {
+        highwayCometRef.current.setAttribute('opacity', '0');
+      }
     }
 
-    let raf = 0;
-    const onScroll = () => {
-      if (raf) return;
-      raf = requestAnimationFrame(() => {
-        raf = 0;
-        const rect = sec.getBoundingClientRect();
-        const vh = window.innerHeight || 800;
-        const p = clamp((vh * 0.82 - rect.top) / (rect.height * 0.72), 0.06, 1);
-        const offset = (1 - p).toFixed(3);
-        if (pathRef.current) pathRef.current.setAttribute('stroke-dashoffset', offset);
-        if (glowRef.current) glowRef.current.setAttribute('stroke-dashoffset', offset);
+    setLineReach((prev) => (Math.abs(prev - p) > 0.04 ? p : prev));
 
-        if (pathRef.current && pathRef.current.getTotalLength && cometRef.current) {
-          const total = pathRef.current.getTotalLength();
-          const pt = pathRef.current.getPointAtLength(total * p);
-          cometRef.current.setAttribute('transform', `translate(${pt.x.toFixed(1)}, ${pt.y.toFixed(1)})`);
-        }
-      });
-    };
+    let reached = 0;
+    CORRIDOR_NODES.forEach((n, idx) => {
+      if (p >= n.threshold) reached = idx;
+    });
+    setScrollCityIdx(reached);
+  });
 
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => {
-      if (raf) cancelAnimationFrame(raf);
-      window.removeEventListener('scroll', onScroll);
-    };
-  }, [reducedMotion]);
-
-  const handleSlabMove = (e) => {
-    if (reducedMotion || !slabRef.current) return;
-    const rect = slabRef.current.getBoundingClientRect();
-    const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    const ny = ((e.clientY - rect.top) / rect.height) * 2 - 1;
-    slabRef.current.style.setProperty('--slab-rx', `${(16 - ny * 7).toFixed(2)}deg`);
-    slabRef.current.style.setProperty('--slab-ry', `${(nx * 9).toFixed(2)}deg`);
-  };
-
-  const handleSlabLeave = () => {
-    if (!slabRef.current) return;
-    slabRef.current.style.setProperty('--slab-rx', '16deg');
-    slabRef.current.style.setProperty('--slab-ry', '0deg');
-  };
+  const activeIdx = hoveredIdx !== null ? hoveredIdx : scrollCityIdx;
+  const activeNode = CORRIDOR_NODES[activeIdx] || CORRIDOR_NODES[0];
 
   return (
-    <section id="radar-command" ref={sectionRef} className="corridor-horizon-chapter">
-      <div className="site-container corridor-horizon-chapter__inner">
-        <header className="story-chapter-head story-chapter-head--light">
-          <span className="story-step-kicker story-step-kicker--light ds-tabular">۰۲ · فصل دوم</span>
-          <h2 className="story-chapter-title story-chapter-title--light">
-            نقاشی زنده آزادراه‌های ایران با اسکرول شما.
+    <section id="radar-command" className="story-corridor-section" data-polarity="daylight">
+      <div className="site-container">
+        <div className="story-chapter-head">
+          <span className="story-step-kicker">۰۲ · فصل دوم</span>
+          <h2 className="story-chapter-title">
+            همان خط سیگنال، وارد نقشه می‌شود و آزادراه ایران را روشن می‌کند.
           </h2>
-        </header>
-
-        {/* لوح سه‌بعدی معلق نقشه کریدور */}
-        <div
-          ref={slabRef}
-          className="corridor-3d-slab"
-          onPointerMove={handleSlabMove}
-          onPointerLeave={handleSlabLeave}
-        >
-          <svg
-            viewBox="0 0 1000 560"
-            className="corridor-3d-slab__svg"
-            aria-hidden="true"
-          >
-            {/* خطوط تراز توپوگرافی ملایم */}
-            <ellipse cx="500" cy="290" rx="410" ry="215" className="corridor-contour" />
-            <ellipse cx="500" cy="290" rx="285" ry="150" className="corridor-contour" />
-
-            {/* ریل پایه و خط نقاش بزرگراه */}
-            <path d={HIGHWAY_SVG_D} className="corridor-highway-rail" />
-            <path
-              ref={glowRef}
-              d={HIGHWAY_SVG_D}
-              pathLength="1"
-              strokeDasharray="1"
-              strokeDashoffset="0.94"
-              className="corridor-highway-glow"
-            />
-            <path
-              ref={pathRef}
-              d={HIGHWAY_SVG_D}
-              pathLength="1"
-              strokeDasharray="1"
-              strokeDashoffset="0.94"
-              className="corridor-highway-stroke"
-            />
-
-            <g ref={cometRef} transform="translate(240, 123)">
-              <circle r="18" className="painter-spark-halo" />
-              <circle r="6" className="painter-spark-core" />
-            </g>
-          </svg>
-
-          {/* پین‌های ۱۳۶.۵۴ درجه برجسته در فضای سه‌بعدی بالای لوح */}
-          {CORRIDOR_NODES.map((node) => {
-            const isSelected = activeNode.id === node.id;
-            return (
-              <div
-                key={node.id}
-                className={`corridor-pin-anchor ${isSelected ? 'is-selected' : ''}`}
-                style={{ '--pin-x': `${node.x}%`, '--pin-y': `${node.y}%` }}
-                onPointerEnter={() => setActiveNode(node)}
-              >
-                <MapPin
-                  speed={node.speed}
-                  heading={140}
-                  status={node.status}
-                  selected={isSelected}
-                  label={`ایستگاه ${node.name} با سرعت ${toFa(node.speed)} کیلومتر بر ساعت`}
-                  onClick={() => setActiveNode(node)}
-                />
-                <span className="corridor-city-tag">{node.name}</span>
-              </div>
-            );
-          })}
-
-          {/* کپسول شیشه‌ای تک‌خطی و هوشمند به جای ستون شلوغ کارت‌ها */}
-          <div className="corridor-floating-hud" aria-live="polite">
-            <StatusChip status={activeNode.status} label={activeNode.name} />
-            <span className="ds-tabular">{toFa(activeNode.speed)} km/h</span>
-            <span className="corridor-floating-hud__sep" aria-hidden="true" />
-            <span className="ds-tabular" dir="ltr">{activeNode.temp}</span>
-          </div>
         </div>
+
+        {/* گره ۳ مدار: اسلب سه‌بعدی کریدور ایران که خط سیگنال از بالا وارد و از پایین آن خارج می‌شود */}
+        <PaintedCard
+          nodeId="node-corridor"
+          tone="horizon"
+          hasBottomPort
+          className="corridor-circuit-card"
+          onProgressRef={corridorProgressRef}
+        >
+          <div className="corridor-deck-stage" data-polarity="nocturnal">
+            <svg
+              viewBox="0 0 1000 500"
+              preserveAspectRatio="none"
+              className="corridor-3d-slab__svg"
+              aria-hidden="true"
+            >
+              <ellipse cx="500" cy="250" rx="410" ry="185" className="corridor-contour" />
+              <ellipse cx="500" cy="250" rx="280" ry="122" className="corridor-contour" />
+
+              <path d={CORRIDOR_HIGHWAY_D} className="corridor-highway-rail" />
+              <path
+                ref={highwayGlowRef}
+                d={CORRIDOR_HIGHWAY_D}
+                pathLength="1"
+                strokeDasharray="1"
+                strokeDashoffset="1"
+                className="corridor-highway-glow"
+              />
+              <path
+                ref={highwayStrokeRef}
+                d={CORRIDOR_HIGHWAY_D}
+                pathLength="1"
+                strokeDasharray="1"
+                strokeDashoffset="1"
+                className="corridor-highway-stroke"
+              />
+              <g ref={highwayCometRef} opacity="0">
+                <circle r="14" className="painter-spark-halo" />
+                <circle r="5.5" className="painter-spark-core" />
+              </g>
+            </svg>
+
+            {CORRIDOR_NODES.map((node, idx) => {
+              const isSelected = idx === activeIdx;
+              const isLit = lineReach >= node.threshold - 0.04;
+              return (
+                <div
+                  key={node.id}
+                  className="corridor-pin-anchor"
+                  data-reached={isLit ? 'true' : 'false'}
+                  style={{ '--pin-x': `${node.x}%`, '--pin-y': `${node.y}%` }}
+                  onMouseEnter={() => setHoveredIdx(idx)}
+                  onMouseLeave={() => setHoveredIdx(null)}
+                >
+                  <MapPin
+                    status={isSelected ? 'signal' : node.status}
+                    active={isSelected}
+                    label={node.speed}
+                    onClick={() => setHoveredIdx(idx)}
+                  />
+                  <span className="corridor-city-tag">{node.city}</span>
+                </div>
+              );
+            })}
+
+            <div className="corridor-floating-hud">
+              <StatusChip status={activeNode.status} pulse size="sm">
+                {activeNode.city} · {activeNode.speed}
+              </StatusChip>
+              <IranPlate
+                digitsLeft={activeNode.plate.l}
+                letter={activeNode.plate.ch}
+                digitsRight={activeNode.plate.r}
+                iranCode={activeNode.plate.ir}
+                size="sm"
+              />
+            </div>
+          </div>
+        </PaintedCard>
       </div>
     </section>
   );
