@@ -5,7 +5,7 @@ import { Play, Pause, RotateCcw } from 'lucide-react';
 import { LOGO_PARTS } from '../data/geometryData.js';
 import { DESIGN_TOKENS } from '../../tokens/tokens.js';
 import { setupClearcoatEnvironment, createClearcoatMaterial } from '../utils/pbrMaterials.js';
-import { usePrefersReducedMotion, getPrefersReducedMotion } from '../utils/usePrefersReducedMotion.js';
+import { usePrefersReducedMotion } from '../utils/usePrefersReducedMotion.js';
 import { Button, Card, Capsule } from '../ds/index.js';
 import { toFa } from '../utils/faDigits.js';
 
@@ -25,35 +25,66 @@ function easeOutBack(t) {
 
 export default function ScrollFilmStage() {
   const canvasWrapRef = useRef(null);
+  const viewportRef = useRef(null);
   const routeMainRef = useRef(null);
+  const beaconRef = useRef(null);
+  const pctLabelRef = useRef(null);
+  const rangeRef = useRef(null);
   const reducedMotion = usePrefersReducedMotion();
 
-  const [progress, setProgress] = useState(() => (getPrefersReducedMotion() ? 1 : 0));
-  const [isPlaying, setIsPlaying] = useState(() => !getPrefersReducedMotion());
-  const [signalPt, setSignalPt] = useState({ x: 640, y: 270, angle: 180 });
+  const [isPlaying, setIsPlaying] = useState(false);
+  const progressRef = useRef(0.86);
+  const playingRef = useRef(false);
 
-  const progressRef = useRef(getPrefersReducedMotion() ? 1 : 0);
+  useEffect(() => {
+    playingRef.current = isPlaying;
+  }, [isPlaying]);
+
+  const applyDomProgress = (rawP) => {
+    const p = clamp(rawP, 0, 1);
+    progressRef.current = p;
+
+    if (viewportRef.current) {
+      viewportRef.current.style.setProperty('--stage-bg-pos', `${(p * 100).toFixed(1)}% ${(p * 100).toFixed(1)}%`);
+    }
+    if (rangeRef.current) {
+      rangeRef.current.value = String(Math.round(p * 1000));
+    }
+    if (pctLabelRef.current) {
+      pctLabelRef.current.textContent = `${toFa(Math.round(p * 100))}٪`;
+    }
+
+    const rEl = routeMainRef.current;
+    if (rEl) {
+      const rProg = easeInOutCubic(clamp((p - 0.5) / 0.45));
+      rEl.setAttribute('stroke-dashoffset', String(1 - rProg));
+      rEl.setAttribute('opacity', rProg > 0.01 ? '1' : '0');
+      if (rEl.getTotalLength && beaconRef.current) {
+        if (rProg > 0.01) {
+          const total = rEl.getTotalLength();
+          const d = total * rProg;
+          const pt = rEl.getPointAtLength(d);
+          const pt2 = rEl.getPointAtLength(Math.min(total, d + 4));
+          const ang = (Math.atan2(pt2.y - pt.y, pt2.x - pt.x) * 180) / Math.PI;
+          beaconRef.current.setAttribute('transform', `translate(${pt.x.toFixed(1)}, ${pt.y.toFixed(1)}) rotate(${ang.toFixed(1)})`);
+          beaconRef.current.setAttribute('opacity', '1');
+        } else {
+          beaconRef.current.setAttribute('opacity', '0');
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    applyDomProgress(progressRef.current);
+  }, []);
 
   useEffect(() => {
     if (reducedMotion) {
       setIsPlaying(false);
-      setProgress(1);
+      applyDomProgress(1);
     }
   }, [reducedMotion]);
-
-  useEffect(() => {
-    progressRef.current = progress;
-    const rEl = routeMainRef.current;
-    if (rEl && rEl.getTotalLength) {
-      const total = rEl.getTotalLength();
-      const rProg = easeInOutCubic(clamp((progress - 0.5) / 0.45));
-      const d = total * rProg;
-      const pt = rEl.getPointAtLength(d);
-      const pt2 = rEl.getPointAtLength(Math.min(total, d + 4));
-      const ang = (Math.atan2(pt2.y - pt.y, pt2.x - pt.x) * 180) / Math.PI;
-      setSignalPt({ x: pt.x, y: pt.y, angle: ang });
-    }
-  }, [progress]);
 
   useEffect(() => {
     if (!isPlaying || reducedMotion) return undefined;
@@ -63,44 +94,58 @@ export default function ScrollFilmStage() {
     const tick = (now) => {
       const dt = (now - lastTime) / 1000;
       lastTime = now;
-      setProgress((prev) => {
-        const next = prev + dt * 0.15;
-        return next >= 1.12 ? 0 : next;
-      });
+      const next = progressRef.current + dt * 0.14;
+      if (next >= 1) {
+        applyDomProgress(1);
+        setIsPlaying(false);
+        return;
+      }
+      applyDomProgress(next);
       rafId = requestAnimationFrame(tick);
     };
-
     rafId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafId);
   }, [isPlaying, reducedMotion]);
 
   useEffect(() => {
     const container = canvasWrapRef.current;
-    if (!container) return;
+    if (!container) return undefined;
+
+    let inView = true;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting;
+      },
+      { threshold: 0.05 }
+    );
+    obs.observe(container);
 
     const width = container.clientWidth || 880;
     const height = container.clientHeight || 420;
+    const isMobile = window.innerWidth <= 768;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(34, width / height, 1, 3000);
     camera.position.set(0, 0, 680);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.innerWidth <= 768 ? 1.5 : 2));
+    const renderer = new THREE.WebGLRenderer({ antialias: !isMobile, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.25 : 2));
     renderer.setSize(width, height);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.12;
+    renderer.domElement.setAttribute('role', 'img');
+    renderer.domElement.setAttribute('aria-label', 'صحنه سه‌بعدی مونتاژ چهار قطعه نشان در آزمایشگاه');
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
 
     const envRT = setupClearcoatEnvironment(renderer, scene);
+    const orangeColor = new THREE.Color(DESIGN_TOKENS.color.signalOrange);
 
     const partsGroup = new THREE.Group();
     scene.add(partsGroup);
 
     const loader = new SVGLoader();
     const partMeshes = [];
-    const cOrange = new THREE.Color(DESIGN_TOKENS.color.signalOrange);
 
     LOGO_PARTS.forEach((part, idx) => {
       const svgMarkup = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 234.21 324.76"><path d="${part.d}"/></svg>`;
@@ -116,15 +161,15 @@ export default function ScrollFilmStage() {
         bevelEnabled: true,
         bevelThickness: 7.5,
         bevelSize: 3.2,
-        bevelOffset: -1.4,
-        bevelSegments: 5,
-        curveSegments: 32,
+        bevelOffset: -1.3,
+        bevelSegments: isMobile ? 2 : 4,
+        curveSegments: isMobile ? 16 : 24,
       });
       geo.translate(-117.105, -162.38, -depth / 2);
 
       const mat = createClearcoatMaterial({
         color: new THREE.Color(part.color),
-        emissive: cOrange,
+        emissive: orangeColor,
         emissiveIntensity: 0,
       });
 
@@ -136,27 +181,32 @@ export default function ScrollFilmStage() {
       partMeshes.push({ pivot, geo, mat, cfg: part.offset, idx });
     });
 
-    scene.add(new THREE.AmbientLight(new THREE.Color(DESIGN_TOKENS.color.sand['50']), 0.85));
+    scene.add(new THREE.AmbientLight(new THREE.Color(DESIGN_TOKENS.color.sand['50']), 0.88));
     const keyLight = new THREE.DirectionalLight(new THREE.Color(DESIGN_TOKENS.color.sand['50']), 1.9);
-    keyLight.position.set(-190, 175, 220);
+    keyLight.position.set(-180, 170, 220);
     scene.add(keyLight);
-
-    const orangeRim = new THREE.PointLight(cOrange, 1.5, 680, 1.5);
-    orangeRim.position.set(170, -145, 130);
-    scene.add(orangeRim);
 
     let animId;
     const t0 = performance.now();
+    let lastP = -1;
+    let settleFrames = 2;
 
     const animate = (now) => {
       animId = requestAnimationFrame(animate);
-      const elapsed = (now - t0) * 0.001;
-      const p = clamp(progressRef.current, 0, 1);
+      if (!inView) return;
 
+      const p = clamp(progressRef.current, 0, 1);
+      if (!playingRef.current && settleFrames <= 0 && Math.abs(p - lastP) < 0.0005) {
+        return;
+      }
+      if (settleFrames > 0) settleFrames -= 1;
+      lastP = p;
+
+      const elapsed = playingRef.current ? (now - t0) * 0.001 : 0;
       partMeshes.forEach(({ pivot, mat, cfg, idx }) => {
         const q = clamp((p - cfg.delay) / 0.24);
         const k = 1 - easeOutBack(q);
-        const floatY = Math.sin(elapsed * 2.1 + idx * 1.4) * 6 * clamp(1 - q * 1.4);
+        const floatY = playingRef.current ? Math.sin(elapsed * 2 + idx) * 6 * clamp(1 - q * 1.4) : 0;
         pivot.position.set(cfg.x * k, cfg.y * k + floatY, cfg.z * k);
         pivot.rotation.set(cfg.rx * k, cfg.ry * k, cfg.rz * k);
         mat.emissiveIntensity = Math.sin(clamp((p - 0.36) / 0.14) * Math.PI) * 0.3;
@@ -176,12 +226,14 @@ export default function ScrollFilmStage() {
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
+      settleFrames = 2;
     };
     const ro = new ResizeObserver(onResize);
     ro.observe(container);
 
     return () => {
       cancelAnimationFrame(animId);
+      obs.disconnect();
       ro.disconnect();
       partMeshes.forEach((m) => {
         m.geo.dispose();
@@ -193,21 +245,25 @@ export default function ScrollFilmStage() {
     };
   }, []);
 
-  const pClamped = clamp(progress, 0, 1);
-  const routeDraw = easeInOutCubic(clamp((pClamped - 0.5) / 0.45));
-
   return (
     <Card variant="panel" className="ds-stack-md">
       <div className="ds-between-wrap">
         <div className="ds-stack-xs">
           <div>
-            <Capsule variant="eyebrow" pulse>صحنه سینمایی مونتاژ ۴ قطعه نشان و مسیر کلوتوئیدی</Capsule>
+            <Capsule variant="eyebrow">صحنه مونتاژ ۴ قطعه نشان و مسیر کلوتوئیدی</Capsule>
           </div>
-          <h2>شبیه‌ساز پیوسته مونتاژ سه‌بعدی و ارسال سیگنال</h2>
+          <h2>شبیه‌ساز مونتاژ سه‌بعدی و ارسال سیگنال</h2>
         </div>
 
         <div className="ds-row-wrap">
-          <Button variant="primary" size="sm" onClick={() => setIsPlaying(!isPlaying)}>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => {
+              if (!isPlaying && progressRef.current >= 0.99) applyDomProgress(0);
+              setIsPlaying(!isPlaying);
+            }}
+          >
             {isPlaying ? <Pause size={15} aria-hidden="true" /> : <Play size={15} aria-hidden="true" />}
             <span>{isPlaying ? 'توقف' : 'پخش'}</span>
           </Button>
@@ -216,7 +272,7 @@ export default function ScrollFilmStage() {
             size="sm"
             onClick={() => {
               setIsPlaying(false);
-              setProgress(0);
+              applyDomProgress(0);
             }}
           >
             <RotateCcw size={15} aria-hidden="true" />
@@ -225,10 +281,7 @@ export default function ScrollFilmStage() {
         </div>
       </div>
 
-      <div
-        className="hero-stage-viewport"
-        style={{ '--stage-bg-pos': `${pClamped * 100}% ${pClamped * 100}%` }}
-      >
+      <div ref={viewportRef} className="hero-stage-viewport">
         <svg viewBox="0 0 820 440" preserveAspectRatio="xMidYMid slice" className="radar-map-svg" aria-hidden="true">
           <path
             ref={routeMainRef}
@@ -239,42 +292,33 @@ export default function ScrollFilmStage() {
             strokeLinecap="round"
             pathLength="1"
             strokeDasharray="1"
-            strokeDashoffset={1 - routeDraw}
-            opacity={routeDraw > 0.01 ? 1 : 0}
+            strokeDashoffset="0.14"
           />
-          {routeDraw > 0.01 && (
-            <g transform={`translate(${signalPt.x}, ${signalPt.y}) rotate(${signalPt.angle})`}>
-              <circle r="13" fill="var(--ds-color-signal-orange)" fillOpacity="0.28" />
-              <path d="M 9,0 L -6,-6 L -3,0 L -6,6 Z" fill="var(--ds-color-signal-orange)" stroke="var(--ds-sand-50)" strokeWidth="1.4" />
-            </g>
-          )}
+          <g ref={beaconRef} transform="translate(102, 276) rotate(90)">
+            <circle r="13" fill="var(--ds-color-signal-orange)" fillOpacity="0.28" />
+            <path d="M 9,0 L -6,-6 L -3,0 L -6,6 Z" fill="var(--ds-color-signal-orange)" stroke="var(--ds-sand-50)" strokeWidth="1.4" />
+          </g>
         </svg>
 
-        <div
-          ref={canvasWrapRef}
-          className="hero-webgl-layer"
-          role="img"
-          aria-label="صحنه آزمایشگاهی مونتاژ چهار قطعه سه‌بعدی لوگو"
-        />
+        <div ref={canvasWrapRef} className="hero-webgl-layer" />
+      </div>
 
-        <div className="hero-controls-dock">
-          <label htmlFor="lab-film-range" className="ds-muted">اسلایدر زمان‌بندی سکانس:</label>
-          <div className="hero-scrubber-group">
-            <input
-              id="lab-film-range"
-              type="range"
-              className="cinema-range"
-              min="0"
-              max="1000"
-              value={Math.round(pClamped * 1000)}
-              onChange={(e) => {
-                setIsPlaying(false);
-                setProgress(Number(e.target.value) / 1000);
-              }}
-            />
-            <strong className="ds-accent-text ds-tabular">{toFa(Math.round(pClamped * 100))}٪</strong>
-          </div>
-        </div>
+      <div className="cinema-scrub-row">
+        <label htmlFor="lab-film-range" className="ds-muted">پیشرفت مونتاژ:</label>
+        <input
+          ref={rangeRef}
+          id="lab-film-range"
+          type="range"
+          className="cinema-range"
+          min="0"
+          max="1000"
+          defaultValue="860"
+          onChange={(e) => {
+            setIsPlaying(false);
+            applyDomProgress(Number(e.target.value) / 1000);
+          }}
+        />
+        <span ref={pctLabelRef} className="ds-tabular ds-accent-text">۸۶٪</span>
       </div>
     </Card>
   );

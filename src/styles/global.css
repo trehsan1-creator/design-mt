@@ -157,7 +157,7 @@ button, input, select, textarea {
 
 .brand-title p,
 .brand-title__sub {
-  font-size: var(--ds-text-xs);
+  font-size: var(--ds-text-sm);
   color: var(--ds-on-surface-muted);
 }
 

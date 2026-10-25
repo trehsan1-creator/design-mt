@@ -12,7 +12,7 @@ const CoreGeometryStep1 = lazy(() => import('./components/CoreGeometryStep1.jsx'
 function getInitialDesignView() {
   if (typeof window === 'undefined') return 'portal';
   const params = new URLSearchParams(window.location.search);
-  return params.get('view') === 'lab' ? 'lab' : 'portal';
+  return params.get('view') === 'lab' || params.get('tab') === 'lab' ? 'lab' : 'portal';
 }
 
 export default function DesignApp() {

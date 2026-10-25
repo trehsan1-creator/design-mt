@@ -18,10 +18,15 @@ function easeOutBack(t) {
   return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
 }
 
-export default function HeroEmblemCanvas({ progressRef, pointerRef, reducedMotion }) {
+export default function HeroEmblemCanvas({ progressRef, pointerRef, isPlaying = false, reducedMotion = false }) {
   const canvasWrapRef = useRef(null);
   const inViewRef = useRef(true);
+  const playingRef = useRef(isPlaying);
   const reducedRef = useRef(getPrefersReducedMotion());
+
+  useEffect(() => {
+    playingRef.current = isPlaying;
+  }, [isPlaying]);
 
   useEffect(() => {
     reducedRef.current = reducedMotion;
@@ -41,17 +46,24 @@ export default function HeroEmblemCanvas({ progressRef, pointerRef, reducedMotio
 
     const width = container.clientWidth || 720;
     const height = container.clientHeight || 500;
-    const maxDpr = window.innerWidth <= 768 ? 1.5 : 2;
+    const isMobile = window.innerWidth <= 768;
+    const maxDpr = isMobile ? 1.25 : 2;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(34, width / height, 1, 3000);
     camera.position.set(0, 0, 680);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+    const renderer = new THREE.WebGLRenderer({
+      antialias: !isMobile,
+      alpha: true,
+      powerPreference: 'high-performance',
+    });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, maxDpr));
     renderer.setSize(width, height);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.14;
+    renderer.domElement.setAttribute('role', 'img');
+    renderer.domElement.setAttribute('aria-label', 'صحنه سه‌بعدی مونتاژ نشان برند و مسیر ناوگان');
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
 
@@ -86,8 +98,8 @@ export default function HeroEmblemCanvas({ progressRef, pointerRef, reducedMotio
         bevelThickness: 8,
         bevelSize: 3.4,
         bevelOffset: -1.4,
-        bevelSegments: 5,
-        curveSegments: 32,
+        bevelSegments: isMobile ? 2 : 4,
+        curveSegments: isMobile ? 16 : 28,
       });
       geo.translate(-117.105, -162.38, -depth / 2);
 
@@ -145,20 +157,21 @@ export default function HeroEmblemCanvas({ progressRef, pointerRef, reducedMotio
 
     let animId;
     const t0 = performance.now();
+    let lastP = -1;
+    let lastPtrX = 999;
+    let lastPtrY = 999;
+    let settleFrames = 2;
 
-    const animate = (now) => {
-      animId = requestAnimationFrame(animate);
-      if (!inViewRef.current) return;
-
-      const elapsed = reducedRef.current ? 0 : (now - t0) * 0.001;
+    const renderSceneAt = (now) => {
+      const elapsed = reducedRef.current || !playingRef.current ? 0 : (now - t0) * 0.001;
       const p = clamp(progressRef.current, 0, 1);
       const ptr = reducedRef.current ? { x: 0, y: 0 } : pointerRef.current;
 
       partMeshes.forEach(({ pivot, mat, cfg, idx }) => {
         const q = clamp((p - cfg.delay) / 0.24);
         const k = 1 - easeOutBack(q);
-        const floatY = Math.sin(elapsed * 2.1 + idx * 1.4) * 7 * clamp(1 - q * 1.4);
-        const floatX = Math.cos(elapsed * 1.7 + idx * 1.1) * 5 * clamp(1 - q * 1.4);
+        const floatY = playingRef.current ? Math.sin(elapsed * 2.1 + idx * 1.4) * 7 * clamp(1 - q * 1.4) : 0;
+        const floatX = playingRef.current ? Math.cos(elapsed * 1.7 + idx * 1.1) * 5 * clamp(1 - q * 1.4) : 0;
 
         pivot.position.set(cfg.x * k + floatX, cfg.y * k + floatY, cfg.z * k);
         pivot.rotation.set(cfg.rx * k, cfg.ry * k, cfg.rz * k);
@@ -170,15 +183,15 @@ export default function HeroEmblemCanvas({ progressRef, pointerRef, reducedMotio
       const orientEase = easeInOutCubic(clamp(p / 0.42));
       const targetRotX = 0.38 * (1 - orientEase) - ptr.y * 0.22;
       const targetRotY = -0.48 * (1 - orientEase) + ptr.x * 0.28;
-      partsGroup.rotation.x += (targetRotX - partsGroup.rotation.x) * 0.14;
-      partsGroup.rotation.y += (targetRotY - partsGroup.rotation.y) * 0.14;
+      partsGroup.rotation.x += (targetRotX - partsGroup.rotation.x) * 0.35;
+      partsGroup.rotation.y += (targetRotY - partsGroup.rotation.y) * 0.35;
 
       const lockBounce = Math.sin(clamp((p - 0.37) / 0.12) * Math.PI);
       const glide = easeInOutCubic(clamp((p - 0.46) / 0.18));
       const baseScale = (0.76 - 0.24 * glide) * (1 + 0.09 * lockBounce);
       partsGroup.scale.setScalar(baseScale);
       partsGroup.position.x = 205 * glide;
-      partsGroup.position.y = 8 + 6 * Math.sin(elapsed * 1.6) * glide;
+      partsGroup.position.y = 8 + (playingRef.current ? 6 * Math.sin(elapsed * 1.6) * glide : 0);
 
       const sw = clamp((p - 0.3) / 0.26);
       sweepLight.position.set(-240 + 520 * sw + 205 * glide, 180 - 320 * sw, 150);
@@ -189,6 +202,28 @@ export default function HeroEmblemCanvas({ progressRef, pointerRef, reducedMotio
 
       renderer.render(scene, camera);
     };
+
+    const animate = (now) => {
+      animId = requestAnimationFrame(animate);
+      if (!inViewRef.current) return;
+
+      const p = progressRef.current;
+      const ptr = pointerRef.current;
+      const changed =
+        playingRef.current ||
+        settleFrames > 0 ||
+        Math.abs(p - lastP) > 0.0005 ||
+        Math.abs(ptr.x - lastPtrX) > 0.002 ||
+        Math.abs(ptr.y - lastPtrY) > 0.002;
+
+      if (!changed) return;
+
+      if (settleFrames > 0) settleFrames -= 1;
+      lastP = p;
+      lastPtrX = ptr.x;
+      lastPtrY = ptr.y;
+      renderSceneAt(now);
+    };
     animId = requestAnimationFrame(animate);
 
     const onResize = () => {
@@ -197,8 +232,9 @@ export default function HeroEmblemCanvas({ progressRef, pointerRef, reducedMotio
       const h = container.clientHeight || 500;
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.innerWidth <= 768 ? 1.5 : 2));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.innerWidth <= 768 ? 1.25 : 2));
       renderer.setSize(w, h);
+      settleFrames = 2;
     };
     const ro = new ResizeObserver(onResize);
     ro.observe(container);

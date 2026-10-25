@@ -128,8 +128,11 @@
 
 .nav-hamburger-btn {
   display: none;
+  flex-shrink: 0;
   inline-size: 44px;
+  min-inline-size: 44px;
   block-size: 44px;
+  min-block-size: 44px;
   border-radius: var(--ds-radius-capsule);
   border: 1px solid var(--ds-border);
   background: var(--ds-surface-raised);

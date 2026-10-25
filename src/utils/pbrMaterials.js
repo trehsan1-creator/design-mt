@@ -6,8 +6,39 @@ import { DESIGN_TOKENS } from '../../tokens/tokens.js';
  * راه‌اندازی نقشه بازتاب محیطی (PMREM + RoomEnvironment) برای نمایش واقعی Clearcoat
  */
 export function setupClearcoatEnvironment(renderer, scene) {
+  const gl = renderer.getContext();
+  const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+  const rendererName = dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) || '') : '';
+  const isSoftwareOrMobile = /SwiftShader|llvmpipe|Software/i.test(rendererName) || window.innerWidth <= 768;
+
+  if (isSoftwareOrMobile) {
+    // نقشه بازتاب استودیویی سبک ۶۴×۳۲ برای موبایل و رندررهای نرم‌افزاری بدون توقف نخ اصلی
+    const w = 64;
+    const h = 32;
+    const data = new Uint8Array(w * h * 4);
+    for (let y = 0; y < h; y++) {
+      const v = 1 - y / (h - 1);
+      const sky = Math.pow(Math.max(0, v), 1.4);
+      for (let x = 0; x < w; x++) {
+        const u = x / (w - 1);
+        const keySpot = Math.exp(-Math.pow((u - 0.28) * 5, 2) - Math.pow((v - 0.72) * 5, 2));
+        const warmRim = Math.exp(-Math.pow((u - 0.78) * 6, 2) - Math.pow((v - 0.35) * 5, 2));
+        const idx = (y * w + x) * 4;
+        data[idx] = Math.min(255, Math.round(18 + sky * 150 + keySpot * 85 + warmRim * 95));
+        data[idx + 1] = Math.min(255, Math.round(34 + sky * 165 + keySpot * 80 + warmRim * 42));
+        data[idx + 2] = Math.min(255, Math.round(52 + sky * 185 + keySpot * 75 + warmRim * 16));
+        data[idx + 3] = 255;
+      }
+    }
+    const envTex = new THREE.DataTexture(data, w, h, THREE.RGBAFormat);
+    envTex.mapping = THREE.EquirectangularReflectionMapping;
+    envTex.colorSpace = THREE.SRGBColorSpace;
+    envTex.needsUpdate = true;
+    scene.environment = envTex;
+    return envTex;
+  }
+
   const pmremGenerator = new THREE.PMREMGenerator(renderer);
-  pmremGenerator.compileEquirectangularShader();
   const roomEnv = new RoomEnvironment();
   const envRT = pmremGenerator.fromScene(roomEnv, 0.04);
   scene.environment = envRT.texture;

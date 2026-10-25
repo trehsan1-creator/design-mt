@@ -136,32 +136,36 @@ export function JalaliRangePicker({
         </button>
       </div>
 
-      <div className="ds-jalali__weekdays" aria-hidden="true">
-        {WEEKDAYS.map((w) => (
-          <span key={w} className="ds-jalali__weekday">{w}</span>
-        ))}
-      </div>
+      <div className="ds-jalali__cal-scroll">
+        <div className="ds-jalali__cal-inner">
+          <div className="ds-jalali__weekdays" aria-hidden="true">
+            {WEEKDAYS.map((w) => (
+              <span key={w} className="ds-jalali__weekday">{w}</span>
+            ))}
+          </div>
 
-      <div className="ds-jalali__grid">
-        {blanks.map((b) => (
-          <span key={`blank-${b}`} className="ds-jalali__blank" aria-hidden="true" />
-        ))}
-        {days.map((d) => {
-          const isEdge = d === range.start || d === range.end;
-          const inSpan = d > range.start && d < range.end;
-          return (
-            <button
-              key={d}
-              type="button"
-              aria-pressed={isEdge || inSpan}
-              aria-label={`${toFa(d)} ${month.name} ${toFa(year)}`}
-              className={`ds-jalali__day ds-tabular ${isEdge ? 'is-edge' : ''} ${inSpan ? 'is-in-range' : ''}`.trim()}
-              onClick={() => handleDayClick(d)}
-            >
-              {toFa(d)}
-            </button>
-          );
-        })}
+          <div className="ds-jalali__grid">
+            {blanks.map((b) => (
+              <span key={`blank-${b}`} className="ds-jalali__blank" aria-hidden="true" />
+            ))}
+            {days.map((d) => {
+              const isEdge = d === range.start || d === range.end;
+              const inSpan = d > range.start && d < range.end;
+              return (
+                <button
+                  key={d}
+                  type="button"
+                  aria-pressed={isEdge || inSpan}
+                  aria-label={`${toFa(d)} ${month.name} ${toFa(year)}`}
+                  className={`ds-jalali__day ds-tabular ${isEdge ? 'is-edge' : ''} ${inSpan ? 'is-in-range' : ''}`.trim()}
+                  onClick={() => handleDayClick(d)}
+                >
+                  {toFa(d)}
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );

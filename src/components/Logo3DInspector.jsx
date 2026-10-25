@@ -38,6 +38,8 @@ export default function Logo3DInspector({ mode = 'inflate', showWireframe = fals
     renderer.setSize(width, height);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.1;
+    renderer.domElement.setAttribute('role', 'img');
+    renderer.domElement.setAttribute('aria-label', 'بازرس سه‌بعدی حجم بالشتکی و پخ‌خورده نشان برند');
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
 

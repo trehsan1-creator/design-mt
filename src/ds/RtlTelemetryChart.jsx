@@ -18,7 +18,20 @@ const DEFAULT_SERIES = [
  */
 export function RtlTelemetryChart({ series = DEFAULT_SERIES, speedLimit = 95, dayCount = 7 }) {
   const [activeIdx, setActiveIdx] = useState(series.length - 1);
+  const [inView, setInView] = useState(false);
+  const rootRef = React.useRef(null);
   const reducedMotion = usePrefersReducedMotion();
+
+  React.useEffect(() => {
+    const el = rootRef.current;
+    if (!el) return undefined;
+    const obs = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold: 0.05 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   const W = 560;
   const H = 196;
@@ -48,7 +61,7 @@ export function RtlTelemetryChart({ series = DEFAULT_SERIES, speedLimit = 95, da
   const selected = points[activeIdx] || points[points.length - 1];
 
   return (
-    <div className="ds-rtl-chart">
+    <div ref={rootRef} className="ds-rtl-chart">
       <div className="ds-between-wrap ds-rtl-chart__head">
         <div>
           <strong>روند راست‌به‌چپ سرعت میانه و مصرف سوخت ناوگان</strong>
@@ -97,7 +110,7 @@ export function RtlTelemetryChart({ series = DEFAULT_SERIES, speedLimit = 95, da
         <path d={areaPath} className="ds-rtl-chart__area" />
         <path d={linePath} className="ds-rtl-chart__line" />
 
-        {!reducedMotion && (
+        {!reducedMotion && inView && (
           <circle r="4.5" className="ds-signal-svg__dot">
             <animateMotion dur="5.2s" repeatCount="indefinite" path={linePath} />
           </circle>

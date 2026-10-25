@@ -1,0 +1,121 @@
+{
+  "mode": "after",
+  "timestamp": "2026-10-25T10:37:09.029Z",
+  "scores": {
+    "performance": 60,
+    "accessibility": 100,
+    "bestPractices": 100
+  },
+  "metrics": {
+    "FCP_ms": 1868,
+    "LCP_ms": 2168,
+    "TBT_ms": 8940,
+    "CLS": 0.0001,
+    "SI_ms": 7334
+  },
+  "failingA11yAudits": [
+    {
+      "id": "label-content-name-mismatch",
+      "title": "Elements with visible text labels do not have matching accessible names.",
+      "score": 0
+    }
+  ],
+  "bundle": {
+    "entryJsKB": 48,
+    "totalJsKB": 855.5,
+    "totalCssKB": 63.7,
+    "totalFontKB": 0,
+    "chunks": [
+      {
+        "file": "CoreGeometryStep1-Dto_UOVk.js",
+        "bytes": 11530,
+        "kb": 11.26
+      },
+      {
+        "file": "DerivedPatternsLab-rLk-lH2n.js",
+        "bytes": 8923,
+        "kb": 8.71
+      },
+      {
+        "file": "DesignSystemPortal-CWBWabzO.js",
+        "bytes": 15648,
+        "kb": 15.28
+      },
+      {
+        "file": "FleetAlertBanner-CsCZspc9.js",
+        "bytes": 15653,
+        "kb": 15.29
+      },
+      {
+        "file": "HardwareTrackerCanvas-BwIe00-e.js",
+        "bytes": 5015,
+        "kb": 4.9
+      },
+      {
+        "file": "HeroEmblemCanvas-BdXADmOW.js",
+        "bytes": 4793,
+        "kb": 4.68
+      },
+      {
+        "file": "PeydaShowcase-CPRaYh98.js",
+        "bytes": 5113,
+        "kb": 4.99
+      },
+      {
+        "file": "ScrollFilmStage-CLFlRQHs.js",
+        "bytes": 6332,
+        "kb": 6.18
+      },
+      {
+        "file": "StatusChip-DQjaAVDv.js",
+        "bytes": 2647,
+        "kb": 2.58
+      },
+      {
+        "file": "design-h7FV5Cwq.js",
+        "bytes": 8620,
+        "kb": 8.42
+      },
+      {
+        "file": "faDigits-D7sDwPAQ.js",
+        "bytes": 144,
+        "kb": 0.14
+      },
+      {
+        "file": "geometryData-vjfj25vR.js",
+        "bytes": 10952,
+        "kb": 10.7
+      },
+      {
+        "file": "main-Ds74AOEs.js",
+        "bytes": 49111,
+        "kb": 47.96
+      },
+      {
+        "file": "pbrMaterials-CfUX2x4B.js",
+        "bytes": 3345,
+        "kb": 3.27
+      },
+      {
+        "file": "three-vendor-C2Zeh1YO.js",
+        "bytes": 560209,
+        "kb": 547.08
+      },
+      {
+        "file": "ui-vendor-5JvZPtde.js",
+        "bytes": 163177,
+        "kb": 159.35
+      },
+      {
+        "file": "useModalFocusTrap-B64CqtcU.css",
+        "bytes": 65246,
+        "kb": 63.72
+      },
+      {
+        "file": "useModalFocusTrap-BbICBt7_.js",
+        "bytes": 4844,
+        "kb": 4.73
+      }
+    ]
+  }
+}

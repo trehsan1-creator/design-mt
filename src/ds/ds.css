@@ -295,18 +295,17 @@
   padding-inline: 2px;
 }
 
-.ds-iran-plate__flag-svg {
-  inline-size: 12px;
-  block-size: 8px;
-  border-radius: var(--ds-radius-nuqta);
+.ds-iran-plate__emblem-svg {
+  inline-size: 14px;
+  block-size: 20px;
+  display: block;
   flex-shrink: 0;
 }
 
-.ds-iran-plate__ir-label {
-  font-family: var(--ds-font-mono);
-  font-size: 7px;
-  line-height: 1;
-  letter-spacing: 0.02em;
+.ds-iran-plate__code-svg {
+  inline-size: 24px;
+  block-size: 9px;
+  display: block;
 }
 
 .ds-iran-plate__body {
@@ -595,14 +594,16 @@
 }
 
 .ds-jalali__presets {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 6px;
 }
 
 .ds-jalali__preset {
+  flex: 1 1 98px;
+  min-inline-size: 44px;
   min-block-size: 44px;
-  padding-inline: 8px;
+  padding-inline: 10px;
   border-radius: var(--ds-radius-xs);
   border: 1px solid var(--ds-border);
   background: color-mix(in srgb, var(--ds-surface) 60%, transparent);
@@ -644,12 +645,26 @@
   font-weight: 800;
 }
 
+.ds-jalali__cal-scroll {
+  inline-size: 100%;
+  overflow-x: auto;
+}
+
+.ds-jalali__cal-inner {
+  min-inline-size: 312px;
+}
+
 .ds-jalali__weekdays,
 .ds-jalali__grid {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 4px;
+  display: flex;
+  flex-wrap: wrap;
   text-align: center;
+}
+
+.ds-jalali__weekday,
+.ds-jalali__blank {
+  inline-size: calc(100% / 7);
+  min-inline-size: 44px;
 }
 
 .ds-jalali__weekday {
@@ -660,8 +675,9 @@
 }
 
 .ds-jalali__day {
+  inline-size: calc(100% / 7);
   min-block-size: 44px;
-  min-inline-size: 38px;
+  min-inline-size: 44px;
   border-radius: var(--ds-radius-xs);
   border: 1px solid transparent;
   background: transparent;
@@ -965,6 +981,11 @@
   .ops-grid {
     grid-template-columns: 1fr;
   }
+}
+
+p.ds-muted,
+li.ds-muted {
+  font-size: var(--ds-text-sm);
 }
 
 .ds-tabular { font-variant-numeric: tabular-nums; }

@@ -61,6 +61,8 @@ export default function HardwareTrackerCanvas({ explodeRef, reducedMotion }) {
     renderer.setSize(width, height);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.15;
+    renderer.domElement.setAttribute('role', 'img');
+    renderer.domElement.setAttribute('aria-label', 'نمایشگر سه‌بعدی سخت‌افزار ردیاب خودرو');
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
 

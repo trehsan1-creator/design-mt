@@ -54,7 +54,7 @@ const HERO_VEHICLES = [
 
 export default function Hero3DStage() {
   const reducedMotion = usePrefersReducedMotion();
-  const [isPlaying, setIsPlaying] = useState(() => !getPrefersReducedMotion());
+  const [isPlaying, setIsPlaying] = useState(false);
   const [selectedVeh, setSelectedVeh] = useState(HERO_VEHICLES[0]);
   const [mountWebgl, setMountWebgl] = useState(false);
 
@@ -76,14 +76,42 @@ export default function Hero3DStage() {
   const rangeInputRef = useRef(null);
   const pctLabelRef = useRef(null);
 
-  const progressRef = useRef(getPrefersReducedMotion() ? 1 : 0);
+  const progressRef = useRef(0.86);
   const pointerRef = useRef({ x: 0, y: 0 });
   const inViewRef = useRef(true);
 
-  // Defer WebGL compilation until after initial Hero LCP paint
+  // Desktop (>768px): mount WebGL in idle window; Mobile (<=768px): mount on first scroll/touch/interaction to save 560KB 4G JS & shader compile during initial paint
   useEffect(() => {
-    const timer = setTimeout(() => setMountWebgl(true), 80);
-    return () => clearTimeout(timer);
+    let mounted = false;
+    const activate = () => {
+      if (!mounted) {
+        mounted = true;
+        setMountWebgl(true);
+      }
+    };
+
+    let timer = null;
+    if (window.innerWidth > 768) {
+      timer = setTimeout(() => {
+        if ('requestIdleCallback' in window) {
+          window.requestIdleCallback(activate, { timeout: 600 });
+        } else {
+          activate();
+        }
+      }, 120);
+    }
+
+    window.addEventListener('scroll', activate, { once: true, passive: true });
+    window.addEventListener('pointerdown', activate, { once: true, passive: true });
+    window.addEventListener('touchstart', activate, { once: true, passive: true });
+    window.addEventListener('keydown', activate, { once: true, passive: true });
+    return () => {
+      if (timer) clearTimeout(timer);
+      window.removeEventListener('scroll', activate);
+      window.removeEventListener('pointerdown', activate);
+      window.removeEventListener('touchstart', activate);
+      window.removeEventListener('keydown', activate);
+    };
   }, []);
 
   const applyFrameDom = useCallback((rawP) => {
@@ -374,15 +402,16 @@ export default function Hero3DStage() {
               <div ref={shock1Ref} className="hero-shockwave" />
               <div ref={shock2Ref} className="hero-shockwave hero-shockwave--accent" />
 
-              {mountWebgl && (
-                <Suspense fallback={null}>
-                  <HeroEmblemCanvas
-                    progressRef={progressRef}
-                    pointerRef={pointerRef}
-                    reducedMotion={reducedMotion}
-                  />
-                </Suspense>
-              )}
+          {mountWebgl && (
+            <Suspense fallback={null}>
+              <HeroEmblemCanvas
+                progressRef={progressRef}
+                pointerRef={pointerRef}
+                isPlaying={isPlaying}
+                reducedMotion={reducedMotion}
+              />
+            </Suspense>
+          )}
 
               <div className="hero-hud-card ds-stack-xs">
                 <div className="ds-between">

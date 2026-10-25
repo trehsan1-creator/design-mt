@@ -23,12 +23,22 @@ export function IranPlate({
   return (
     <span className={classes} role="img" aria-label={ariaLabel}>
       <span className="ds-iran-plate__flag" aria-hidden="true">
-        <svg viewBox="0 0 12 8" className="ds-iran-plate__flag-svg">
-          <rect width="12" height="2.67" y="0" fill="var(--ds-plate-green)" />
-          <rect width="12" height="2.67" y="2.67" fill="var(--ds-neutral-white)" />
-          <rect width="12" height="2.66" y="5.34" fill="var(--ds-plate-red)" />
+        <svg viewBox="0 0 16 20" className="ds-iran-plate__emblem-svg">
+          <rect x="1" width="14" height="3" y="1" fill="var(--ds-plate-green)" />
+          <rect x="1" width="14" height="3" y="4" fill="var(--ds-neutral-white)" />
+          <rect x="1" width="14" height="3" y="7" fill="var(--ds-plate-red)" />
+          <text
+            x="8"
+            y="18"
+            textAnchor="middle"
+            fill="var(--ds-neutral-white)"
+            fontSize="6.5"
+            fontWeight="800"
+            fontFamily="sans-serif"
+          >
+            IR
+          </text>
         </svg>
-        <span className="ds-iran-plate__ir-label">IR</span>
       </span>
       <span className="ds-iran-plate__body" aria-hidden="true">
         <span>{toFa(left2)}</span>
@@ -36,7 +46,18 @@ export function IranPlate({
         <span>{toFa(mid3)}</span>
       </span>
       <span className="ds-iran-plate__code" aria-hidden="true">
-        <span className="ds-iran-plate__code-caption">ایران</span>
+        <svg viewBox="0 0 28 10" className="ds-iran-plate__code-svg">
+          <text
+            x="14"
+            y="8"
+            textAnchor="middle"
+            fill="currentColor"
+            fontSize="7.5"
+            fontWeight="700"
+          >
+            ایران
+          </text>
+        </svg>
         <span className="ds-iran-plate__code-num">{toFa(iranCode)}</span>
       </span>
     </span>
