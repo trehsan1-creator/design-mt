@@ -11,29 +11,38 @@ function clamp(v, min, max) {
 export default function Hero3DStage() {
   const reducedMotion = usePrefersReducedMotion();
   const trackRef = useRef(null);
-  const scrollRef = useRef(0);
+  const stickyRef = useRef(null);
+  const scrollProgressRef = useRef(0);
   const pointerRef = useRef({ x: 0, y: 0 });
+  const pulseIdRef = useRef(0);
   const copyRef = useRef(null);
 
   const svgRef = useRef(null);
-  const railPathRef = useRef(null);
+  const skyArcRef = useRef(null);
+  const skyStrokeRef = useRef(null);
+  const railLeftRef = useRef(null);
+  const railRightRef = useRef(null);
+  const pulseTrackRef = useRef(null);
   const glowPathRef = useRef(null);
   const strokePathRef = useRef(null);
-  const tipNodeRef = useRef(null);
   const handoffSparkRef = useRef(null);
 
   useEffect(() => {
     const updateScroll = () => {
-      const el = trackRef.current;
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-      const scrollable = Math.max(1, rect.height - window.innerHeight);
-      const p = clamp(window.scrollY / scrollable, 0, 1);
-      scrollRef.current = p;
+      if (!trackRef.current) return;
+      const scrollTop = Math.max(0, window.scrollY || window.pageYOffset || 0);
+      const vh = window.innerHeight || 800;
+      const scrollable = Math.max(240, trackRef.current.offsetHeight - vh);
+      const p = scrollTop <= 4 ? 0 : clamp((scrollTop - 4) / scrollable, 0, 1);
+      scrollProgressRef.current = p;
 
-      if (copyRef.current && !reducedMotion) {
-        copyRef.current.style.setProperty('--hero-copy-y', `${(p * -38).toFixed(1)}px`);
-        copyRef.current.style.setProperty('--hero-copy-op', `${clamp(1 - p * 1.05, 0.12, 1).toFixed(3)}`);
+      const fade = p <= 0.08 ? 1 : clamp(1 - (p - 0.08) * 1.85, 0, 1);
+      if (stickyRef.current) {
+        stickyRef.current.style.setProperty('--hero-copy-op', fade.toFixed(3));
+      }
+      if (copyRef.current) {
+        copyRef.current.style.setProperty('--hero-copy-op', fade.toFixed(3));
+        copyRef.current.style.setProperty('--hero-copy-y', `${(p * 26).toFixed(1)}px`);
       }
     };
 
@@ -44,49 +53,95 @@ export default function Hero3DStage() {
       window.removeEventListener('scroll', updateScroll);
       window.removeEventListener('resize', updateScroll);
     };
-  }, [reducedMotion]);
-
-  // اتصال لحظه‌ای و پیکسلی نوار نقاش به نوک واقعی تندیس سه‌بعدی در هر فریم
-  const handleTipScreenUpdate = useCallback((sx, sy, w, h, tetherReady, smoothScroll) => {
-    if (!svgRef.current || !strokePathRef.current) return;
-    svgRef.current.setAttribute('viewBox', `0 0 ${w} ${h}`);
-
-    const endX = w * 0.5;
-    const endY = h;
-    const spanY = Math.max(40, endY - sy);
-    const d = `M ${sx.toFixed(1)},${sy.toFixed(1)} C ${sx.toFixed(1)},${(sy + spanY * 0.54).toFixed(1)} ${endX.toFixed(1)},${(endY - spanY * 0.42).toFixed(1)} ${endX.toFixed(1)},${endY.toFixed(1)}`;
-
-    if (railPathRef.current) railPathRef.current.setAttribute('d', d);
-    if (glowPathRef.current) glowPathRef.current.setAttribute('d', d);
-    strokePathRef.current.setAttribute('d', d);
-
-    // در بدو هم‌گرایی تندیس، بخش اول پرتو روشن می‌شود و با اسکرول تا دقیقاً نقطه تحویل پایین صفحه (50%, 100%) کشیده می‌شود
-    const draw = clamp(tetherReady * (0.34 + smoothScroll * 0.66), 0, 1);
-    const dashOffset = `${(1 - draw).toFixed(4)}`;
-    strokePathRef.current.setAttribute('stroke-dashoffset', dashOffset);
-    if (glowPathRef.current) glowPathRef.current.setAttribute('stroke-dashoffset', dashOffset);
-
-    if (tipNodeRef.current) {
-      tipNodeRef.current.setAttribute('transform', `translate(${sx.toFixed(1)}, ${sy.toFixed(1)})`);
-      tipNodeRef.current.setAttribute('opacity', `${tetherReady.toFixed(3)}`);
-    }
-
-    if (handoffSparkRef.current && strokePathRef.current.getTotalLength) {
-      const total = strokePathRef.current.getTotalLength();
-      if (total > 1) {
-        const pt = strokePathRef.current.getPointAtLength(total * draw);
-        handoffSparkRef.current.setAttribute('transform', `translate(${pt.x.toFixed(1)}, ${pt.y.toFixed(1)})`);
-        handoffSparkRef.current.setAttribute('opacity', `${tetherReady.toFixed(3)}`);
-      }
-    }
   }, []);
 
-  const handlePointerMove = (e) => {
-    if (reducedMotion) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    const ny = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+  const handleGatewayScreenUpdate = useCallback(
+    (exitX, exitY, skyX, skyY, w, h, corridorAppear, smoothScroll) => {
+      if (!svgRef.current || !strokePathRef.current) return;
+      svgRef.current.setAttribute('viewBox', `0 0 ${w} ${h}`);
+
+      if (skyArcRef.current && skyStrokeRef.current) {
+        const satStartX = Math.min(w - 24, skyX + w * 0.14);
+        const satStartY = Math.max(24, skyY - h * 0.1);
+        const dSat = `M ${satStartX.toFixed(1)},${satStartY.toFixed(1)} C ${(satStartX - w * 0.06).toFixed(1)},${(satStartY + h * 0.07).toFixed(1)} ${(skyX + 34).toFixed(1)},${(skyY - 10).toFixed(1)} ${skyX.toFixed(1)},${skyY.toFixed(1)}`;
+        skyArcRef.current.setAttribute('d', dSat);
+        skyStrokeRef.current.setAttribute('d', dSat);
+        skyStrokeRef.current.setAttribute('opacity', `${(corridorAppear * 0.78).toFixed(3)}`);
+      }
+
+      const endX = w * 0.5;
+      const endY = h;
+      const spanY = Math.max(54, endY - exitY);
+      const isCompact = w <= 900;
+      const bankPush = isCompact ? 54 : Math.min(96, Math.abs(endX - exitX) * 0.4 + 46);
+      const c1x = isCompact ? exitX - bankPush : exitX - bankPush * 0.5;
+      const c1y = exitY + spanY * 0.36;
+      const c2x = isCompact ? endX + bankPush : endX + bankPush * 0.72;
+      const c2y = endY - spanY * 0.34;
+
+      const dMain = `M ${exitX.toFixed(1)},${exitY.toFixed(1)} C ${c1x.toFixed(1)},${c1y.toFixed(1)} ${c2x.toFixed(1)},${c2y.toFixed(1)} ${endX.toFixed(1)},${endY.toFixed(1)}`;
+      const dLaneL = `M ${(exitX - 10).toFixed(1)},${exitY.toFixed(1)} C ${(c1x - 11).toFixed(1)},${c1y.toFixed(1)} ${(c2x - 9).toFixed(1)},${c2y.toFixed(1)} ${(endX - 7).toFixed(1)},${endY.toFixed(1)}`;
+      const dLaneR = `M ${(exitX + 10).toFixed(1)},${exitY.toFixed(1)} C ${(c1x + 11).toFixed(1)},${c1y.toFixed(1)} ${(c2x + 9).toFixed(1)},${c2y.toFixed(1)} ${(endX + 7).toFixed(1)},${endY.toFixed(1)}`;
+
+      if (railLeftRef.current) railLeftRef.current.setAttribute('d', dLaneL);
+      if (railRightRef.current) railRightRef.current.setAttribute('d', dLaneR);
+      if (pulseTrackRef.current) pulseTrackRef.current.setAttribute('d', dMain);
+      if (glowPathRef.current) glowPathRef.current.setAttribute('d', dMain);
+      strokePathRef.current.setAttribute('d', dMain);
+
+      const draw = clamp(corridorAppear * (0.48 + smoothScroll * 0.52), 0, 1);
+      const dashOffset = `${(1 - draw).toFixed(4)}`;
+      strokePathRef.current.setAttribute('stroke-dashoffset', dashOffset);
+      if (glowPathRef.current) glowPathRef.current.setAttribute('stroke-dashoffset', dashOffset);
+
+      if (handoffSparkRef.current && strokePathRef.current.getTotalLength) {
+        try {
+          const total = strokePathRef.current.getTotalLength();
+          if (total > 1) {
+            const pt = strokePathRef.current.getPointAtLength(total * draw);
+            if (pt) {
+              handoffSparkRef.current.setAttribute(
+                'transform',
+                `translate(${pt.x.toFixed(1)}, ${pt.y.toFixed(1)})`
+              );
+              handoffSparkRef.current.setAttribute('opacity', `${corridorAppear.toFixed(3)}`);
+            }
+          }
+        } catch {
+          // ignore layout shift
+        }
+      }
+    },
+    []
+  );
+
+  const updatePointerCoords = (clientX, clientY, targetEl) => {
+    if (reducedMotion || !targetEl) return;
+    const rect = targetEl.getBoundingClientRect();
+    const px = ((clientX - rect.left) / rect.width) * 100;
+    const py = ((clientY - rect.top) / rect.height) * 100;
+    const nx = (px / 100) * 2 - 1;
+    const ny = (py / 100) * 2 - 1;
     pointerRef.current = { x: clamp(nx, -1, 1), y: clamp(ny, -1, 1) };
+    if (stickyRef.current) {
+      stickyRef.current.style.setProperty('--hero-spot-x', `${px.toFixed(1)}%`);
+      stickyRef.current.style.setProperty('--hero-spot-y', `${py.toFixed(1)}%`);
+    }
+  };
+
+  const handlePointerMove = (e) => {
+    updatePointerCoords(e.clientX, e.clientY, e.currentTarget);
+  };
+
+  const handleTouchMove = (e) => {
+    if (e.touches && e.touches[0]) {
+      updatePointerCoords(e.touches[0].clientX, e.touches[0].clientY, e.currentTarget);
+    }
+  };
+
+  const handleStageTap = (e) => {
+    if (e.target.closest('button, a')) return;
+    pulseIdRef.current += 1;
   };
 
   const handlePointerLeave = () => {
@@ -96,21 +151,34 @@ export default function Hero3DStage() {
   return (
     <section id="hero" ref={trackRef} className="hero-cinema-track">
       <div
+        ref={stickyRef}
         className="hero-cinema-sticky"
         data-polarity="nocturnal"
         onPointerMove={handlePointerMove}
+        onTouchMove={handleTouchMove}
         onPointerLeave={handlePointerLeave}
+        onClick={handleStageTap}
       >
+        <div className="hero-interactive-spotlight" aria-hidden="true" />
+
+        <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" className="hero-blueprint-backdrop" aria-hidden="true">
+          <circle cx="430" cy="442" r="240" className="hero-blueprint-ring" />
+          <circle cx="430" cy="442" r="348" className="hero-blueprint-ring hero-blueprint-ring--dashed" />
+          <line x1="150" y1="584" x2="730" y2="290" className="hero-blueprint-axis" />
+          <text x="690" y="282" className="hero-blueprint-tag">GPS · 64 CHANNELS LIVE</text>
+          <text x="315" y="186" className="hero-blueprint-tag">R 117.6 · FLEET GATEWAY</text>
+        </svg>
+
         <Suspense fallback={<div className="hero-fullbleed-webgl" aria-hidden="true" />}>
           <HeroEmblemCanvas
-            scrollRef={scrollRef}
+            scrollRef={scrollProgressRef}
             pointerRef={pointerRef}
+            pulseRef={pulseIdRef}
             reducedMotion={reducedMotion}
-            onTipScreenUpdate={handleTipScreenUpdate}
+            onGatewayScreenUpdate={handleGatewayScreenUpdate}
           />
         </Suspense>
 
-        {/* رشته سیگنال قفل‌شده به نوک واقعی تندیس سه‌بعدی تا سوکت ورودی مدار پایین صفحه */}
         <svg
           ref={svgRef}
           viewBox="0 0 1440 900"
@@ -118,60 +186,78 @@ export default function Hero3DStage() {
           className="hero-painter-handoff"
           aria-hidden="true"
         >
-          <path ref={railPathRef} d="M 520,660 C 520,760 720,800 720,900" className="hero-painter-handoff__rail" />
+          <path ref={skyArcRef} className="hero-painter-handoff__rail" />
+          <path ref={skyStrokeRef} opacity="0" className="hero-painter-handoff__sky" />
+
+          <path ref={railLeftRef} className="hero-painter-handoff__lane" />
+          <path ref={railRightRef} className="hero-painter-handoff__lane" />
+          <path ref={pulseTrackRef} className="hero-painter-handoff__pulse" />
+
           <path
             ref={glowPathRef}
-            d="M 520,660 C 520,760 720,800 720,900"
             pathLength="1"
             strokeDasharray="1"
-            strokeDashoffset="0.66"
+            strokeDashoffset="0.56"
             className="hero-painter-handoff__glow"
           />
           <path
             ref={strokePathRef}
-            d="M 520,660 C 520,760 720,800 720,900"
             pathLength="1"
             strokeDasharray="1"
-            strokeDashoffset="0.66"
+            strokeDashoffset="0.56"
             className="hero-painter-handoff__stroke"
           />
-          <g ref={tipNodeRef} opacity="0">
-            <circle r="9" className="painter-spark-halo" />
-            <circle r="4" className="painter-spark-core" />
-          </g>
           <g ref={handoffSparkRef} opacity="0">
-            <circle r="15" className="painter-spark-halo" />
-            <circle r="5.5" className="painter-spark-core" />
+            <circle r="16" className="painter-spark-halo" />
+            <circle r="6" className="painter-spark-core" />
           </g>
         </svg>
+
+        {/* بج راهنمای تعامل و اسکرول در فضای باز زیر تندیس در موبایل */}
+        <div className="hero-mobile-touch-chip" aria-hidden="true">
+          <span className="hero-concept-flow__dot" />
+          با اسکرول، تندیس باز می‌شود · لمس برای چرخش
+        </div>
 
         <div className="site-container hero-cinema-overlay">
           <div ref={copyRef} className="hero-cinema-copy">
             <div>
               <Capsule tone="orange" dot>
-                مدار زنده فرماندهی ناوگان
+                پایش زنده ناوگان · ضد سرقت سوخت · پوشش سراسری
               </Capsule>
             </div>
 
             <h1 className="hero-cinema-title">
-              رد هر حرکت،
+              هر ثانیه از جاده،
               <br />
               <span>زنده در دستانت.</span>
             </h1>
 
             <p className="hero-cinema-lead">
-              یک رشته سیگنال پیوسته که از نوک تندیس سه‌بعدی آغاز می‌شود و با اسکرول شما، حسگرها، کریدور ایران و کالبد ردیاب را یک‌به‌یک روشن می‌کند.
+              از لحظهٔ استارت خودرو تا تخلیهٔ بار در اسکله؛ مصرف واقعی سوخت، دمای یخچال و مسیر دقیق ناوگان را بی‌واسطه کنترل کنید تا با ورود سیگنال، هر ابزار مدیریتی شکل بگیرد.
             </p>
+
+            <div className="hero-concept-flow" aria-label="سفر سیگنال از جاده تا سود ناوگان">
+              <span className="hero-concept-flow__step">
+                <i className="hero-concept-flow__dot" aria-hidden="true" />
+                دریافت از خودرو
+              </span>
+              <span className="hero-concept-flow__sep" aria-hidden="true">←</span>
+              <span className="hero-concept-flow__step">شکل‌گیری ابزارها</span>
+              <span className="hero-concept-flow__sep" aria-hidden="true">←</span>
+              <span className="hero-concept-flow__step hero-concept-flow__step--active">
+                کاهش ۱۸٪ هزینه‌ها
+              </span>
+            </div>
 
             <div className="hero-cinema-cta">
               <Button as="a" href="#story-cards" variant="primary" size="lg">
-                همراهی با خط سیگنال ↙
+                ورود به بزرگراه سیگنال ↙
               </Button>
             </div>
           </div>
         </div>
 
-        {/* درگاه تحویل سیگنال در مرز دقیق افق شنی */}
         <div className="hero-handoff-port" aria-hidden="true">
           <span className="hero-handoff-port__ring" />
           <span className="hero-handoff-port__dot" />

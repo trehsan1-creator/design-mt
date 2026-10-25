@@ -1,35 +1,60 @@
 import React, { useRef, useState } from 'react';
 import { Gauge, IranPlate, MapPin, StatusChip } from '../../ds';
+import { LOGO_PARTS } from '../../data/geometryData.js';
 import { toFa } from '../../utils/faDigits.js';
+import LogoAnatomyBadge from './LogoAnatomyBadge.jsx';
 import PaintedCard from './PaintedCard.jsx';
 
 const FLEET_PLATES = [
-  { digitsLeft: '۴۸', letter: 'ع', digitsRight: '۷۲۹', iranCode: '۱۱', route: 'تهران — بندرعباس', speed: '۸۴' },
-  { digitsLeft: '۶۲', letter: 'د', digitsRight: '۳۱۵', iranCode: '۲۱', route: 'تبریز — قزوین', speed: '۷۹' },
-  { digitsLeft: '۱۹', letter: 'ط', digitsRight: '۸۴۶', iranCode: '۵۳', route: 'اصفهان — شیراز', speed: '۹۱' },
+  {
+    digitsLeft: '۴۸',
+    letter: 'ع',
+    digitsRight: '۷۲۹',
+    iranCode: '۱۱',
+    route: 'تهران — بندرعباس',
+    speed: '۸۴',
+    weight: '۲۲.۴ تن · ثبت خودکار باسکول',
+  },
+  {
+    digitsLeft: '۶۲',
+    letter: 'د',
+    digitsRight: '۳۱۵',
+    iranCode: '۲۱',
+    route: 'تبریز — قزوین',
+    speed: '۷۹',
+    weight: '۱۸.۶ تن · خروج از انبار مرکزی',
+  },
+  {
+    digitsLeft: '۱۹',
+    letter: 'ط',
+    digitsRight: '۸۴۶',
+    iranCode: '۵۳',
+    route: 'اصفهان — شیراز',
+    speed: '۹۱',
+    weight: '۲۴.۱ تن · تحویل بدون توقف',
+  },
 ];
 
 export default function StoryCardsChapter() {
   const [plateIdx, setPlateIdx] = useState(0);
   const [plateLocked, setPlateLocked] = useState(false);
 
-  const [fuelEfficiency, setFuelEfficiency] = useState(76);
+  const [fuelEfficiency, setFuelEfficiency] = useState(78);
   const userScrubbedFuel = useRef(false);
 
   const [geofencePin, setGeofencePin] = useState({ x: 50, y: 50, inside: true });
 
   const activePlate = FLEET_PLATES[plateIdx];
   const savedPercent = Math.max(9, Math.round((fuelEfficiency - 40) * 0.48));
+  const savedLiters = Math.round(fuelEfficiency * 19.5);
 
-  // هم‌گام‌سازی خودکار پلاک‌خوان با رسیدن خط سیگنال به کارت اول
   const plateProgressRef = useRef((p) => {
-    setPlateLocked(p > 0.45);
+    setPlateLocked(p > 0.42);
   });
 
-  // هم‌گام‌سازی خودکار گیج سوخت با پیشرفت خط سیگنال دور کارت دوم (تا قبل از تعامل دستی موس)
   const fuelProgressRef = useRef((p) => {
     if (!userScrubbedFuel.current && p > 0.05) {
-      setFuelEfficiency(Math.round(46 + p * 42));
+      setFuelEfficiency(Math.round(48 + p * 40));
     }
   });
 
@@ -52,97 +77,143 @@ export default function StoryCardsChapter() {
     <section id="story-cards" className="story-sand-chapter" data-polarity="daylight">
       <div className="site-container">
         <div className="story-chapter-head">
-          <span className="story-step-kicker">۰۱ · فصل اول</span>
+          <span className="story-step-kicker">گام ۰۱ · شکل‌گیری ابزارها با ورود سیگنال</span>
           <h2 className="story-chapter-title">
-            هر ایستگاهی که خط سیگنال لمس می‌کند، زنده می‌شود.
+            با ورود مسیر، هر دغدغهٔ ناوگان به یک ابزارِ کنترلی زنده تبدیل می‌شود.
           </h2>
+          <p className="story-chapter-sub">
+            اسکرول کنید تا ببینید چگونه خط سیگنال هر کامپوننت را از بالا به پایین می‌سازد و سه گلوگاه پرهزینهٔ ناوگان را حل می‌کند.
+          </p>
         </div>
 
         <div className="story-stagger-grid">
-          {/* گره ۰ مدار: پلاک‌خوانی زنده */}
           <PaintedCard
             nodeId="node-plate"
             tone="alabaster"
             className="story-stagger-item story-stagger-item--start"
             onProgressRef={plateProgressRef}
           >
-            <div className="smart-card-head">
-              <span className="smart-card-index">۰۱</span>
+            <div className="smart-card-toprow">
+              <LogoAnatomyBadge
+                activeParts={['p1']}
+                code="مزیت ۰۱"
+                elementTitle="حذف صف و قبض کاغذی انبار"
+                morphTarget="پلاک‌خوان لیزری + باسکول"
+              />
               <StatusChip status={plateLocked ? 'moving' : 'signal'} pulse size="sm">
-                {plateLocked ? `قفل در ۰.۰۲ ثانیه · ${activePlate.speed} km/h` : 'در انتظار سیگنال'}
+                {plateLocked ? `ثبت ۰.۰۲ ثانیه · ${activePlate.speed} km/h` : 'آماده اسکن'}
               </StatusChip>
             </div>
-            <h3 className="smart-card-title">قفل خودکار پلاک با ورود سیگنال</h3>
+
+            <h3 className="smart-card-title">ثبت خودکار ورود، خروج و وزن بار بدون توقف کامیون</h3>
             <p className="smart-card-desc">
-              با رسیدن خط نارنجی، پلاک فعال اسکن می‌شود؛ روی پلاک کلیک کنید تا واحد بعدی ناوگان فراخوانی شود.
+              به‌محض عبور خودرو از دروازه، پلاک، ساعت دقیق و تناژ باسکول ثبت می‌شود. روی پلاک بزنید:
             </p>
 
             <button
               type="button"
-              className="smart-plate-trigger"
+              className="gantry-scanner-well"
+              data-polarity="nocturnal"
+              data-locked={plateLocked ? 'true' : 'false'}
               onClick={() => setPlateIdx((i) => (i + 1) % FLEET_PLATES.length)}
-              aria-label="تغییر پلاک خودرو فعال در مدار"
+              aria-label="اسکن پلاک خودرو بعدی ناوگان"
             >
-              <IranPlate
-                digitsLeft={activePlate.digitsLeft}
-                letter={activePlate.letter}
-                digitsRight={activePlate.digitsRight}
-                iranCode={activePlate.iranCode}
-                size="md"
-              />
-              <span className="smart-plate-route">{activePlate.route}</span>
+              <div className="gantry-scanner-well__pillar" aria-hidden="true">
+                <svg viewBox="0 118 44 212" className="gantry-scanner-well__pillar-svg">
+                  <path d={LOGO_PARTS[1].d} fill="currentColor" />
+                </svg>
+                <span className="gantry-scanner-well__beam" />
+              </div>
+
+              <div className="gantry-scanner-well__content">
+                <IranPlate
+                  digitsLeft={activePlate.digitsLeft}
+                  letter={activePlate.letter}
+                  digitsRight={activePlate.digitsRight}
+                  iranCode={activePlate.iranCode}
+                  size="md"
+                />
+                <div className="gantry-scanner-well__telemetry">
+                  <strong>{activePlate.route}</strong>
+                  <span>{activePlate.weight} · کلیک برای خودروی بعدی</span>
+                </div>
+              </div>
             </button>
           </PaintedCard>
 
-          {/* گره ۱ مدار: گیج مورب سوخت */}
           <PaintedCard
             nodeId="node-fuel"
             tone="alabaster"
             className="story-stagger-item story-stagger-item--end"
             onProgressRef={fuelProgressRef}
           >
-            <div className="smart-card-head">
-              <span className="smart-card-index">۰۲</span>
-              <span className="smart-card-metric">
-                {toFa(savedPercent)}٪ صرفه‌جویی سوخت
-              </span>
+            <div className="smart-card-toprow">
+              <LogoAnatomyBadge
+                activeParts={['p2']}
+                code="مزیت ۰۲"
+                elementTitle="جلوگیری از سرقت و هدررفت سوخت"
+                morphTarget="سنسور باک + دیاگ ECU"
+              />
+              <span className="smart-card-metric">{toFa(savedPercent)}٪ کاهش مصرف</span>
             </div>
-            <h3 className="smart-card-title">کالیبراسیون مورب مصرف سوخت</h3>
+
+            <h3 className="smart-card-title">تشخیص آنی تخلیهٔ شبانه باک و رانندگی پرمصرف</h3>
             <p className="smart-card-desc">
-              جریان سیگنال تیغه‌های `-۲۶.۸۴°` را شارژ می‌کند؛ موس را روی تیغه‌ها بکشید تا بازده ناوگان را بسنجید.
+              هرگونه افت ناگهانی سطح سوخت در توقف‌ها را با مکان دقیق هشدار می‌دهد. روی تیغه‌ها بکشید:
             </p>
 
             <div
               className="smart-gauge-scrub"
               data-polarity="nocturnal"
               onPointerMove={handleGaugeScrub}
+              onClick={handleGaugeScrub}
             >
-              <Gauge value={fuelEfficiency} max={100} segments={14} label="بازده لحظه‌ای ناوگان" />
+              <div className="horizon-wing-rail" aria-hidden="true">
+                <svg viewBox="115 -2 122 42" preserveAspectRatio="none" className="horizon-wing-rail__svg">
+                  <path d={LOGO_PARTS[2].d} fill="currentColor" />
+                </svg>
+                <span className="horizon-wing-rail__tag">
+                  صرفه‌جویی ماهانه هر خودرو: {toFa(savedLiters)} لیتر
+                </span>
+              </div>
+
+              <Gauge value={fuelEfficiency} max={100} segments={14} label="راندمان احتراق و سلامت مصرف ناوگان" />
             </div>
           </PaintedCard>
 
-          {/* گره ۲ مدار: رادار ژئوفنس */}
           <PaintedCard
             nodeId="node-geofence"
             tone="alabaster"
             className="story-stagger-item story-stagger-item--start"
           >
-            <div className="smart-card-head">
-              <span className="smart-card-index">۰۳</span>
+            <div className="smart-card-toprow">
+              <LogoAnatomyBadge
+                activeParts={['p1', 'p3']}
+                code="مزیت ۰۳"
+                elementTitle="امنیت محموله‌های حساس"
+                morphTarget="حصار جغرافیایی (Geofence)"
+              />
               <StatusChip status={geofencePin.inside ? 'moving' : 'critical'} pulse size="sm">
-                {geofencePin.inside ? 'درون حصار مجاز' : 'خروج از ژئوفنس'}
+                {geofencePin.inside ? 'در مسیر مجاز شرکت' : 'هشدار خروج از مسیر!'}
               </StatusChip>
             </div>
-            <h3 className="smart-card-title">حصار فضایی حساس به حرکت موس</h3>
+
+            <h3 className="smart-card-title">هشدار فوری انحراف از مسیر و توقف غیرمجاز</h3>
             <p className="smart-card-desc">
-              اشاره‌گر موس را از دایره سبز عبور دهید تا هشدار آنی خروج از مرز مجاز را ببینید.
+              محدودهٔ مجاز حرکت هر خودرو را تعیین کنید؛ مکان‌نما را از حلقهٔ سبز بیرون ببرید تا هشدار آنی را ببینید:
             </p>
 
             <div
               className={`smart-geofence-pad ${geofencePin.inside ? 'is-safe' : 'is-alert'}`}
               data-polarity="nocturnal"
               onPointerMove={handleGeofenceMove}
+              onClick={handleGeofenceMove}
             >
+              <svg viewBox="0 0 400 170" className="smart-geofence-pad__grid" aria-hidden="true">
+                <line x1="0" y1="85" x2="400" y2="85" />
+                <line x1="200" y1="0" x2="200" y2="170" />
+                <circle cx="200" cy="85" r="76" />
+              </svg>
               <div className="smart-geofence-ring" aria-hidden="true" />
               <div
                 className="smart-geofence-cursor"

@@ -1,30 +1,71 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { LOGO_PARTS } from '../../data/geometryData.js';
 import { usePrefersReducedMotion } from '../../utils/usePrefersReducedMotion.js';
 
 function clamp(v, min, max) {
   return Math.max(min, Math.min(max, v));
 }
 
-const STORY_ACTS = [
-  { id: '۰۱', label: 'فصل اول · قفل شدن حسگرها روی مدار سیگنال' },
-  { id: '۰۲', label: 'فصل دوم · جریان زنده کریدور تبریز تا بندرعباس' },
-  { id: '۰۳', label: 'فصل سوم · شکافته شدن کالبد سه‌بعدی ردیاب' },
-  { id: '۰۴', label: 'فصل چهارم · تبدیل داده مسیر به سود خالص' },
+const CHAPTER_NARRATION = [
+  {
+    id: '۰۱',
+    label: 'گام اول · ثبت خودکار تردد، سوخت و حریم مسیر',
+    activeParts: ['p1', 'p2'],
+  },
+  {
+    id: '۰۲',
+    label: 'گام دوم · اتاق فرمان زنده کریدورهای ایران',
+    activeParts: ['p0'],
+  },
+  {
+    id: '۰۳',
+    label: 'گام سوم · سخت‌افزار صنعتی ضدضربه و آفلاین',
+    activeParts: ['p0', 'p1', 'p2', 'p3'],
+  },
+  {
+    id: '۰۴',
+    label: 'گام چهارم · محاسبه سود خالص و بازگشت سرمایه',
+    activeParts: ['p3'],
+  },
 ];
 
-/**
- * موتور هماهنگ‌ساز مدار زنده سیگنال (Unified Signal Choreographer):
- * مختصات واقعی تمام گره‌های [data-circuit-node] را در صفحه می‌سنجد، کابل‌های دقیق بین سوکت خروجی هر کارت
- * تا سوکت ورودی کارت بعدی را رسم می‌کند، با حرکت موس مثل سیم کشسان ارتعاش می‌یابد و با یک Playhead واحد
- * تمام کارت‌ها، نقشه کریدور و کالبد سه‌بعدی سخت‌افزار را دقیقاً در لحظه رسیدن خط نارنجی بیدار می‌کند.
- */
+// ایستگاه‌های مفهومی مشتری در پیچ‌وخم مسیر بین کامپوننت‌ها
+const HIGHWAY_WAYPOINTS = [
+  {
+    cableIndex: 1,
+    code: 'دقت ۹۹.۴٪',
+    title: 'تشخیص آنی افت ناگهانی باک',
+  },
+  {
+    cableIndex: 2,
+    code: 'هشدار فوری',
+    title: 'کنترل خروج از محدوده مجاز',
+  },
+  {
+    cableIndex: 3,
+    code: 'سراسر ایران',
+    title: 'پایش زنده دما و کریدور ترانزیت',
+  },
+  {
+    cableIndex: 4,
+    code: '۷۲ ساعت',
+    title: 'ذخیره آفلاین در نقاط کور کوهستانی',
+  },
+  {
+    cableIndex: 5,
+    code: '۴ ماهه',
+    title: 'بازگشت کامل سرمایه ناوگان',
+  },
+];
+
 export default function StoryPainterRibbon({ children }) {
   const reducedMotion = usePrefersReducedMotion();
   const worldRef = useRef(null);
   const svgRef = useRef(null);
   const cablesGroupRef = useRef(null);
-  const leadCometRef = useRef(null);
+  const leadTotemRef = useRef(null);
   const pluckRingRef = useRef(null);
+  const waypointElsRef = useRef([]);
 
   const [activeAct, setActiveAct] = useState(0);
   const [narratorVisible, setNarratorVisible] = useState(false);
@@ -37,28 +78,133 @@ export default function StoryPainterRibbon({ children }) {
 
     let nodesMeta = [];
     let cablesMeta = [];
-    let worldWidth = world.clientWidth || 1280;
-    let worldHeight = Math.max(800, world.scrollHeight || 3200);
+    let worldWidth = 1440;
+    let worldHeight = 3200;
+    let smoothPlayhead = -1;
+    let lastRenderedPlayhead = -999;
+    let lastAct = -1;
+    let lastVis = false;
+    let rafId = 0;
 
-    // محاسبه مختصات دقیق پیکسلی هر گره نسبت به ظرف .story-painter-world
+    const createSvgPath = (cls) => {
+      const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      p.setAttribute('class', cls);
+      return p;
+    };
+
+    const updateCableGeometry = (ptrX, ptrY, ptrInside, forceWrite = false) => {
+      let nearestPluck = null;
+      const isCompact = worldWidth <= 900;
+
+      cablesMeta.forEach((cb) => {
+        const midX = (cb.startX + cb.endX) * 0.5;
+        const midY = (cb.startY + cb.endY) * 0.5;
+        let targetPluck = 0;
+
+        if (ptrInside && !reducedMotion && ptrY >= cb.startY - 70 && ptrY <= cb.endY + 70) {
+          const dist = Math.hypot(ptrX - midX, ptrY - midY);
+          if (dist < 260) {
+            const pull = Math.pow(1 - dist / 260, 1.45);
+            targetPluck = clamp((ptrX - midX) * 0.55 * pull, -96, 96);
+            if (!nearestPluck || dist < nearestPluck.dist) {
+              nearestPluck = { x: midX + targetPluck * 0.52, y: midY, dist };
+            }
+          }
+        }
+
+        const force = (targetPluck - cb.pluckX) * 0.16;
+        cb.vx = (cb.vx + force) * 0.75;
+        cb.pluckX += cb.vx;
+
+        if (forceWrite || Number.isNaN(cb.lastRenderedPluck) || Math.abs(cb.pluckX - cb.lastRenderedPluck) > 0.08) {
+          cb.lastRenderedPluck = cb.pluckX;
+          const spanY = Math.max(28, cb.endY - cb.startY);
+          const dx = Math.abs(cb.endX - cb.startX);
+
+          // قوس S-Curve کلوتوئیدی پویا هم در موبایل و هم در دسکتاپ تا مسیر هرگز یک خط صاف ساده نباشد
+          const dirSign = cb.idx % 2 === 0 ? 1 : -1;
+          const maxSwing = isCompact ? 56 : 98;
+          const naturalWave =
+            dx < 75 && spanY > 70
+              ? Math.min(maxSwing, spanY * 0.36) * dirSign
+              : spanY > 110
+                ? (isCompact ? 34 : 46) * dirSign
+                : 0;
+
+          const c1x = cb.startX + naturalWave + cb.pluckX * 0.85;
+          const c1y = cb.startY + spanY * 0.42;
+          const c2x = cb.endX - naturalWave * 0.85 + cb.pluckX * 0.85;
+          const c2y = cb.endY - spanY * 0.42;
+
+          const d = `M ${cb.startX.toFixed(1)},${cb.startY.toFixed(1)} C ${c1x.toFixed(1)},${c1y.toFixed(1)} ${c2x.toFixed(1)},${c2y.toFixed(1)} ${cb.endX.toFixed(1)},${cb.endY.toFixed(1)}`;
+          const dCyan = `M ${(cb.startX - 9).toFixed(1)},${cb.startY.toFixed(1)} C ${(c1x - 13).toFixed(1)},${c1y.toFixed(1)} ${(c2x + 11).toFixed(1)},${c2y.toFixed(1)} ${(cb.endX - 9).toFixed(1)},${cb.endY.toFixed(1)}`;
+          const dWarm = `M ${(cb.startX + 9).toFixed(1)},${cb.startY.toFixed(1)} C ${(c1x + 13).toFixed(1)},${c1y.toFixed(1)} ${(c2x - 11).toFixed(1)},${c2y.toFixed(1)} ${(cb.endX + 9).toFixed(1)},${cb.endY.toFixed(1)}`;
+
+          cb.laneCyan.setAttribute('d', dCyan);
+          cb.laneWarm.setAttribute('d', dWarm);
+          cb.rail.setAttribute('d', d);
+          cb.glow.setAttribute('d', d);
+          cb.stroke.setAttribute('d', d);
+          cb.pulseTrack.setAttribute('d', d);
+
+          const curveMidX = 0.125 * cb.startX + 0.375 * c1x + 0.375 * c2x + 0.125 * cb.endX;
+          const curveMidY = 0.125 * cb.startY + 0.375 * c1y + 0.375 * c2y + 0.125 * cb.endY;
+          const wpEl = waypointElsRef.current[cb.idx];
+          if (wpEl) {
+            if (spanY >= 64) {
+              const physLeftPct = (curveMidX / worldWidth) * 100;
+              const safeMargin = isCompact ? 30 : 18;
+              wpEl.style.setProperty('--wp-x', `${clamp(physLeftPct, safeMargin, 100 - safeMargin).toFixed(2)}%`);
+              wpEl.style.setProperty('--wp-top', `${curveMidY.toFixed(1)}px`);
+              wpEl.style.display = 'inline-flex';
+            } else {
+              wpEl.style.display = 'none';
+            }
+          }
+        }
+      });
+
+      if (pluckRingRef.current) {
+        if (nearestPluck) {
+          pluckRingRef.current.setAttribute(
+            'transform',
+            `translate(${nearestPluck.x.toFixed(1)}, ${nearestPluck.y.toFixed(1)})`
+          );
+          pluckRingRef.current.setAttribute('opacity', '0.94');
+        } else {
+          pluckRingRef.current.setAttribute('opacity', '0');
+        }
+      }
+    };
+
     const measureCircuit = () => {
       const wRect = world.getBoundingClientRect();
       worldWidth = Math.max(320, wRect.width);
-      worldHeight = Math.max(600, world.offsetHeight);
+      worldHeight = Math.max(600, world.scrollHeight || wRect.height);
       svg.setAttribute('viewBox', `0 0 ${worldWidth} ${worldHeight}`);
 
-      const domNodes = Array.from(world.querySelectorAll('[data-circuit-node]'));
-      nodesMeta = domNodes.map((el) => {
+      const nodeEls = Array.from(world.querySelectorAll('[data-circuit-node]'));
+      nodesMeta = nodeEls.map((el) => {
+        const prevTransform = el.style.transform;
+        el.style.transform = 'none';
         const r = el.getBoundingClientRect();
+        el.style.transform = prevTransform;
+
         const topY = r.top - wRect.top;
         const bottomY = r.bottom - wRect.top;
-        const cx = r.left - wRect.left + r.width * 0.5;
+        const centerX = r.left - wRect.left + r.width * 0.5;
+
         return {
           el,
-          cx,
+          id: el.getAttribute('data-circuit-node') || '',
           topY,
           bottomY,
-          height: Math.max(40, r.height),
+          height: Math.max(48, bottomY - topY),
+          inX: centerX,
+          inY: topY,
+          outX: centerX,
+          outY: bottomY,
+          hasOut: Boolean(el.querySelector('[data-port-out]')),
           portIn: el.querySelector('[data-port-in]'),
           portOut: el.querySelector('[data-port-out]'),
           splitRight: el.querySelector('[data-split-right]'),
@@ -69,113 +215,79 @@ export default function StoryPainterRibbon({ children }) {
         };
       });
 
-      // ساخت کابل‌های SVG بین خروجی هیرو (center, 0) -> گره ۰ -> گره ۱ -> ... -> گره آخر
-      cablesGroup.innerHTML = '';
-      cablesMeta = [];
+      const neededCables = [];
+      if (nodesMeta.length > 0) {
+        neededCables.push({
+          idx: 0,
+          startX: worldWidth * 0.5,
+          startY: 0,
+          endX: nodesMeta[0].inX,
+          endY: nodesMeta[0].inY,
+        });
+        for (let i = 0; i < nodesMeta.length - 1; i += 1) {
+          if (nodesMeta[i].hasOut) {
+            neededCables.push({
+              idx: i + 1,
+              startX: nodesMeta[i].outX,
+              startY: nodesMeta[i].outY,
+              endX: nodesMeta[i + 1].inX,
+              endY: nodesMeta[i + 1].inY,
+            });
+          }
+        }
+      }
 
-      for (let i = 0; i < nodesMeta.length; i += 1) {
-        const startX = i === 0 ? worldWidth * 0.5 : nodesMeta[i - 1].cx;
-        const startY = i === 0 ? 0 : nodesMeta[i - 1].bottomY;
-        const endX = nodesMeta[i].cx;
-        const endY = nodesMeta[i].topY;
+      if (cablesMeta.length !== neededCables.length) {
+        cablesGroup.innerHTML = '';
+        cablesMeta = neededCables.map((spec) => {
+          const laneCyan = createSvgPath('story-painter-svg__cyan-lane');
+          const laneWarm = createSvgPath('story-painter-svg__lane');
+          const rail = createSvgPath('story-painter-svg__rail');
+          const glow = createSvgPath('story-painter-svg__glow');
+          const stroke = createSvgPath('story-painter-svg__stroke');
+          const pulseTrack = createSvgPath('story-painter-svg__pulse');
 
-        const ns = 'http://www.w3.org/2000/svg';
-        const rail = document.createElementNS(ns, 'path');
-        rail.setAttribute('class', 'story-painter-svg__rail');
+          glow.setAttribute('pathLength', '1');
+          glow.setAttribute('stroke-dasharray', '1');
+          glow.setAttribute('stroke-dashoffset', reducedMotion ? '0' : '1');
 
-        const glow = document.createElementNS(ns, 'path');
-        glow.setAttribute('class', 'story-painter-svg__glow');
-        glow.setAttribute('pathLength', '1');
-        glow.setAttribute('stroke-dasharray', '1');
-        glow.setAttribute('stroke-dashoffset', reducedMotion ? '0' : '1');
+          stroke.setAttribute('pathLength', '1');
+          stroke.setAttribute('stroke-dasharray', '1');
+          stroke.setAttribute('stroke-dashoffset', reducedMotion ? '0' : '1');
 
-        const stroke = document.createElementNS(ns, 'path');
-        stroke.setAttribute('class', 'story-painter-svg__stroke');
-        stroke.setAttribute('pathLength', '1');
-        stroke.setAttribute('stroke-dasharray', '1');
-        stroke.setAttribute('stroke-dashoffset', reducedMotion ? '0' : '1');
+          cablesGroup.appendChild(laneCyan);
+          cablesGroup.appendChild(laneWarm);
+          cablesGroup.appendChild(rail);
+          cablesGroup.appendChild(glow);
+          cablesGroup.appendChild(stroke);
+          cablesGroup.appendChild(pulseTrack);
 
-        cablesGroup.appendChild(rail);
-        cablesGroup.appendChild(glow);
-        cablesGroup.appendChild(stroke);
-
-        cablesMeta.push({
-          startX,
-          startY,
-          endX,
-          endY,
-          ox: 0,
-          oy: 0,
-          lastOx: 9999,
-          lastOy: 9999,
-          vx: 0,
-          vy: 0,
-          rail,
-          glow,
-          stroke,
+          return {
+            ...spec,
+            laneCyan,
+            laneWarm,
+            rail,
+            glow,
+            stroke,
+            pulseTrack,
+            pluckX: 0,
+            vx: 0,
+            lastRenderedPluck: NaN,
+          };
+        });
+      } else {
+        neededCables.forEach((spec, idx) => {
+          cablesMeta[idx].idx = spec.idx;
+          cablesMeta[idx].startX = spec.startX;
+          cablesMeta[idx].startY = spec.startY;
+          cablesMeta[idx].endX = spec.endX;
+          cablesMeta[idx].endY = spec.endY;
+          cablesMeta[idx].lastRenderedPluck = NaN;
         });
       }
 
-      updateCableGeometry(0, -9999, false);
-    };
-
-    const updateCableGeometry = (ptrX, ptrY, ptrInside) => {
-      let nearestPluck = null;
-      let bestDist = 145;
-
-      cablesMeta.forEach((cb) => {
-        const midX = (cb.startX + cb.endX) * 0.5;
-        const midY = (cb.startY + cb.endY) * 0.5;
-        let tx = 0;
-        let ty = 0;
-
-        if (ptrInside && !reducedMotion) {
-          const dx = ptrX - midX;
-          const dy = ptrY - midY;
-          const dist = Math.hypot(dx, dy);
-          if (dist < 145) {
-            const pull = (1 - dist / 145) * 46;
-            tx = (dx / (dist || 1)) * pull;
-            ty = (dy / (dist || 1)) * pull * 0.35;
-            if (dist < bestDist) {
-              bestDist = dist;
-              nearestPluck = { x: midX + cb.ox * 0.65, y: midY + cb.oy * 0.65 };
-            }
-          }
-        }
-
-        cb.vx = (cb.vx + (tx - cb.ox) * 0.14) * 0.76;
-        cb.vy = (cb.vy + (ty - cb.oy) * 0.14) * 0.76;
-        cb.ox += cb.vx;
-        cb.oy += cb.vy;
-
-        if (Math.abs(cb.ox - cb.lastOx) > 0.08 || Math.abs(cb.oy - cb.lastOy) > 0.08) {
-          cb.lastOx = cb.ox;
-          cb.lastOy = cb.oy;
-          const spanY = Math.max(24, cb.endY - cb.startY);
-          const c1x = cb.startX + cb.ox * 0.85;
-          const c1y = cb.startY + spanY * 0.52 + cb.oy;
-          const c2x = cb.endX + cb.ox * 0.85;
-          const c2y = cb.endY - spanY * 0.48 + cb.oy;
-
-          const d = `M ${cb.startX.toFixed(1)},${cb.startY.toFixed(1)} C ${c1x.toFixed(1)},${c1y.toFixed(1)} ${c2x.toFixed(1)},${c2y.toFixed(1)} ${cb.endX.toFixed(1)},${cb.endY.toFixed(1)}`;
-          cb.rail.setAttribute('d', d);
-          cb.glow.setAttribute('d', d);
-          cb.stroke.setAttribute('d', d);
-        }
-      });
-
-      if (pluckRingRef.current) {
-        if (nearestPluck) {
-          pluckRingRef.current.setAttribute(
-            'transform',
-            `translate(${nearestPluck.x.toFixed(1)}, ${nearestPluck.y.toFixed(1)})`
-          );
-          pluckRingRef.current.setAttribute('opacity', '0.9');
-        } else {
-          pluckRingRef.current.setAttribute('opacity', '0');
-        }
-      }
+      updateCableGeometry(0, -9999, false, true);
+      lastRenderedPlayhead = -999;
     };
 
     const ptr = { x: 0, y: -9999, inside: false };
@@ -202,22 +314,15 @@ export default function StoryPainterRibbon({ children }) {
     ro.observe(world);
     window.addEventListener('resize', measureCircuit, { passive: true });
 
-    let smoothPlayhead = -1;
-    let lastRenderedPlayhead = -999;
-    let lastAct = -1;
-    let lastVis = false;
-    let rafId = 0;
-
     const tick = () => {
       rafId = requestAnimationFrame(tick);
 
       const wRect = world.getBoundingClientRect();
       const vh = window.innerHeight || 800;
 
-      // موقعیت واحد قلم‌موی نقاش در ۶۴٪ ارتفاع دید کاربر
       const targetPlayhead = reducedMotion
         ? worldHeight
-        : clamp(vh * 0.64 - wRect.top, 0, worldHeight);
+        : clamp(vh * 0.68 - wRect.top, 0, worldHeight);
 
       if (smoothPlayhead < 0 || Math.abs(targetPlayhead - smoothPlayhead) > 360) {
         smoothPlayhead = targetPlayhead;
@@ -232,26 +337,34 @@ export default function StoryPainterRibbon({ children }) {
       }
       lastRenderedPlayhead = smoothPlayhead;
 
-      let cometPos = null;
+      let totemPos = null;
 
-      // ۱. به‌روزرسانی دقیق تمام کابل‌های بین کارت‌ها بر اساس Playhead واحد
       cablesMeta.forEach((cb) => {
         const lenY = Math.max(14, cb.endY - cb.startY);
         const p = reducedMotion ? 1 : clamp((smoothPlayhead - cb.startY) / lenY, 0, 1);
         const dash = `${(1 - p).toFixed(4)}`;
         cb.stroke.setAttribute('stroke-dashoffset', dash);
         cb.glow.setAttribute('stroke-dashoffset', dash);
+        cb.pulseTrack.setAttribute('opacity', p > 0.12 ? '0.78' : '0');
+
+        const wpEl = waypointElsRef.current[cb.idx];
+        if (wpEl) {
+          wpEl.setAttribute('data-passed', p >= 0.45 ? 'true' : 'false');
+        }
 
         if (p > 0.005 && p < 0.995 && cb.stroke.getTotalLength) {
-          const total = cb.stroke.getTotalLength();
-          if (total > 1) {
-            const pt = cb.stroke.getPointAtLength(total * p);
-            cometPos = { x: pt.x, y: pt.y };
+          try {
+            const total = cb.stroke.getTotalLength();
+            if (total > 1) {
+              const pt = cb.stroke.getPointAtLength(total * p);
+              if (pt) totemPos = { x: pt.x, y: pt.y };
+            }
+          } catch {
+            // ignore layout transition
           }
         }
       });
 
-      // ۲. به‌روزرسانی هم‌زمان انشعاب دوطرفه کادر، سوکت‌ها و رویداد درونی هر گره دقیقاً در لحظه رسیدن خط نارنجی
       nodesMeta.forEach((nd) => {
         const p = reducedMotion ? 1 : clamp((smoothPlayhead - nd.topY) / nd.height, 0, 1);
         const dash = `${(1 - p).toFixed(4)}`;
@@ -259,39 +372,53 @@ export default function StoryPainterRibbon({ children }) {
         if (nd.splitRight) nd.splitRight.setAttribute('stroke-dashoffset', dash);
         if (nd.splitLeft) nd.splitLeft.setAttribute('stroke-dashoffset', dash);
 
-        // بالا آمدن سه‌بعدی نرم کارت هم‌گام با رسم کادر
         nd.el.style.setProperty('--card-rise', p.toFixed(3));
-        nd.el.setAttribute('data-awake', p > 0.08 ? 'true' : 'false');
+        nd.el.setAttribute('data-awake', p > 0.03 ? 'true' : 'false');
+        nd.el.setAttribute('data-formed', p >= 0.97 ? 'true' : 'false');
 
         if (nd.portIn) nd.portIn.setAttribute('data-lit', smoothPlayhead >= nd.topY - 4 ? 'true' : 'false');
         if (nd.portOut) nd.portOut.setAttribute('data-lit', p >= 0.96 ? 'true' : 'false');
 
-        // نمایش دو گوی جرقه چپ و راست در حین شکافته شدن کادر کارت
         const showSplitSparks = !reducedMotion && p > 0.02 && p < 0.98;
         if (nd.sparkRight && nd.splitRight?.getTotalLength) {
           if (showSplitSparks) {
-            const lenR = nd.splitRight.getTotalLength();
-            const ptR = nd.splitRight.getPointAtLength(lenR * p);
-            nd.sparkRight.setAttribute('cx', ptR.x.toFixed(1));
-            nd.sparkRight.setAttribute('cy', ptR.y.toFixed(1));
-            nd.sparkRight.setAttribute('opacity', '1');
+            try {
+              const lenR = nd.splitRight.getTotalLength();
+              if (lenR > 1) {
+                const ptR = nd.splitRight.getPointAtLength(lenR * p);
+                if (ptR) {
+                  nd.sparkRight.setAttribute('cx', ptR.x.toFixed(1));
+                  nd.sparkRight.setAttribute('cy', ptR.y.toFixed(1));
+                  nd.sparkRight.setAttribute('opacity', '1');
+                }
+              }
+            } catch {
+              nd.sparkRight.setAttribute('opacity', '0');
+            }
           } else {
             nd.sparkRight.setAttribute('opacity', '0');
           }
         }
         if (nd.sparkLeft && nd.splitLeft?.getTotalLength) {
           if (showSplitSparks) {
-            const lenL = nd.splitLeft.getTotalLength();
-            const ptL = nd.splitLeft.getPointAtLength(lenL * p);
-            nd.sparkLeft.setAttribute('cx', ptL.x.toFixed(1));
-            nd.sparkLeft.setAttribute('cy', ptL.y.toFixed(1));
-            nd.sparkLeft.setAttribute('opacity', '1');
+            try {
+              const lenL = nd.splitLeft.getTotalLength();
+              if (lenL > 1) {
+                const ptL = nd.splitLeft.getPointAtLength(lenL * p);
+                if (ptL) {
+                  nd.sparkLeft.setAttribute('cx', ptL.x.toFixed(1));
+                  nd.sparkLeft.setAttribute('cy', ptL.y.toFixed(1));
+                  nd.sparkLeft.setAttribute('opacity', '1');
+                }
+              }
+            } catch {
+              nd.sparkLeft.setAttribute('opacity', '0');
+            }
           } else {
             nd.sparkLeft.setAttribute('opacity', '0');
           }
         }
 
-        // ارسال میزان دقیق پیشروی به گره‌های هوشمند (نقشه کریدور ایران و کالبد سه‌بعدی سخت‌افزار)
         const roundedP = Math.round(p * 200) / 200;
         if (roundedP !== nd.lastSentProgress) {
           nd.lastSentProgress = roundedP;
@@ -299,19 +426,18 @@ export default function StoryPainterRibbon({ children }) {
         }
       });
 
-      if (leadCometRef.current) {
-        if (cometPos) {
-          leadCometRef.current.setAttribute(
+      if (leadTotemRef.current) {
+        if (totemPos) {
+          leadTotemRef.current.setAttribute(
             'transform',
-            `translate(${cometPos.x.toFixed(1)}, ${cometPos.y.toFixed(1)})`
+            `translate(${totemPos.x.toFixed(1)}, ${totemPos.y.toFixed(1)})`
           );
-          leadCometRef.current.setAttribute('opacity', '1');
+          leadTotemRef.current.setAttribute('opacity', '1');
         } else {
-          leadCometRef.current.setAttribute('opacity', '0');
+          leadTotemRef.current.setAttribute('opacity', '0');
         }
       }
 
-      // کپسول راوی شناور پایین صفحه هماهنگ با موقعیت واقعی گره‌ها
       const vis = wRect.top < vh * 0.72 && wRect.bottom > vh * 0.25;
       if (vis !== lastVis) {
         lastVis = vis;
@@ -319,9 +445,10 @@ export default function StoryPainterRibbon({ children }) {
       }
 
       let actIdx = 0;
-      if (nodesMeta[5] && smoothPlayhead >= nodesMeta[5].topY - 120) actIdx = 3;
-      else if (nodesMeta[4] && smoothPlayhead >= nodesMeta[4].topY - 120) actIdx = 2;
-      else if (nodesMeta[3] && smoothPlayhead >= nodesMeta[3].topY - 120) actIdx = 1;
+      const nLen = nodesMeta.length;
+      if (nLen >= 4 && smoothPlayhead >= nodesMeta[nLen - 1].topY - 120) actIdx = 3;
+      else if (nLen >= 4 && smoothPlayhead >= nodesMeta[nLen - 2].topY - 120) actIdx = 2;
+      else if (nLen >= 4 && smoothPlayhead >= nodesMeta[nLen - 3].topY - 120) actIdx = 1;
 
       if (actIdx !== lastAct) {
         lastAct = actIdx;
@@ -340,10 +467,29 @@ export default function StoryPainterRibbon({ children }) {
     };
   }, [reducedMotion]);
 
-  const currentAct = STORY_ACTS[activeAct] || STORY_ACTS[0];
+  const currentAct = CHAPTER_NARRATION[activeAct] || CHAPTER_NARRATION[0];
+  const activePartSet = new Set(currentAct.activeParts);
 
   return (
     <div ref={worldRef} className="story-painter-world">
+      {/* ایستگاه‌های مفهومی زنده در پیچ‌وخم مسیر بین کامپوننت‌ها */}
+      <div className="highway-waypoints-layer" aria-hidden="true">
+        {HIGHWAY_WAYPOINTS.map((wp) => (
+          <div
+            key={wp.cableIndex}
+            ref={(el) => {
+              waypointElsRef.current[wp.cableIndex] = el;
+            }}
+            data-passed="false"
+            className="highway-waypoint-pill"
+          >
+            <span className="highway-waypoint-pill__dot" />
+            <strong className="highway-waypoint-pill__code">{wp.code}</strong>
+            <span className="highway-waypoint-pill__title">{wp.title}</span>
+          </div>
+        ))}
+      </div>
+
       <svg
         ref={svgRef}
         viewBox="0 0 1280 3200"
@@ -353,16 +499,27 @@ export default function StoryPainterRibbon({ children }) {
       >
         <g ref={cablesGroupRef} />
 
-        {/* حلقه ارتعاش مغناطیسی روی کابل هنگام نزدیک شدن موس */}
         <g ref={pluckRingRef} opacity="0">
           <circle r="16" className="painter-spark-halo" />
           <circle r="5" className="painter-spark-core" />
         </g>
 
-        {/* گوی نقاش پیشرو که از خروجی هر کارت به ورودی کارت بعدی شلیک می‌شود */}
-        <g ref={leadCometRef} opacity="0">
-          <circle r="15" className="painter-spark-halo" />
-          <circle r="6" className="painter-spark-core" />
+        <g ref={leadTotemRef} opacity="0">
+          <circle r="28" className="totem-carrier-halo" />
+          <circle r="16" className="totem-carrier-disc" />
+          <g transform="translate(-6.5, -9) scale(0.056)">
+            {LOGO_PARTS.map((part) => (
+              <path
+                key={part.id}
+                d={part.d}
+                className={
+                  activePartSet.has(part.id)
+                    ? 'totem-carrier-part totem-carrier-part--active'
+                    : 'totem-carrier-part'
+                }
+              />
+            ))}
+          </g>
         </g>
       </svg>
 
@@ -371,6 +528,21 @@ export default function StoryPainterRibbon({ children }) {
         data-visible={narratorVisible ? 'true' : 'false'}
         aria-live="polite"
       >
+        <span className="story-narrator-pill__emblem" aria-hidden="true">
+          <svg viewBox="0 0 234.21 324.76" width="14" height="19">
+            {LOGO_PARTS.map((part) => (
+              <path
+                key={part.id}
+                d={part.d}
+                className={
+                  activePartSet.has(part.id)
+                    ? 'totem-carrier-part totem-carrier-part--active'
+                    : 'totem-carrier-part'
+                }
+              />
+            ))}
+          </svg>
+        </span>
         <span className="story-narrator-pill__step">{currentAct.id}</span>
         <span className="story-narrator-pill__label">{currentAct.label}</span>
       </aside>

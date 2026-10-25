@@ -1,18 +1,22 @@
 import React, { useRef, useState } from 'react';
 import { IranPlate, MapPin, StatusChip } from '../../ds';
+import { LOGO_PARTS } from '../../data/geometryData.js';
+import LogoAnatomyBadge from './LogoAnatomyBadge.jsx';
 import PaintedCard from './PaintedCard.jsx';
 
-// مسیر آزادراه دقیقاً از سوکت ورودی بالا (500, 0) آغاز و به سوکت خروجی پایین (500, 500) ختم می‌شود
 const CORRIDOR_HIGHWAY_D =
-  'M 500,0 C 500,55 680,55 680,115 C 680,175 560,175 560,230 C 560,290 430,285 430,345 C 430,415 500,435 500,500';
+  'M 500,0 C 500,48 680,46 680,102 C 680,152 560,150 560,198 C 560,248 430,244 430,294 C 430,362 500,418 500,500';
 
 const CORRIDOR_NODES = [
   {
     id: 'tabriz',
     city: 'تبریز',
+    corridor: 'آزادراه شمال‌غرب · محموله صادراتی سردخانه‌ای',
+    temp: '-۱۸.۲°C زنجیره سرد پایدار',
+    eta: 'زمان تحویل تخمینی: ۴ ساعت دیگر در قزوین',
     x: 32,
-    y: 23,
-    threshold: 0.2,
+    y: 20,
+    threshold: 0.18,
     speed: '۷۸ km/h',
     status: 'moving',
     plate: { l: '۶۲', ch: 'د', r: '۳۱۵', ir: '۱۵' },
@@ -20,9 +24,12 @@ const CORRIDOR_NODES = [
   {
     id: 'tehran',
     city: 'تهران',
+    corridor: 'کمربندی آزادگان · هاب توزیع مرکزی',
+    temp: '+۴.۰°C کابین دارو و لبنیات',
+    eta: 'عبور از گیت هوشمند بدون معطلی',
     x: 44,
-    y: 46,
-    threshold: 0.45,
+    y: 39,
+    threshold: 0.4,
     speed: '۸۶ km/h',
     status: 'signal',
     plate: { l: '۴۸', ch: 'ع', r: '۷۲۹', ir: '۱۱' },
@@ -30,9 +37,12 @@ const CORRIDOR_NODES = [
   {
     id: 'isfahan',
     city: 'اصفهان',
+    corridor: 'کریدور شمال-جنوب · رانندگی ایمن بدون تخلف',
+    temp: '-۱۹.۰°C زنجیره سرد پایدار',
+    eta: '۲۱۰ کیلومتر تا ایستگاه بعدی',
     x: 57,
-    y: 69,
-    threshold: 0.68,
+    y: 56.5,
+    threshold: 0.62,
     speed: '۹۱ km/h',
     status: 'corridor',
     plate: { l: '۸۳', ch: 'ط', r: '۴۱۲', ir: '۵۳' },
@@ -40,9 +50,12 @@ const CORRIDOR_NODES = [
   {
     id: 'bandar',
     city: 'بندرعباس',
-    x: 52.5,
-    y: 86,
-    threshold: 0.86,
+    corridor: 'بندر شهید رجایی · تایید نهایی تحویل بار',
+    temp: '+۲.۱°C ثبت سلامت کامل محموله',
+    eta: 'تخلیه در اسکله شماره ۴ تکمیل شد',
+    x: 51.5,
+    y: 71.5,
+    threshold: 0.78,
     speed: 'تحویل در اسکله',
     status: 'moving',
     plate: { l: '۲۹', ch: 'ص', r: '۶۱۸', ir: '۸۴' },
@@ -58,7 +71,6 @@ export default function LivingCorridorChapter() {
   const [scrollCityIdx, setScrollCityIdx] = useState(1);
   const [lineReach, setLineReach] = useState(0);
 
-  // اتصال مستقیم آزادراه داخلی به همان Playhead واحد مدار نقاش
   const corridorProgressRef = useRef((p) => {
     const dash = `${(1 - p).toFixed(4)}`;
     if (highwayStrokeRef.current) highwayStrokeRef.current.setAttribute('stroke-dashoffset', dash);
@@ -66,10 +78,21 @@ export default function LivingCorridorChapter() {
 
     if (highwayCometRef.current && highwayStrokeRef.current?.getTotalLength) {
       if (p > 0.01 && p < 0.99) {
-        const len = highwayStrokeRef.current.getTotalLength();
-        const pt = highwayStrokeRef.current.getPointAtLength(len * p);
-        highwayCometRef.current.setAttribute('transform', `translate(${pt.x.toFixed(1)}, ${pt.y.toFixed(1)})`);
-        highwayCometRef.current.setAttribute('opacity', '1');
+        try {
+          const len = highwayStrokeRef.current.getTotalLength();
+          if (len > 1) {
+            const pt = highwayStrokeRef.current.getPointAtLength(len * p);
+            if (pt) {
+              highwayCometRef.current.setAttribute(
+                'transform',
+                `translate(${pt.x.toFixed(1)}, ${pt.y.toFixed(1)})`
+              );
+              highwayCometRef.current.setAttribute('opacity', '1');
+            }
+          }
+        } catch {
+          highwayCometRef.current.setAttribute('opacity', '0');
+        }
       } else {
         highwayCometRef.current.setAttribute('opacity', '0');
       }
@@ -91,16 +114,23 @@ export default function LivingCorridorChapter() {
     <section id="radar-command" className="story-corridor-section" data-polarity="daylight">
       <div className="site-container">
         <div className="story-chapter-head">
-          <span className="story-step-kicker">۰۲ · فصل دوم</span>
+          <LogoAnatomyBadge
+            activeParts={['p0']}
+            code="گام ۰۲"
+            elementTitle="اشراف سراسری بدون یک تماس تلفنی"
+            morphTarget="اتاق فرمان کریدورهای ترانزیتی ایران"
+          />
           <h2 className="story-chapter-title">
-            همان خط سیگنال، وارد نقشه می‌شود و آزادراه ایران را روشن می‌کند.
+            تمام ناوگانِ تبریز تا بندرعباس، زنده جلوی چشم شماست.
           </h2>
+          <p className="story-chapter-sub">
+            روی هر شهر بزنید تا سرعت، دمای یخچال، پلاک خودرو و زمان دقیق تحویل محموله را در لحظه ببینید.
+          </p>
         </div>
 
-        {/* گره ۳ مدار: اسلب سه‌بعدی کریدور ایران که خط سیگنال از بالا وارد و از پایین آن خارج می‌شود */}
         <PaintedCard
           nodeId="node-corridor"
-          tone="horizon"
+          tone="command"
           hasBottomPort
           className="corridor-circuit-card"
           onProgressRef={corridorProgressRef}
@@ -112,8 +142,18 @@ export default function LivingCorridorChapter() {
               className="corridor-3d-slab__svg"
               aria-hidden="true"
             >
-              <ellipse cx="500" cy="250" rx="410" ry="185" className="corridor-contour" />
-              <ellipse cx="500" cy="250" rx="280" ry="122" className="corridor-contour" />
+              <g transform="translate(26, 24) scale(1.45)" className="corridor-clothoid-origin">
+                <path d={LOGO_PARTS[0].d} />
+              </g>
+              <g transform="translate(974, 476) scale(-1.45, -1.45)" className="corridor-clothoid-origin">
+                <path d={LOGO_PARTS[0].d} />
+              </g>
+
+              <ellipse cx="500" cy="250" rx="430" ry="198" className="corridor-contour" />
+              <ellipse cx="500" cy="250" rx="305" ry="138" className="corridor-contour" />
+              <ellipse cx="500" cy="250" rx="175" ry="78" className="corridor-contour" />
+              <line x1="80" y1="250" x2="920" y2="250" className="corridor-axis-line" />
+              <line x1="500" y1="20" x2="500" y2="480" className="corridor-axis-line" />
 
               <path d={CORRIDOR_HIGHWAY_D} className="corridor-highway-rail" />
               <path
@@ -133,8 +173,8 @@ export default function LivingCorridorChapter() {
                 className="corridor-highway-stroke"
               />
               <g ref={highwayCometRef} opacity="0">
-                <circle r="14" className="painter-spark-halo" />
-                <circle r="5.5" className="painter-spark-core" />
+                <circle r="15" className="painter-spark-halo" />
+                <circle r="6" className="painter-spark-core" />
               </g>
             </svg>
 
@@ -161,10 +201,16 @@ export default function LivingCorridorChapter() {
               );
             })}
 
-            <div className="corridor-floating-hud">
-              <StatusChip status={activeNode.status} pulse size="sm">
-                {activeNode.city} · {activeNode.speed}
-              </StatusChip>
+            <div className="corridor-telemetry-dock">
+              <div className="corridor-telemetry-dock__main">
+                <StatusChip status={activeNode.status} pulse size="sm">
+                  {activeNode.city} · {activeNode.speed}
+                </StatusChip>
+                <div className="corridor-telemetry-dock__meta">
+                  <strong>{activeNode.corridor}</strong>
+                  <span>{activeNode.temp} · {activeNode.eta}</span>
+                </div>
+              </div>
               <IranPlate
                 digitsLeft={activeNode.plate.l}
                 letter={activeNode.plate.ch}
