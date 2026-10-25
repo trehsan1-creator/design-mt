@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Radar, LocateFixed, Thermometer } from 'lucide-react';
 import { Button, Capsule, Gauge, IranPlate, MapPin, StatusChip } from '../../ds/index.js';
+import { usePrefersReducedMotion } from '../../utils/usePrefersReducedMotion.js';
 import { toFa } from '../../utils/faDigits.js';
 
 const FLEET_UNITS = [
@@ -79,13 +80,22 @@ const CITIES = [
   { name: 'بندرعباس', x: 63, y: 84 },
 ];
 
+const RADAR_TABS = [
+  { id: 'all', label: 'همه واحدها (۴)' },
+  { id: 'transit', label: 'ترانزیت جاده‌ای' },
+  { id: 'cold', label: 'زنجیره سرد یخچالی' },
+  { id: 'city', label: 'توزیع مویرگی' },
+];
+
 export default function LiveFleetRadarSection() {
+  const reducedMotion = usePrefersReducedMotion();
   const [filter, setFilter] = useState('all');
   const [selected, setSelected] = useState(FLEET_UNITS[0]);
-  const [radarAngle, setRadarAngle] = useState(0);
+  const [radarAngle, setRadarAngle] = useState(28);
   const [pingBurst, setPingBurst] = useState(false);
 
   useEffect(() => {
+    if (reducedMotion) return undefined;
     let raf;
     let last = performance.now();
     const tick = (now) => {
@@ -96,7 +106,7 @@ export default function LiveFleetRadarSection() {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [reducedMotion]);
 
   const filtered = filter === 'all' ? FLEET_UNITS : FLEET_UNITS.filter((u) => u.category === filter);
 
@@ -121,19 +131,33 @@ export default function LiveFleetRadarSection() {
             </h2>
           </div>
 
-          <div className="ds-row-wrap" role="tablist" aria-label="فیلتر دسته‌بندی ناوگان">
-            {[
-              { id: 'all', label: 'همه واحدها (۴)' },
-              { id: 'transit', label: 'ترانزیت جاده‌ای' },
-              { id: 'cold', label: 'زنجیره سرد یخچالی' },
-              { id: 'city', label: 'توزیع مویرگی' },
-            ].map((tab) => (
+          <div
+            className="ds-row-wrap"
+            role="tablist"
+            aria-label="فیلتر دسته‌بندی ناوگان"
+            onKeyDown={(e) => {
+              const idx = RADAR_TABS.findIndex((t) => t.id === filter);
+              if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                const next = RADAR_TABS[(idx + 1) % RADAR_TABS.length];
+                setFilter(next.id);
+              } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                const prev = RADAR_TABS[(idx - 1 + RADAR_TABS.length) % RADAR_TABS.length];
+                setFilter(prev.id);
+              }
+            }}
+          >
+            {RADAR_TABS.map((tab) => (
               <Button
                 key={tab.id}
+                id={`radar-tab-${tab.id}`}
                 variant="pill"
                 size="sm"
                 role="tab"
+                tabIndex={filter === tab.id ? 0 : -1}
                 aria-selected={filter === tab.id}
+                aria-controls="radar-tabpanel"
                 active={filter === tab.id}
                 onClick={() => setFilter(tab.id)}
               >
@@ -143,7 +167,12 @@ export default function LiveFleetRadarSection() {
           </div>
         </div>
 
-        <div className="radar-command-grid">
+        <div
+          id="radar-tabpanel"
+          role="tabpanel"
+          aria-labelledby={`radar-tab-${filter}`}
+          className="radar-command-grid"
+        >
           <div className="radar-vehicle-list">
             {filtered.map((unit) => {
               const isSel = selected.id === unit.id;

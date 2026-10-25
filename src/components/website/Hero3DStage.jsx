@@ -5,6 +5,7 @@ import { Play, Pause, Navigation, ArrowLeft, Radio } from 'lucide-react';
 import { LOGO_PARTS } from '../../data/geometryData.js';
 import { DESIGN_TOKENS } from '../../../tokens/tokens.js';
 import { setupClearcoatEnvironment, createClearcoatMaterial } from '../../utils/pbrMaterials.js';
+import { usePrefersReducedMotion, getPrefersReducedMotion } from '../../utils/usePrefersReducedMotion.js';
 import { Button, Card, Capsule, IranPlate, StatusChip } from '../../ds/index.js';
 import { toFa } from '../../utils/faDigits.js';
 
@@ -65,16 +66,26 @@ export default function Hero3DStage() {
   const routeMainRef = useRef(null);
   const routeSecRef = useRef(null);
 
-  const [progress, setProgress] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(true);
+  const reducedMotion = usePrefersReducedMotion();
+  const [progress, setProgress] = useState(() => (getPrefersReducedMotion() ? 1 : 0));
+  const [isPlaying, setIsPlaying] = useState(() => !getPrefersReducedMotion());
   const [selectedVeh, setSelectedVeh] = useState(HERO_VEHICLES[0]);
   const [pointer, setPointer] = useState({ x: 0, y: 0 });
   const [mainPt, setMainPt] = useState({ x: 595, y: 296, angle: 180 });
   const [secPt, setSecPt] = useState({ x: 595, y: 296 });
 
-  const progressRef = useRef(0);
+  const progressRef = useRef(getPrefersReducedMotion() ? 1 : 0);
   const pointerRef = useRef({ x: 0, y: 0 });
   const inViewRef = useRef(true);
+  const reducedRef = useRef(getPrefersReducedMotion());
+
+  useEffect(() => {
+    reducedRef.current = reducedMotion;
+    if (reducedMotion) {
+      setIsPlaying(false);
+      setProgress(1);
+    }
+  }, [reducedMotion]);
 
   useEffect(() => {
     progressRef.current = progress;
@@ -105,7 +116,7 @@ export default function Hero3DStage() {
   }, [pointer]);
 
   useEffect(() => {
-    if (!isPlaying) return;
+    if (!isPlaying || reducedMotion) return undefined;
     let raf;
     let last = performance.now();
     const step = (now) => {
@@ -121,7 +132,7 @@ export default function Hero3DStage() {
     };
     raf = requestAnimationFrame(step);
     return () => cancelAnimationFrame(raf);
-  }, [isPlaying]);
+  }, [isPlaying, reducedMotion]);
 
   useEffect(() => {
     const container = canvasWrapRef.current;
@@ -245,9 +256,9 @@ export default function Hero3DStage() {
       animId = requestAnimationFrame(animate);
       if (!inViewRef.current) return;
 
-      const elapsed = (now - t0) * 0.001;
+      const elapsed = reducedRef.current ? 0 : (now - t0) * 0.001;
       const p = clamp(progressRef.current, 0, 1);
-      const ptr = pointerRef.current;
+      const ptr = reducedRef.current ? { x: 0, y: 0 } : pointerRef.current;
 
       partMeshes.forEach(({ pivot, mat, cfg, idx }) => {
         const q = clamp((p - cfg.delay) / 0.24);

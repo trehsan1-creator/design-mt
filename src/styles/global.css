@@ -45,6 +45,41 @@ button, input, select, textarea {
   outline-offset: 3px;
 }
 
+.skip-link {
+  position: fixed;
+  inset-block-start: -120px;
+  inset-inline-start: var(--ds-space-1s);
+  z-index: var(--ds-z-modal);
+  padding-block: var(--ds-space-0_5s);
+  padding-inline: var(--ds-space-1s);
+  border-radius: var(--ds-radius-cap);
+  background: var(--ds-accent);
+  color: var(--ds-on-accent);
+  font-weight: var(--ds-weight-extrabold);
+  text-decoration: none;
+  box-shadow: var(--ds-shadow-glow-accent);
+}
+
+.skip-link:focus-visible {
+  inset-block-start: var(--ds-space-0_75s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .ds-card--tilt,
+  .ds-card--interactive:hover,
+  .ds-btn:hover {
+    transform: none !important;
+  }
+}
+
 .ltr-code {
   direction: ltr;
   unicode-bidi: isolate;

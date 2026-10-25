@@ -5,6 +5,7 @@ import { Play, Pause, RotateCcw } from 'lucide-react';
 import { LOGO_PARTS } from '../data/geometryData.js';
 import { DESIGN_TOKENS } from '../../tokens/tokens.js';
 import { setupClearcoatEnvironment, createClearcoatMaterial } from '../utils/pbrMaterials.js';
+import { usePrefersReducedMotion, getPrefersReducedMotion } from '../utils/usePrefersReducedMotion.js';
 import { Button, Card, Capsule } from '../ds/index.js';
 import { toFa } from '../utils/faDigits.js';
 
@@ -25,12 +26,20 @@ function easeOutBack(t) {
 export default function ScrollFilmStage() {
   const canvasWrapRef = useRef(null);
   const routeMainRef = useRef(null);
+  const reducedMotion = usePrefersReducedMotion();
 
-  const [progress, setProgress] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [progress, setProgress] = useState(() => (getPrefersReducedMotion() ? 1 : 0));
+  const [isPlaying, setIsPlaying] = useState(() => !getPrefersReducedMotion());
   const [signalPt, setSignalPt] = useState({ x: 640, y: 270, angle: 180 });
 
-  const progressRef = useRef(0);
+  const progressRef = useRef(getPrefersReducedMotion() ? 1 : 0);
+
+  useEffect(() => {
+    if (reducedMotion) {
+      setIsPlaying(false);
+      setProgress(1);
+    }
+  }, [reducedMotion]);
 
   useEffect(() => {
     progressRef.current = progress;
@@ -47,7 +56,7 @@ export default function ScrollFilmStage() {
   }, [progress]);
 
   useEffect(() => {
-    if (!isPlaying) return;
+    if (!isPlaying || reducedMotion) return undefined;
     let rafId;
     let lastTime = performance.now();
 
@@ -63,7 +72,7 @@ export default function ScrollFilmStage() {
 
     rafId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafId);
-  }, [isPlaying]);
+  }, [isPlaying, reducedMotion]);
 
   useEffect(() => {
     const container = canvasWrapRef.current;

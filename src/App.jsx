@@ -19,7 +19,7 @@ import PeydaShowcase from './components/PeydaShowcase.jsx';
 import DerivedPatternsLab from './components/DerivedPatternsLab.jsx';
 import CoreGeometryStep1 from './components/CoreGeometryStep1.jsx';
 
-export default function App({ initialView = 'website' }) {
+export default function App({ initialView = 'website', onBackToWebsite = true }) {
   const [viewMode, setViewMode] = useState(initialView);
   const [archOpen, setArchOpen] = useState(false);
   const [labTab, setLabTab] = useState('overview');
@@ -39,35 +39,59 @@ export default function App({ initialView = 'website' }) {
   }
 
   if (viewMode === 'lab') {
+    const LAB_TABS = [
+      { id: 'overview', label: 'نمای کلی پترن‌ها و فونت پیدا', icon: Layers },
+      { id: 'peyda', label: 'تایپوگرافی پیدا', icon: Type },
+      { id: 'patterns', label: '۶ پترن مشتق‌شده', icon: Radar },
+      { id: 'geometry', label: 'کالبدشکافی هندسه مادر', icon: Compass },
+    ];
     return (
       <div className="lab-shell">
+        <a href="#main-content" className="skip-link">پرش به محتوای اصلی</a>
         <header className="topbar">
           <div className="ds-row-wrap">
-            <Button variant="primary" size="sm" onClick={() => goTopAndSet('website')}>
-              <ArrowRight size={16} aria-hidden="true" />
-              <span>بازگشت به وب‌سایت ناوگان</span>
-            </Button>
+            {onBackToWebsite !== false && (
+              <Button variant="primary" size="sm" onClick={() => goTopAndSet('website')}>
+                <ArrowRight size={16} aria-hidden="true" />
+                <span>بازگشت به وب‌سایت ناوگان</span>
+              </Button>
+            )}
             <Button variant="secondary" size="sm" onClick={() => goTopAndSet('design-system')}>
               <Palette size={15} aria-hidden="true" />
               <span>پورتال دیزاین سیستم</span>
             </Button>
+            <div className="brand-title">
+              <h1>آزمایشگاه کالبدشکافی هندسه برند</h1>
+            </div>
           </div>
 
-          <div className="step-tabs" role="tablist" aria-label="بخش‌های آزمایشگاه هندسه">
-            {[
-              { id: 'overview', label: 'نمای کلی پترن‌ها و فونت پیدا', icon: Layers },
-              { id: 'peyda', label: 'تایپوگرافی پیدا', icon: Type },
-              { id: 'patterns', label: '۶ پترن مشتق‌شده', icon: Radar },
-              { id: 'geometry', label: 'کالبدشکافی هندسه مادر', icon: Compass },
-            ].map((t) => {
+          <div
+            className="step-tabs"
+            role="tablist"
+            aria-label="بخش‌های آزمایشگاه هندسه"
+            onKeyDown={(e) => {
+              const idx = LAB_TABS.findIndex((t) => t.id === labTab);
+              if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                setLabTab(LAB_TABS[(idx + 1) % LAB_TABS.length].id);
+              } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                setLabTab(LAB_TABS[(idx - 1 + LAB_TABS.length) % LAB_TABS.length].id);
+              }
+            }}
+          >
+            {LAB_TABS.map((t) => {
               const Icon = t.icon;
               const isSelected = labTab === t.id;
               return (
                 <button
                   key={t.id}
+                  id={`lab-tab-${t.id}`}
                   type="button"
                   role="tab"
+                  tabIndex={isSelected ? 0 : -1}
                   aria-selected={isSelected}
+                  aria-controls="lab-tabpanel"
                   className={`step-tab ${isSelected ? 'active' : ''}`}
                   onClick={() => setLabTab(t.id)}
                 >
@@ -79,28 +103,33 @@ export default function App({ initialView = 'website' }) {
           </div>
         </header>
 
-        <ScrollFilmStage />
-        {labTab === 'overview' && (
-          <>
-            <PeydaShowcase />
-            <DerivedPatternsLab />
-          </>
-        )}
-        {labTab === 'peyda' && <PeydaShowcase />}
-        {labTab === 'patterns' && <DerivedPatternsLab />}
-        {labTab === 'geometry' && <CoreGeometryStep1 />}
+        <main id="main-content">
+          <div id="lab-tabpanel" role="tabpanel" aria-labelledby={`lab-tab-${labTab}`}>
+            <ScrollFilmStage />
+            {labTab === 'overview' && (
+              <>
+                <PeydaShowcase />
+                <DerivedPatternsLab />
+              </>
+            )}
+            {labTab === 'peyda' && <PeydaShowcase />}
+            {labTab === 'patterns' && <DerivedPatternsLab />}
+            {labTab === 'geometry' && <CoreGeometryStep1 />}
+          </div>
+        </main>
       </div>
     );
   }
 
   return (
     <div className="fleet-site nuqta-ambient-bg">
+      <a href="#main-content" className="skip-link">پرش به محتوای اصلی</a>
       <Navbar3D
         onOpenArch={() => setArchOpen(true)}
         onOpenDesignSystem={() => goTopAndSet('design-system')}
       />
 
-      <main>
+      <main id="main-content">
         <Hero3DStage />
         <LiveFleetRadarSection />
         <Hardware3DTracker />

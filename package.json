@@ -7,7 +7,8 @@
     "dev": "vite --host 0.0.0.0 --port 5173",
     "tokens:build": "node scripts/build-tokens.mjs",
     "lint:tokens": "node scripts/lint-tokens.mjs",
-    "build": "node scripts/build-tokens.mjs && npm run lint:tokens && vite build",
+    "test:contrast": "node scripts/test-contrast.mjs",
+    "build": "node scripts/build-tokens.mjs && npm run lint:tokens && npm run test:contrast && vite build",
     "preview": "vite preview --host 0.0.0.0 --port 4173"
   },
   "dependencies": {

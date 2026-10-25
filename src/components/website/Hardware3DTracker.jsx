@@ -6,6 +6,7 @@ import { Cpu, Layers, ShieldCheck, BatteryCharging, Wifi } from 'lucide-react';
 import { LOGO_PATH_D } from '../../data/geometryData.js';
 import { DESIGN_TOKENS } from '../../../tokens/tokens.js';
 import { setupClearcoatEnvironment, createClearcoatMaterial } from '../../utils/pbrMaterials.js';
+import { usePrefersReducedMotion, getPrefersReducedMotion } from '../../utils/usePrefersReducedMotion.js';
 import { Button, Card, Capsule } from '../../ds/index.js';
 import { toFa } from '../../utils/faDigits.js';
 
@@ -54,14 +55,24 @@ function createSquircleShape(size, radiusRatio = 0.3125) {
 
 export default function Hardware3DTracker() {
   const mountRef = useRef(null);
+  const reducedMotion = usePrefersReducedMotion();
   const [explode, setExplode] = useState(0.55);
   const [activeLayer, setActiveLayer] = useState(0);
   const explodeRef = useRef(0.55);
   const inViewRef = useRef(true);
+  const reducedRef = useRef(getPrefersReducedMotion());
+  const controlsRef = useRef(null);
 
   useEffect(() => {
     explodeRef.current = explode;
   }, [explode]);
+
+  useEffect(() => {
+    reducedRef.current = reducedMotion;
+    if (controlsRef.current) {
+      controlsRef.current.autoRotate = !reducedMotion;
+    }
+  }, [reducedMotion]);
 
   useEffect(() => {
     const container = mountRef.current;
@@ -95,10 +106,11 @@ export default function Hardware3DTracker() {
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.07;
-    controls.autoRotate = true;
+    controls.autoRotate = !reducedRef.current;
     controls.autoRotateSpeed = 1.25;
     controls.minDistance = 260;
     controls.maxDistance = 680;
+    controlsRef.current = controls;
 
     const deviceGroup = new THREE.Group();
     scene.add(deviceGroup);
@@ -275,8 +287,8 @@ export default function Hardware3DTracker() {
         ly.grp.position.y += (targetY - ly.grp.position.y) * 0.12;
       });
 
-      deviceGroup.position.y = Math.sin(t * 1.8) * 4;
-      ledMat.emissiveIntensity = 1.6 + Math.sin(t * 4.2) * 0.8;
+      deviceGroup.position.y = reducedRef.current ? 0 : Math.sin(t * 1.8) * 4;
+      ledMat.emissiveIntensity = reducedRef.current ? 1.8 : 1.6 + Math.sin(t * 4.2) * 0.8;
 
       controls.update();
       renderer.render(scene, camera);

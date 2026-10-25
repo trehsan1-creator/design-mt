@@ -81,8 +81,18 @@ export default function DesignSystemPortal({ onBackToWebsite, onOpenLab }) {
 
   const showSection = (id) => activeTab === 'all' || activeTab === id;
 
+  const PORTAL_TABS = [
+    { id: 'all', label: 'همه بخش‌ها', icon: Sparkles },
+    { id: 'colors', label: 'رنگ و قطبیت معنایی', icon: Palette },
+    { id: 'typography', label: 'تایپوگرافی پیدا', icon: Type },
+    { id: 'geometry', label: 'هندسه، فاصله S و مواد 3D', icon: Box },
+    { id: 'components', label: 'کامپوننت‌های زنده src/ds', icon: Cpu },
+    { id: 'tokens', label: 'خروجی خودکار توکن‌ها', icon: Code2 },
+  ];
+
   return (
     <div className="fleet-site portal-shell" data-polarity={polarity}>
+      <a href="#main-content" className="skip-link">پرش به محتوای اصلی</a>
       <div className="lab-shell">
         <header className="topbar">
           <div className="ds-row-wrap">
@@ -126,24 +136,34 @@ export default function DesignSystemPortal({ onBackToWebsite, onOpenLab }) {
           </div>
         </header>
 
-        <div className="portal-tab-bar" role="tablist" aria-label="بخش‌های پورتال دیزاین سیستم">
-          {[
-            { id: 'all', label: 'همه بخش‌ها', icon: Sparkles },
-            { id: 'colors', label: 'رنگ و قطبیت معنایی', icon: Palette },
-            { id: 'typography', label: 'تایپوگرافی پیدا', icon: Type },
-            { id: 'geometry', label: 'هندسه، فاصله S و مواد 3D', icon: Box },
-            { id: 'components', label: 'کامپوننت‌های زنده src/ds', icon: Cpu },
-            { id: 'tokens', label: 'خروجی خودکار توکن‌ها', icon: Code2 },
-          ].map((tab) => {
+        <div
+          className="portal-tab-bar"
+          role="tablist"
+          aria-label="بخش‌های پورتال دیزاین سیستم"
+          onKeyDown={(e) => {
+            const idx = PORTAL_TABS.findIndex((t) => t.id === activeTab);
+            if (e.key === 'ArrowLeft') {
+              e.preventDefault();
+              setActiveTab(PORTAL_TABS[(idx + 1) % PORTAL_TABS.length].id);
+            } else if (e.key === 'ArrowRight') {
+              e.preventDefault();
+              setActiveTab(PORTAL_TABS[(idx - 1 + PORTAL_TABS.length) % PORTAL_TABS.length].id);
+            }
+          }}
+        >
+          {PORTAL_TABS.map((tab) => {
             const Icon = tab.icon;
             const isSel = activeTab === tab.id;
             return (
               <Button
                 key={tab.id}
+                id={`portal-tab-${tab.id}`}
                 variant="pill"
                 size="sm"
                 role="tab"
+                tabIndex={isSel ? 0 : -1}
                 aria-selected={isSel}
+                aria-controls="main-content"
                 active={isSel}
                 onClick={() => setActiveTab(tab.id)}
               >
@@ -154,7 +174,7 @@ export default function DesignSystemPortal({ onBackToWebsite, onOpenLab }) {
           })}
         </div>
 
-        <main className="ds-stack-lg">
+        <main id="main-content" role="tabpanel" aria-labelledby={`portal-tab-${activeTab}`} className="ds-stack-lg">
           {showSection('colors') && (
             <Card variant="panel" className="ds-stack-md">
               <div className="ds-between-wrap">

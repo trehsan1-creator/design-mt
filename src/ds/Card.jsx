@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { usePrefersReducedMotion } from '../utils/usePrefersReducedMotion.js';
 
 export function Card({
   variant = 'panel',
@@ -13,6 +14,8 @@ export function Card({
   ...rest
 }) {
   const Tag = as;
+  const reducedMotion = usePrefersReducedMotion();
+  const enableTilt = tilt && !reducedMotion;
   const [rot, setRot] = useState({ rx: 0, ry: 0 });
 
   const classes = [
@@ -21,13 +24,13 @@ export function Card({
     compact ? 'ds-card--compact' : '',
     interactive ? 'ds-card--interactive' : '',
     accentOutline ? 'ds-card--accent-outline' : '',
-    tilt ? 'ds-card--tilt' : '',
+    enableTilt ? 'ds-card--tilt' : '',
     className,
   ]
     .filter(Boolean)
     .join(' ');
 
-  const tiltProps = tilt
+  const tiltProps = enableTilt
     ? {
         onMouseMove: (e) => {
           const rect = e.currentTarget.getBoundingClientRect();

@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { X } from 'lucide-react';
 import { Button, Card, Capsule } from '../../ds/index.js';
+import { useModalFocusTrap } from '../../utils/useModalFocusTrap.js';
 
 const ARCH_ACTS = [
   {
@@ -48,20 +49,15 @@ const ARCH_ACTS = [
 ];
 
 export default function ArchitectureModal({ open, onClose, onOpenDesignSystem, onSwitchToLab }) {
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [open, onClose]);
+  const modalRef = useModalFocusTrap(open, onClose);
 
   if (!open) return null;
 
   return (
     <div className="arch-modal-backdrop" onClick={onClose}>
       <div
+        ref={modalRef}
+        tabIndex={-1}
         role="dialog"
         aria-modal="true"
         aria-label="معماری فضایی و سه‌بعدی وب‌سایت"

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Radar, ShieldCheck, Truck, Navigation } from 'lucide-react';
 import { Button, Card, Capsule, Gauge, IranPlate, StatusChip } from '../ds/index.js';
+import { usePrefersReducedMotion } from '../utils/usePrefersReducedMotion.js';
 import { toFa } from '../utils/faDigits.js';
 
 function PatternClothoidRoute() {
@@ -58,9 +59,11 @@ function PatternClothoidRoute() {
 }
 
 function PatternSquircleRadar() {
-  const [angle, setAngle] = useState(0);
+  const reducedMotion = usePrefersReducedMotion();
+  const [angle, setAngle] = useState(32);
 
   useEffect(() => {
+    if (reducedMotion) return undefined;
     let raf;
     let last = performance.now();
     const step = (now) => {
@@ -71,7 +74,7 @@ function PatternSquircleRadar() {
     };
     raf = requestAnimationFrame(step);
     return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [reducedMotion]);
 
   const vehicles = [
     { id: 'TR-108', speed: '۸۶', x: 74, y: 30, deg: 35 },

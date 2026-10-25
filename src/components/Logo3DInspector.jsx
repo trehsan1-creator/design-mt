@@ -9,10 +9,18 @@ import {
   createClearcoatMaterial,
   createInflateCushionMaps,
 } from '../utils/pbrMaterials.js';
+import { usePrefersReducedMotion, getPrefersReducedMotion } from '../utils/usePrefersReducedMotion.js';
 
 export default function Logo3DInspector({ mode = 'inflate', showWireframe = false, showLightRig = true }) {
   const mountRef = useRef(null);
   const stateRef = useRef({});
+  const reducedMotion = usePrefersReducedMotion();
+
+  useEffect(() => {
+    if (stateRef.current.controls) {
+      stateRef.current.controls.autoRotate = !reducedMotion;
+    }
+  }, [reducedMotion]);
 
   useEffect(() => {
     const container = mountRef.current;
@@ -40,7 +48,7 @@ export default function Logo3DInspector({ mode = 'inflate', showWireframe = fals
     controls.dampingFactor = 0.07;
     controls.minDistance = 320;
     controls.maxDistance = 1050;
-    controls.autoRotate = true;
+    controls.autoRotate = !getPrefersReducedMotion();
     controls.autoRotateSpeed = 1.1;
 
     const svgMarkup = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 234.21 324.76"><path d="${LOGO_PATH_D}"/></svg>`;
@@ -146,6 +154,7 @@ export default function Logo3DInspector({ mode = 'inflate', showWireframe = fals
       rigGroup,
       arrowGeo,
       sunDot,
+      controls,
     };
 
     let rafId;

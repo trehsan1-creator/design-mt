@@ -223,7 +223,7 @@
   border-radius: var(--ds-radius-capsule);
   font-size: var(--ds-text-xs);
   font-weight: var(--ds-weight-bold);
-  background: color-mix(in srgb, var(--chip-color) 15%, var(--ds-surface-sunken));
+  background: color-mix(in srgb, var(--chip-color) 14%, var(--ds-navy-950));
   border: 1px solid color-mix(in srgb, var(--chip-color) 42%, transparent);
   color: var(--chip-color);
   white-space: nowrap;

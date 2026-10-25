@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Layers, Sparkles, Palette, Menu, X, ChevronLeft } from 'lucide-react';
 import { Button, StatusChip } from '../../ds/index.js';
+import { useModalFocusTrap } from '../../utils/useModalFocusTrap.js';
 import { toFa } from '../../utils/faDigits.js';
 
 const NAV_ITEMS = [
@@ -14,15 +15,7 @@ const NAV_ITEMS = [
 
 export default function Navbar3D({ onOpenArch, onOpenDesignSystem, activeFleetCount = 12486 }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
-
-  useEffect(() => {
-    if (!drawerOpen) return;
-    const onKey = (e) => {
-      if (e.key === 'Escape') setDrawerOpen(false);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [drawerOpen]);
+  const drawerRef = useModalFocusTrap(drawerOpen, () => setDrawerOpen(false));
 
   const fleetLabel = `${toFa(activeFleetCount.toLocaleString('en-US'))} خودرو متصل`;
 
@@ -98,6 +91,8 @@ export default function Navbar3D({ onOpenArch, onOpenDesignSystem, activeFleetCo
       {drawerOpen && (
         <div className="mobile-drawer-backdrop" onClick={() => setDrawerOpen(false)}>
           <aside
+            ref={drawerRef}
+            tabIndex={-1}
             id="mobile-nav-drawer"
             role="dialog"
             aria-modal="true"
