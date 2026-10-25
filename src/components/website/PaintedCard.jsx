@@ -23,14 +23,23 @@ export default function PaintedCard({
   const rightSplitRef = useRef(null);
   const leftSparkRef = useRef(null);
   const rightSparkRef = useRef(null);
+  const cachedRectRef = useRef(null);
+  const tiltRafRef = useRef(0);
 
   useEffect(() => {
     const el = rootRef.current;
     if (!el) return undefined;
+    let lastW = 0;
+    let lastH = 0;
 
     const rebuildPerimeter = () => {
       const w = Math.max(120, el.offsetWidth);
       const h = Math.max(80, el.offsetHeight);
+      if (Math.abs(w - lastW) < 1 && Math.abs(h - lastH) < 1) return;
+      lastW = w;
+      lastH = h;
+      cachedRectRef.current = null;
+
       const r = Math.min(28, w * 0.12, h * 0.22);
       const s = 1.5;
       const cx = w * 0.5;
@@ -69,7 +78,10 @@ export default function PaintedCard({
     rebuildPerimeter();
     const ro = new ResizeObserver(rebuildPerimeter);
     ro.observe(el);
-    return () => ro.disconnect();
+    return () => {
+      ro.disconnect();
+      if (tiltRafRef.current) cancelAnimationFrame(tiltRafRef.current);
+    };
   }, []);
 
   useEffect(() => {
@@ -84,19 +96,39 @@ export default function PaintedCard({
     return () => el.removeEventListener('circuit-progress', handler);
   }, [onProgressRef]);
 
-  const handlePointerMove = (e) => {
-    if (reducedMotion || !interactiveTilt || !rootRef.current) return;
-    const rect = rootRef.current.getBoundingClientRect();
-    const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    const ny = ((e.clientY - rect.top) / rect.height) * 2 - 1;
-    rootRef.current.style.setProperty('--card-rx', `${(-ny * 4.0).toFixed(2)}deg`);
-    rootRef.current.style.setProperty('--card-ry', `${(nx * 5.0).toFixed(2)}deg`);
-    rootRef.current.style.setProperty('--glare-x', `${((nx * 0.5 + 0.5) * 100).toFixed(1)}%`);
-    rootRef.current.style.setProperty('--glare-y', `${((ny * 0.5 + 0.5) * 100).toFixed(1)}%`);
+  const handlePointerEnter = (e) => {
+    if (e.pointerType === 'touch' || !rootRef.current) return;
+    cachedRectRef.current = rootRef.current.getBoundingClientRect();
   };
 
-  const handlePointerLeave = () => {
-    if (!rootRef.current) return;
+  const handlePointerMove = (e) => {
+    // در موبایل/لمس از چرخش سه‌بعدی کارت حین اسکرول جلوگیری می‌کنیم تا اسکرول کاملاً نرم بماند
+    if (reducedMotion || !interactiveTilt || e.pointerType === 'touch' || !rootRef.current) return;
+    if (!cachedRectRef.current) {
+      cachedRectRef.current = rootRef.current.getBoundingClientRect();
+    }
+    const rect = cachedRectRef.current;
+    if (!rect || rect.width < 10 || rect.height < 10) return;
+
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+    if (!tiltRafRef.current) {
+      tiltRafRef.current = requestAnimationFrame(() => {
+        tiltRafRef.current = 0;
+        if (!rootRef.current) return;
+        const nx = Math.max(-1, Math.min(1, ((clientX - rect.left) / rect.width) * 2 - 1));
+        const ny = Math.max(-1, Math.min(1, ((clientY - rect.top) / rect.height) * 2 - 1));
+        rootRef.current.style.setProperty('--card-rx', `${(-ny * 4.0).toFixed(2)}deg`);
+        rootRef.current.style.setProperty('--card-ry', `${(nx * 5.0).toFixed(2)}deg`);
+        rootRef.current.style.setProperty('--glare-x', `${((nx * 0.5 + 0.5) * 100).toFixed(1)}%`);
+        rootRef.current.style.setProperty('--glare-y', `${((ny * 0.5 + 0.5) * 100).toFixed(1)}%`);
+      });
+    }
+  };
+
+  const handlePointerLeave = (e) => {
+    if (e.pointerType === 'touch' || !rootRef.current) return;
+    cachedRectRef.current = null;
     rootRef.current.style.setProperty('--card-rx', '0deg');
     rootRef.current.style.setProperty('--card-ry', '0deg');
   };
@@ -107,6 +139,7 @@ export default function PaintedCard({
       data-circuit-node={nodeId}
       data-tone={tone}
       className={`painted-card ${className}`}
+      onPointerEnter={handlePointerEnter}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
     >
@@ -135,7 +168,7 @@ export default function PaintedCard({
           data-split-right
           pathLength="1"
           strokeDasharray="1"
-          strokeDashoffset={reducedMotion ? '0' : '1'}
+          strokeDashoffset="1"
           className="painted-card__stroke"
         />
         <path
@@ -143,7 +176,7 @@ export default function PaintedCard({
           data-split-left
           pathLength="1"
           strokeDasharray="1"
-          strokeDashoffset={reducedMotion ? '0' : '1'}
+          strokeDashoffset="1"
           className="painted-card__stroke"
         />
         <circle ref={rightSparkRef} data-spark-right r="4.8" opacity="0" className="painted-card__spark" />

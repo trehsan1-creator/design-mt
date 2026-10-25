@@ -306,7 +306,7 @@ export default function HeroEmblemCanvas({
     const isSoftwareGpu = /swiftshader|llvmpipe|software/i.test(rendererInfo);
 
     renderer.setPixelRatio(
-      isSoftwareGpu ? 0.75 : Math.min(window.devicePixelRatio || 1, isCompactInit ? 1.6 : 2)
+      isSoftwareGpu ? 0.75 : Math.min(window.devicePixelRatio || 1, isCompactInit ? 1.5 : 2)
     );
     renderer.setSize(width, height);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -370,8 +370,8 @@ export default function HeroEmblemCanvas({
       bevelThickness: 8.5,
       bevelSize: 5.2,
       bevelOffset: -1.1,
-      bevelSegments: isSoftwareGpu ? 2 : 5,
-      curveSegments: isSoftwareGpu ? 14 : 26,
+      bevelSegments: isSoftwareGpu ? 2 : isCompactInit ? 3 : 5,
+      curveSegments: isSoftwareGpu ? 14 : isCompactInit ? 18 : 26,
     });
     sharedGeo.translate(0, 0, -19);
 
@@ -553,7 +553,7 @@ export default function HeroEmblemCanvas({
 
     const tick = (now) => {
       rafId = requestAnimationFrame(tick);
-      if (!inView) return;
+      if (!inView || document.hidden) return;
 
       const elapsed = Math.max(0, (now - startTime) * 0.001);
       const isReduced = Boolean(reducedMotion);
@@ -590,24 +590,32 @@ export default function HeroEmblemCanvas({
       smoothPtrX += (rawPtr.x - smoothPtrX) * 0.085;
       smoothPtrY += (rawPtr.y - smoothPtrY) * 0.085;
 
-      const introGlobal = isReduced ? 1 : clamp(elapsed / 2.2, 0, 1);
+      const introGlobal = isReduced ? 1 : clamp(elapsed / 2.0, 0, 1);
+
+      // حرکت زنده و تنفس سه‌بعدی خودکار در موبایل (چون در موبایل نشانگر موس وجود ندارد)
+      const ambientMotionScale = isReduced || isSoftwareGpu ? 0.35 : 1;
+      const idleYaw = Math.sin(elapsed * 1.25) * (isCompact ? 0.28 : 0.11) * ambientMotionScale;
+      const idlePitch = Math.cos(elapsed * 0.92) * (isCompact ? 0.15 : 0.06) * ambientMotionScale;
+      const idleRoll = Math.sin(elapsed * 0.72) * (isCompact ? 0.045 : 0.02) * ambientMotionScale;
+      const breatheY = isSoftwareGpu
+        ? 0
+        : Math.sin(elapsed * 1.65) * (isCompact ? 9.5 : 5.5) * ambientMotionScale;
 
       // در حالت موبایل/تبلت (<=900px) تندیس کاملاً در فضای باز بین هدر و کارت متن قرار می‌گیرد
       const compactCenterY = Math.min(104, height * 0.115);
-      const baseX = isCompact ? 0 : -194 * (1 - smoothScroll * 0.55);
+      const baseX = isCompact ? Math.sin(elapsed * 0.85) * 8 * ambientMotionScale : -194 * (1 - smoothScroll * 0.55);
       const baseY = isCompact ? compactCenterY + smoothScroll * 10 : 6 + smoothScroll * 18;
-      const breatheY = isReduced || isSoftwareGpu ? 0 : Math.sin(elapsed * 1.45) * 4.5;
 
       emblemGroup.position.set(
-        baseX + smoothPtrX * 22,
-        baseY - smoothPtrY * 18 + breatheY,
+        baseX + smoothPtrX * 26,
+        baseY - smoothPtrY * 20 + breatheY,
         smoothScroll * 28
       );
 
       const emblemNormX = isCompact ? 0 : baseX / (width * 0.5);
       const emblemNormY = isCompact ? -0.34 : 0.02;
       const dist = Math.hypot(rawPtr.x - emblemNormX, rawPtr.y - emblemNormY);
-      const hoverMag = !isReduced && introGlobal > 0.72 && dist < 0.74 ? Math.pow(1 - dist / 0.74, 1.3) : 0;
+      const hoverMag = introGlobal > 0.65 && dist < 0.78 ? Math.pow(1 - dist / 0.78, 1.3) : 0;
       const targetMag = Math.min(1.25, hoverMag + tapBurst * 0.95);
       smoothMag += (targetMag - smoothMag) * 0.12;
 
@@ -623,29 +631,30 @@ export default function HeroEmblemCanvas({
       warmFilamentMat.opacity = corridorAppear * 0.38;
       pulseSphereMat.opacity = corridorAppear * 0.95;
 
-      const isFracturing = !isReduced && smoothScroll > 0.008;
+      // شکست ۱۱تکه با اسکرول همیشه به اسکرول کاربر پاسخ می‌دهد (حتی در حالت ذخیره باتری گوشی)
+      const isFracturing = smoothScroll > 0.008;
       intactMesh.visible = !isFracturing;
       shardsGroup.visible = isFracturing;
 
       const crackGlow = clamp(smoothScroll * 2.4, 0, 1);
-      const lightPulse = isReduced || isSoftwareGpu ? 1 : 0.88 + 0.24 * Math.sin(elapsed * 3.1);
-      seamLight.intensity = isFracturing ? (2.2 + crackGlow * 7.2 + smoothMag * 2.5) * lightPulse : 1.4;
+      const lightPulse = isSoftwareGpu ? 1 : 0.88 + 0.24 * Math.sin(elapsed * 3.1);
+      seamLight.intensity = isFracturing ? (2.2 + crackGlow * 7.2 + smoothMag * 2.5) * lightPulse : 1.5;
       coreEmberMat.opacity = isFracturing ? crackGlow * 0.72 * lightPulse : 0;
       archTunnelLight.intensity = corridorAppear * (3.2 + crackGlow * 2.8 + smoothMag * 2.0) + totalPulse * 2.6;
 
       pulseBeads.forEach(({ mesh, phase }) => {
-        const rawU = (elapsed * 0.42 + phase) % 1;
-        const u = isReduced ? clamp(0.2 + phase * 0.7, 0.05, 0.95) : clamp(rawU < 0 ? rawU + 1 : rawU, 0.001, 0.999);
+        const rawU = (elapsed * 0.46 + phase) % 1;
+        const u = clamp(rawU < 0 ? rawU + 1 : rawU, 0.001, 0.999);
         gatewayCurve.getPointAt(u, tangentVec);
         mesh.position.copy(tangentVec);
         const edgeFade = Math.sin(u * Math.PI);
-        mesh.scale.setScalar(0.62 + edgeFade * 0.72);
+        mesh.scale.setScalar(0.62 + edgeFade * 0.74);
       });
 
-      const introSpinY = isReduced ? 0 : (1 - easeOutExpo(introGlobal)) * -0.38;
-      emblemGroup.rotation.y = introSpinY + smoothPtrX * 0.36 - smoothScroll * 0.22;
-      emblemGroup.rotation.x = -smoothPtrY * 0.24 + smoothScroll * 0.16;
-      emblemGroup.rotation.z = smoothScroll * -0.05;
+      const introSpinY = isReduced ? 0 : (1 - easeOutExpo(introGlobal)) * -0.45;
+      emblemGroup.rotation.y = introSpinY + idleYaw + smoothPtrX * 0.42 - smoothScroll * 0.24;
+      emblemGroup.rotation.x = idlePitch - smoothPtrY * 0.28 + smoothScroll * 0.18;
+      emblemGroup.rotation.z = idleRoll + smoothScroll * -0.05;
 
       const scaleBase = isCompact ? (height < 760 ? 0.34 : 0.38) : 0.7;
       const introScale = isReduced ? 1 : 0.9 + easeOutExpo(introGlobal) * 0.1;
@@ -718,14 +727,17 @@ export default function HeroEmblemCanvas({
 
     const ro = new ResizeObserver(() => {
       if (!container) return;
-      width = container.clientWidth || window.innerWidth || 1280;
-      height = container.clientHeight || window.innerHeight || 800;
+      const nextW = container.clientWidth || window.innerWidth || 1280;
+      const nextH = container.clientHeight || window.innerHeight || 800;
+      if (Math.abs(nextW - width) < 2 && Math.abs(nextH - height) < 2) return;
+      width = nextW;
+      height = nextH;
       const compact = width <= 900;
       camera.aspect = width / height;
       camera.position.z = compact ? 860 : 820;
       camera.updateProjectionMatrix();
       renderer.setPixelRatio(
-        isSoftwareGpu ? 0.75 : Math.min(window.devicePixelRatio || 1, compact ? 1.6 : 2)
+        isSoftwareGpu ? 0.75 : Math.min(window.devicePixelRatio || 1, compact ? 1.5 : 2)
       );
       renderer.setSize(width, height);
     });

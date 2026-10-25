@@ -41,6 +41,8 @@ export default function StoryCardsChapter() {
 
   const [fuelEfficiency, setFuelEfficiency] = useState(78);
   const userScrubbedFuel = useRef(false);
+  const gaugeRectRef = useRef(null);
+  const geoRectRef = useRef(null);
 
   const [geofencePin, setGeofencePin] = useState({ x: 50, y: 50, inside: true });
 
@@ -49,28 +51,57 @@ export default function StoryCardsChapter() {
   const savedLiters = Math.round(fuelEfficiency * 19.5);
 
   const plateProgressRef = useRef((p) => {
-    setPlateLocked(p > 0.42);
+    const locked = p > 0.42;
+    setPlateLocked((prev) => (prev === locked ? prev : locked));
   });
 
   const fuelProgressRef = useRef((p) => {
     if (!userScrubbedFuel.current && p > 0.05) {
-      setFuelEfficiency(Math.round(48 + p * 40));
+      const nextVal = Math.round(48 + p * 40);
+      setFuelEfficiency((prev) => (prev === nextVal ? prev : nextVal));
     }
   });
 
-  const handleGaugeScrub = (e) => {
+  const applyGaugeClientX = (clientX, targetEl) => {
     userScrubbedFuel.current = true;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const ratio = Math.max(0, Math.min(1, 1 - (e.clientX - rect.left) / rect.width));
-    setFuelEfficiency(Math.round(45 + ratio * 51));
+    const rect = gaugeRectRef.current || targetEl.getBoundingClientRect();
+    gaugeRectRef.current = rect;
+    if (!rect || rect.width < 10) return;
+    const ratio = Math.max(0, Math.min(1, 1 - (clientX - rect.left) / rect.width));
+    const nextVal = Math.round(45 + ratio * 51);
+    setFuelEfficiency((prev) => (prev === nextVal ? prev : nextVal));
+  };
+
+  const handleGaugeScrub = (e) => {
+    applyGaugeClientX(e.clientX, e.currentTarget);
+  };
+
+  const handleGaugeTouchMove = (e) => {
+    if (e.touches && e.touches[0]) {
+      applyGaugeClientX(e.touches[0].clientX, e.currentTarget);
+    }
+  };
+
+  const applyGeofenceCoords = (clientX, clientY, targetEl) => {
+    const rect = geoRectRef.current || targetEl.getBoundingClientRect();
+    geoRectRef.current = rect;
+    if (!rect || rect.width < 10 || rect.height < 10) return;
+    const x = Math.round(Math.max(12, Math.min(88, ((clientX - rect.left) / rect.width) * 100)) * 2) / 2;
+    const y = Math.round(Math.max(16, Math.min(84, ((clientY - rect.top) / rect.height) * 100)) * 2) / 2;
+    const inside = Math.hypot(x - 50, y - 50) <= 29;
+    setGeofencePin((prev) =>
+      prev.x === x && prev.y === y && prev.inside === inside ? prev : { x, y, inside }
+    );
   };
 
   const handleGeofenceMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = Math.max(12, Math.min(88, ((e.clientX - rect.left) / rect.width) * 100));
-    const y = Math.max(16, Math.min(84, ((e.clientY - rect.top) / rect.height) * 100));
-    const dist = Math.hypot(x - 50, y - 50);
-    setGeofencePin({ x, y, inside: dist <= 29 });
+    applyGeofenceCoords(e.clientX, e.clientY, e.currentTarget);
+  };
+
+  const handleGeofenceTouchMove = (e) => {
+    if (e.touches && e.touches[0]) {
+      applyGeofenceCoords(e.touches[0].clientX, e.touches[0].clientY, e.currentTarget);
+    }
   };
 
   return (
@@ -165,7 +196,14 @@ export default function StoryCardsChapter() {
             <div
               className="smart-gauge-scrub"
               data-polarity="nocturnal"
+              onPointerEnter={(e) => {
+                gaugeRectRef.current = e.currentTarget.getBoundingClientRect();
+              }}
+              onTouchStart={(e) => {
+                gaugeRectRef.current = e.currentTarget.getBoundingClientRect();
+              }}
               onPointerMove={handleGaugeScrub}
+              onTouchMove={handleGaugeTouchMove}
               onClick={handleGaugeScrub}
             >
               <div className="horizon-wing-rail" aria-hidden="true">
@@ -206,7 +244,14 @@ export default function StoryCardsChapter() {
             <div
               className={`smart-geofence-pad ${geofencePin.inside ? 'is-safe' : 'is-alert'}`}
               data-polarity="nocturnal"
+              onPointerEnter={(e) => {
+                geoRectRef.current = e.currentTarget.getBoundingClientRect();
+              }}
+              onTouchStart={(e) => {
+                geoRectRef.current = e.currentTarget.getBoundingClientRect();
+              }}
               onPointerMove={handleGeofenceMove}
+              onTouchMove={handleGeofenceTouchMove}
               onClick={handleGeofenceMove}
             >
               <svg viewBox="0 0 400 170" className="smart-geofence-pad__grid" aria-hidden="true">

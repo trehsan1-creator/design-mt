@@ -1,0 +1,43 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  NPM_FLAGS = "--include=dev"
+
+# مسیر پورتال داخلی دیزاین‌سیستم (/design و /design/)
+[[redirects]]
+  from = "/design"
+  to = "/design/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/design/*"
+  to = "/design/index.html"
+  status = 200
+
+# مسیر اصلی وب‌سایت مشتری (SPA Fallback بدون تداخل با فایل‌های استاتیک dist/)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# کش بلندمدت فایل‌های هش‌شده Vite روی CDN نتلیفای برای بارگذاری فوری در موبایل
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# کش بلندمدت فونت‌های فارسی Peyda WOFF2
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    Access-Control-Allow-Origin = "*"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
