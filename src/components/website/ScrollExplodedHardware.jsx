@@ -55,7 +55,7 @@ export default function ScrollExplodedHardware() {
     HARDWARE_SPECS.forEach((sp, i) => {
       if (p >= sp.threshold) count = i + 1;
     });
-    setLitStage(count);
+    setLitStage((prev) => (prev === count ? prev : count));
   });
 
   const handleFocusLayer = (idx) => {

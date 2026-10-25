@@ -2608,6 +2608,10 @@
   animation: signalPacketStream 2s linear infinite;
 }
 
+.story-painter-svg__pulse[data-flowing="false"] {
+  animation-play-state: paused;
+}
+
 .story-painter-svg__cyan-lane {
   fill: none;
   stroke: color-mix(in srgb, var(--ds-status-corridor) 34%, transparent);
@@ -2698,6 +2702,32 @@
     rotateX(var(--card-rx, 0deg))
     rotateY(var(--card-ry, 0deg));
   opacity: 1;
+}
+
+.painted-card:not([data-awake="true"]) .painted-card__surface {
+  visibility: hidden;
+}
+
+/* آزادسازی ماسک سنگین clip-path پس از تکمیل شکل‌گیری کارت بدون هیچ تغییر ظاهری */
+.painted-card[data-formed="true"] .painted-card__surface {
+  clip-path: none;
+}
+
+/* روان‌تر کردن اسکرول و لمس در ابزارک‌های تعاملی بدون گیر کردن اسکرول عمودی */
+.hero-cinema-sticky,
+.smart-gauge-scrub,
+.smart-geofence-pad,
+.webgl-canvas-mount--tracker {
+  touch-action: pan-y;
+}
+
+.gantry-scanner-well,
+.hardware-callout-item,
+.finale-ribbon-slider__input,
+.nav-hamburger-btn,
+.ds-btn {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* ایستگاه‌های مفهومی زنده مشتری در پیچ‌وخم مسیر بین کامپوننت‌ها */
@@ -2802,13 +2832,14 @@
     gap: 7px;
     padding: 5px 14px;
     border-radius: var(--ds-radius-capsule);
-    background: color-mix(in srgb, var(--ds-navy-900) 86%, transparent);
+    background: color-mix(in srgb, var(--ds-navy-900) 88%, transparent);
     border: 1px solid color-mix(in srgb, var(--ds-color-signal-orange) 42%, transparent);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(8px);
     color: var(--ds-sand-50);
     font-size: var(--ds-text-xs);
     font-weight: var(--ds-weight-semibold);
     opacity: var(--hero-copy-op, 1);
+    will-change: opacity;
     pointer-events: none;
     white-space: nowrap;
   }
@@ -2819,10 +2850,20 @@
     gap: 8px;
     padding: 15px 16px;
     border-radius: var(--ds-radius-card-md);
-    background: color-mix(in srgb, var(--ds-navy-900) 93%, transparent);
+    background: color-mix(in srgb, var(--ds-navy-900) 94%, transparent);
     border: 1px solid color-mix(in srgb, var(--ds-sand-100) 20%, transparent);
     box-shadow: var(--ds-shadow-card);
-    backdrop-filter: blur(18px);
+    backdrop-filter: blur(10px);
+    will-change: transform, opacity;
+  }
+
+  .painted-card[data-formed="true"] .painted-card__surface {
+    transform: none;
+  }
+
+  .story-narrator-pill {
+    backdrop-filter: blur(8px);
+    will-change: transform, opacity;
   }
 
   .hero-cinema-title {

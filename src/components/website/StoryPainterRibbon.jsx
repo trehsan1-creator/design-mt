@@ -6,6 +6,117 @@ function clamp(v, min, max) {
   return Math.max(min, Math.min(max, v));
 }
 
+function evalCubic1D(p0, p1, p2, p3, t) {
+  const mt = 1 - t;
+  return (
+    mt * mt * mt * p0 +
+    3 * mt * mt * t * p1 +
+    3 * mt * t * t * p2 +
+    t * t * t * p3
+  );
+}
+
+// جدول سبک ۲۴ نقطه‌ای طول کمان بزیه برای محاسبه آنی مختصات توتم بدون فراخوانی getPointAtLength در اسکرول
+function buildCubicLut(x0, y0, x1, y1, x2, y2, x3, y3) {
+  const steps = 24;
+  const xs = new Float32Array(steps + 1);
+  const ys = new Float32Array(steps + 1);
+  const cum = new Float32Array(steps + 1);
+  xs[0] = x0;
+  ys[0] = y0;
+  cum[0] = 0;
+  let total = 0;
+  for (let i = 1; i <= steps; i += 1) {
+    const t = i / steps;
+    const x = evalCubic1D(x0, x1, x2, x3, t);
+    const y = evalCubic1D(y0, y1, y2, y3, t);
+    xs[i] = x;
+    ys[i] = y;
+    total += Math.hypot(x - xs[i - 1], y - ys[i - 1]);
+    cum[i] = total;
+  }
+  return { xs, ys, cum, total, steps };
+}
+
+function sampleCubicLut(lut, frac) {
+  if (!lut || lut.total <= 0.5) return null;
+  const target = clamp(frac, 0, 1) * lut.total;
+  let lo = 0;
+  let hi = lut.steps;
+  while (lo < hi - 1) {
+    const mid = (lo + hi) >> 1;
+    if (lut.cum[mid] < target) lo = mid;
+    else hi = mid;
+  }
+  const segLen = Math.max(0.0001, lut.cum[hi] - lut.cum[lo]);
+  const alpha = clamp((target - lut.cum[lo]) / segLen, 0, 1);
+  return {
+    x: lut.xs[lo] + (lut.xs[hi] - lut.xs[lo]) * alpha,
+    y: lut.ys[lo] + (lut.ys[hi] - lut.ys[lo]) * alpha,
+  };
+}
+
+// محاسبه تحلیلی دقیق موقعیت جرقه‌های کادر PaintedCard بدون نیاز به کوئری SVG در هر فریم
+function evalCardHalfPerimeter(w, h, p, isRight) {
+  const s = 1.5;
+  const r = Math.min(28, w * 0.12, h * 0.22);
+  const rad = Math.max(0, r - s);
+  const cx = w * 0.5;
+  const len1 = Math.max(0, cx - r);
+  const lenArc = 0.5 * Math.PI * rad;
+  const len3 = Math.max(0, h - 2 * r);
+  const total = len1 + lenArc + len3 + lenArc + len1;
+  if (total <= 1) return { x: cx, y: s };
+
+  let d = clamp(p, 0, 1) * total;
+
+  if (d <= len1) {
+    const u = len1 > 0 ? d / len1 : 0;
+    return {
+      x: isRight ? cx + (w - r - cx) * u : cx + (r - cx) * u,
+      y: s,
+    };
+  }
+  d -= len1;
+
+  if (d <= lenArc) {
+    const u = lenArc > 0 ? d / lenArc : 0;
+    const ang = isRight ? -Math.PI * 0.5 + u * Math.PI * 0.5 : -Math.PI * 0.5 - u * Math.PI * 0.5;
+    const ox = isRight ? w - r : r;
+    return {
+      x: ox + rad * Math.cos(ang),
+      y: r + rad * Math.sin(ang),
+    };
+  }
+  d -= lenArc;
+
+  if (d <= len3) {
+    const u = len3 > 0 ? d / len3 : 0;
+    return {
+      x: isRight ? w - s : s,
+      y: r + len3 * u,
+    };
+  }
+  d -= len3;
+
+  if (d <= lenArc) {
+    const u = lenArc > 0 ? d / lenArc : 0;
+    const ang = isRight ? u * Math.PI * 0.5 : Math.PI - u * Math.PI * 0.5;
+    const ox = isRight ? w - r : r;
+    return {
+      x: ox + rad * Math.cos(ang),
+      y: h - r + rad * Math.sin(ang),
+    };
+  }
+  d -= lenArc;
+
+  const u = len1 > 0 ? clamp(d / len1, 0, 1) : 1;
+  return {
+    x: isRight ? w - r + (cx - (w - r)) * u : r + (cx - r) * u,
+    y: h - s,
+  };
+}
+
 const CHAPTER_NARRATION = [
   {
     id: '۰۱',
@@ -78,10 +189,17 @@ export default function StoryPainterRibbon({ children }) {
 
     let nodesMeta = [];
     let cablesMeta = [];
-    let worldWidth = 1440;
-    let worldHeight = 3200;
+    let worldWidth = 0;
+    let worldHeight = 0;
+    let worldDocTop = 0;
+    let cachedVh = window.innerHeight || 800;
+    let cachedWinW = window.innerWidth || 1280;
+    let cablesSleeping = false;
     let smoothPlayhead = -1;
     let lastRenderedPlayhead = -999;
+    let lastTotemTf = '';
+    let lastTotemOp = '';
+    let lastPluckOp = '0';
     let lastAct = -1;
     let lastVis = false;
     let rafId = 0;
@@ -93,7 +211,10 @@ export default function StoryPainterRibbon({ children }) {
     };
 
     const updateCableGeometry = (ptrX, ptrY, ptrInside, forceWrite = false) => {
+      if (!forceWrite && !ptrInside && cablesSleeping) return;
+
       let nearestPluck = null;
+      let anyMoving = false;
       const isCompact = worldWidth <= 900;
 
       cablesMeta.forEach((cb) => {
@@ -115,6 +236,13 @@ export default function StoryPainterRibbon({ children }) {
         const force = (targetPluck - cb.pluckX) * 0.16;
         cb.vx = (cb.vx + force) * 0.75;
         cb.pluckX += cb.vx;
+
+        if (Math.abs(cb.pluckX) > 0.04 || Math.abs(cb.vx) > 0.01) {
+          anyMoving = true;
+        } else {
+          cb.pluckX = 0;
+          cb.vx = 0;
+        }
 
         if (forceWrite || Number.isNaN(cb.lastRenderedPluck) || Math.abs(cb.pluckX - cb.lastRenderedPluck) > 0.08) {
           cb.lastRenderedPluck = cb.pluckX;
@@ -146,6 +274,7 @@ export default function StoryPainterRibbon({ children }) {
           cb.glow.setAttribute('d', d);
           cb.stroke.setAttribute('d', d);
           cb.pulseTrack.setAttribute('d', d);
+          cb.lut = buildCubicLut(cb.startX, cb.startY, c1x, c1y, c2x, c2y, cb.endX, cb.endY);
 
           const curveMidX = 0.125 * cb.startX + 0.375 * c1x + 0.375 * c2x + 0.125 * cb.endX;
           const curveMidY = 0.125 * cb.startY + 0.375 * c1y + 0.375 * c2y + 0.125 * cb.endY;
@@ -164,21 +293,31 @@ export default function StoryPainterRibbon({ children }) {
         }
       });
 
+      cablesSleeping = !ptrInside && !anyMoving;
+
       if (pluckRingRef.current) {
         if (nearestPluck) {
           pluckRingRef.current.setAttribute(
             'transform',
             `translate(${nearestPluck.x.toFixed(1)}, ${nearestPluck.y.toFixed(1)})`
           );
-          pluckRingRef.current.setAttribute('opacity', '0.94');
-        } else {
+          if (lastPluckOp !== '0.94') {
+            lastPluckOp = '0.94';
+            pluckRingRef.current.setAttribute('opacity', '0.94');
+          }
+        } else if (lastPluckOp !== '0') {
+          lastPluckOp = '0';
           pluckRingRef.current.setAttribute('opacity', '0');
         }
       }
     };
 
     const measureCircuit = () => {
+      const scrollY = window.scrollY || window.pageYOffset || 0;
       const wRect = world.getBoundingClientRect();
+      worldDocTop = wRect.top + scrollY;
+      cachedVh = window.innerHeight || 800;
+      cachedWinW = window.innerWidth || 1280;
       worldWidth = Math.max(320, wRect.width);
       worldHeight = Math.max(600, world.scrollHeight || wRect.height);
       svg.setAttribute('viewBox', `0 0 ${worldWidth} ${worldHeight}`);
@@ -199,6 +338,7 @@ export default function StoryPainterRibbon({ children }) {
           id: el.getAttribute('data-circuit-node') || '',
           topY,
           bottomY,
+          width: Math.max(120, r.width),
           height: Math.max(48, bottomY - topY),
           inX: centerX,
           inY: topY,
@@ -211,6 +351,13 @@ export default function StoryPainterRibbon({ children }) {
           splitLeft: el.querySelector('[data-split-left]'),
           sparkRight: el.querySelector('[data-spark-right]'),
           sparkLeft: el.querySelector('[data-spark-left]'),
+          lastDash: '',
+          lastRise: '',
+          lastAwake: '',
+          lastFormed: '',
+          lastLitIn: '',
+          lastLitOut: '',
+          lastSparkOp: '',
           lastSentProgress: -1,
         };
       });
@@ -246,6 +393,8 @@ export default function StoryPainterRibbon({ children }) {
           const glow = createSvgPath('story-painter-svg__glow');
           const stroke = createSvgPath('story-painter-svg__stroke');
           const pulseTrack = createSvgPath('story-painter-svg__pulse');
+          pulseTrack.setAttribute('opacity', '0');
+          pulseTrack.setAttribute('data-flowing', 'false');
 
           glow.setAttribute('pathLength', '1');
           glow.setAttribute('stroke-dasharray', '1');
@@ -270,9 +419,13 @@ export default function StoryPainterRibbon({ children }) {
             glow,
             stroke,
             pulseTrack,
+            lut: null,
             pluckX: 0,
             vx: 0,
             lastRenderedPluck: NaN,
+            lastDash: '',
+            lastFlowing: '',
+            lastPassed: '',
           };
         });
       } else {
@@ -283,23 +436,44 @@ export default function StoryPainterRibbon({ children }) {
           cablesMeta[idx].endX = spec.endX;
           cablesMeta[idx].endY = spec.endY;
           cablesMeta[idx].lastRenderedPluck = NaN;
+          cablesMeta[idx].lastDash = '';
         });
       }
 
+      cablesSleeping = false;
       updateCableGeometry(0, -9999, false, true);
       lastRenderedPlayhead = -999;
     };
 
     const ptr = { x: 0, y: -9999, inside: false };
     const onPointerMove = (e) => {
-      if (reducedMotion) return;
-      const r = world.getBoundingClientRect();
-      ptr.x = e.clientX - r.left;
-      ptr.y = e.clientY - r.top;
-      ptr.inside = ptr.y >= 0 && ptr.y <= r.height;
+      if (reducedMotion || e.pointerType === 'touch') return;
+      const scrollY = window.scrollY || window.pageYOffset || 0;
+      const wTop = worldDocTop - scrollY;
+      ptr.x = e.clientX;
+      ptr.y = e.clientY - wTop;
+      ptr.inside = ptr.y >= 0 && ptr.y <= worldHeight;
+      if (ptr.inside) cablesSleeping = false;
     };
     const onPointerLeave = () => {
       ptr.inside = false;
+    };
+
+    const onWindowResize = () => {
+      cachedVh = window.innerHeight || 800;
+      const nextWinW = window.innerWidth || 1280;
+      // نادیده گرفتن تغییر ارتفاع نوار آدرس مرورگر موبایل حین اسکرول و اندازه‌گیری مجدد فقط در تغییر عرض واقعی
+      if (Math.abs(nextWinW - cachedWinW) >= 2) {
+        measureCircuit();
+      }
+    };
+
+    const onObserverResize = () => {
+      const nextW = Math.max(320, world.clientWidth);
+      const nextH = Math.max(600, world.scrollHeight);
+      if (Math.abs(nextW - worldWidth) >= 2 || Math.abs(nextH - worldHeight) >= 3) {
+        measureCircuit();
+      }
     };
 
     window.addEventListener('pointermove', onPointerMove, { passive: true });
@@ -310,19 +484,21 @@ export default function StoryPainterRibbon({ children }) {
       document.fonts.ready.then(measureCircuit);
     }
 
-    const ro = new ResizeObserver(measureCircuit);
+    const ro = new ResizeObserver(onObserverResize);
     ro.observe(world);
-    window.addEventListener('resize', measureCircuit, { passive: true });
+    window.addEventListener('resize', onWindowResize, { passive: true });
 
     const tick = () => {
       rafId = requestAnimationFrame(tick);
+      if (document.hidden) return;
 
-      const wRect = world.getBoundingClientRect();
-      const vh = window.innerHeight || 800;
+      const scrollY = window.scrollY || window.pageYOffset || 0;
+      const wTop = worldDocTop - scrollY;
+      const vh = cachedVh;
 
       const targetPlayhead = reducedMotion
         ? worldHeight
-        : clamp(vh * 0.68 - wRect.top, 0, worldHeight);
+        : clamp(vh * 0.68 - wTop, 0, worldHeight);
 
       if (smoothPlayhead < 0 || Math.abs(targetPlayhead - smoothPlayhead) > 360) {
         smoothPlayhead = targetPlayhead;
@@ -331,6 +507,12 @@ export default function StoryPainterRibbon({ children }) {
       }
 
       updateCableGeometry(ptr.x, ptr.y, ptr.inside);
+
+      const vis = wTop < vh * 0.72 && wTop + worldHeight > vh * 0.25;
+      if (vis !== lastVis) {
+        lastVis = vis;
+        setNarratorVisible(vis);
+      }
 
       if (Math.abs(smoothPlayhead - lastRenderedPlayhead) < 0.2) {
         return;
@@ -342,81 +524,93 @@ export default function StoryPainterRibbon({ children }) {
       cablesMeta.forEach((cb) => {
         const lenY = Math.max(14, cb.endY - cb.startY);
         const p = reducedMotion ? 1 : clamp((smoothPlayhead - cb.startY) / lenY, 0, 1);
-        const dash = `${(1 - p).toFixed(4)}`;
-        cb.stroke.setAttribute('stroke-dashoffset', dash);
-        cb.glow.setAttribute('stroke-dashoffset', dash);
-        cb.pulseTrack.setAttribute('opacity', p > 0.12 ? '0.78' : '0');
+        const dash = (1 - p).toFixed(4);
+
+        if (dash !== cb.lastDash) {
+          cb.lastDash = dash;
+          cb.stroke.setAttribute('stroke-dashoffset', dash);
+          cb.glow.setAttribute('stroke-dashoffset', dash);
+        }
+
+        const flowing = p > 0.12 ? 'true' : 'false';
+        if (flowing !== cb.lastFlowing) {
+          cb.lastFlowing = flowing;
+          cb.pulseTrack.setAttribute('opacity', flowing === 'true' ? '0.78' : '0');
+          cb.pulseTrack.setAttribute('data-flowing', flowing);
+        }
 
         const wpEl = waypointElsRef.current[cb.idx];
         if (wpEl) {
-          wpEl.setAttribute('data-passed', p >= 0.45 ? 'true' : 'false');
+          const passed = p >= 0.45 ? 'true' : 'false';
+          if (passed !== cb.lastPassed) {
+            cb.lastPassed = passed;
+            wpEl.setAttribute('data-passed', passed);
+          }
         }
 
-        if (p > 0.005 && p < 0.995 && cb.stroke.getTotalLength) {
-          try {
-            const total = cb.stroke.getTotalLength();
-            if (total > 1) {
-              const pt = cb.stroke.getPointAtLength(total * p);
-              if (pt) totemPos = { x: pt.x, y: pt.y };
-            }
-          } catch {
-            // ignore layout transition
-          }
+        if (p > 0.005 && p < 0.995 && cb.lut) {
+          const pt = sampleCubicLut(cb.lut, p);
+          if (pt) totemPos = pt;
         }
       });
 
       nodesMeta.forEach((nd) => {
         const p = reducedMotion ? 1 : clamp((smoothPlayhead - nd.topY) / nd.height, 0, 1);
-        const dash = `${(1 - p).toFixed(4)}`;
+        const dash = (1 - p).toFixed(4);
+        const rise = p.toFixed(3);
+        const awake = p > 0.03 ? 'true' : 'false';
+        const formed = p >= 0.97 ? 'true' : 'false';
+        const litIn = smoothPlayhead >= nd.topY - 4 ? 'true' : 'false';
+        const litOut = p >= 0.96 ? 'true' : 'false';
 
-        if (nd.splitRight) nd.splitRight.setAttribute('stroke-dashoffset', dash);
-        if (nd.splitLeft) nd.splitLeft.setAttribute('stroke-dashoffset', dash);
+        if (dash !== nd.lastDash) {
+          nd.lastDash = dash;
+          if (nd.splitRight) nd.splitRight.setAttribute('stroke-dashoffset', dash);
+          if (nd.splitLeft) nd.splitLeft.setAttribute('stroke-dashoffset', dash);
+        }
 
-        nd.el.style.setProperty('--card-rise', p.toFixed(3));
-        nd.el.setAttribute('data-awake', p > 0.03 ? 'true' : 'false');
-        nd.el.setAttribute('data-formed', p >= 0.97 ? 'true' : 'false');
-
-        if (nd.portIn) nd.portIn.setAttribute('data-lit', smoothPlayhead >= nd.topY - 4 ? 'true' : 'false');
-        if (nd.portOut) nd.portOut.setAttribute('data-lit', p >= 0.96 ? 'true' : 'false');
+        if (rise !== nd.lastRise) {
+          nd.lastRise = rise;
+          nd.el.style.setProperty('--card-rise', rise);
+        }
+        if (awake !== nd.lastAwake) {
+          nd.lastAwake = awake;
+          nd.el.setAttribute('data-awake', awake);
+        }
+        if (formed !== nd.lastFormed) {
+          nd.lastFormed = formed;
+          nd.el.setAttribute('data-formed', formed);
+        }
+        if (litIn !== nd.lastLitIn && nd.portIn) {
+          nd.lastLitIn = litIn;
+          nd.portIn.setAttribute('data-lit', litIn);
+        }
+        if (litOut !== nd.lastLitOut && nd.portOut) {
+          nd.lastLitOut = litOut;
+          nd.portOut.setAttribute('data-lit', litOut);
+        }
 
         const showSplitSparks = !reducedMotion && p > 0.02 && p < 0.98;
-        if (nd.sparkRight && nd.splitRight?.getTotalLength) {
-          if (showSplitSparks) {
-            try {
-              const lenR = nd.splitRight.getTotalLength();
-              if (lenR > 1) {
-                const ptR = nd.splitRight.getPointAtLength(lenR * p);
-                if (ptR) {
-                  nd.sparkRight.setAttribute('cx', ptR.x.toFixed(1));
-                  nd.sparkRight.setAttribute('cy', ptR.y.toFixed(1));
-                  nd.sparkRight.setAttribute('opacity', '1');
-                }
-              }
-            } catch {
-              nd.sparkRight.setAttribute('opacity', '0');
-            }
-          } else {
-            nd.sparkRight.setAttribute('opacity', '0');
+        if (showSplitSparks) {
+          if (nd.sparkRight) {
+            const ptR = evalCardHalfPerimeter(nd.width, nd.height, p, true);
+            nd.sparkRight.setAttribute('cx', ptR.x.toFixed(1));
+            nd.sparkRight.setAttribute('cy', ptR.y.toFixed(1));
           }
-        }
-        if (nd.sparkLeft && nd.splitLeft?.getTotalLength) {
-          if (showSplitSparks) {
-            try {
-              const lenL = nd.splitLeft.getTotalLength();
-              if (lenL > 1) {
-                const ptL = nd.splitLeft.getPointAtLength(lenL * p);
-                if (ptL) {
-                  nd.sparkLeft.setAttribute('cx', ptL.x.toFixed(1));
-                  nd.sparkLeft.setAttribute('cy', ptL.y.toFixed(1));
-                  nd.sparkLeft.setAttribute('opacity', '1');
-                }
-              }
-            } catch {
-              nd.sparkLeft.setAttribute('opacity', '0');
-            }
-          } else {
-            nd.sparkLeft.setAttribute('opacity', '0');
+          if (nd.sparkLeft) {
+            const ptL = evalCardHalfPerimeter(nd.width, nd.height, p, false);
+            nd.sparkLeft.setAttribute('cx', ptL.x.toFixed(1));
+            nd.sparkLeft.setAttribute('cy', ptL.y.toFixed(1));
           }
+          if (nd.lastSparkOp !== '1') {
+            nd.lastSparkOp = '1';
+            if (nd.sparkRight) nd.sparkRight.setAttribute('opacity', '1');
+            if (nd.sparkLeft) nd.sparkLeft.setAttribute('opacity', '1');
+          }
+        } else if (nd.lastSparkOp !== '0') {
+          nd.lastSparkOp = '0';
+          if (nd.sparkRight) nd.sparkRight.setAttribute('opacity', '0');
+          if (nd.sparkLeft) nd.sparkLeft.setAttribute('opacity', '0');
         }
 
         const roundedP = Math.round(p * 200) / 200;
@@ -428,20 +622,19 @@ export default function StoryPainterRibbon({ children }) {
 
       if (leadTotemRef.current) {
         if (totemPos) {
-          leadTotemRef.current.setAttribute(
-            'transform',
-            `translate(${totemPos.x.toFixed(1)}, ${totemPos.y.toFixed(1)})`
-          );
-          leadTotemRef.current.setAttribute('opacity', '1');
-        } else {
+          const tf = `translate(${totemPos.x.toFixed(1)}, ${totemPos.y.toFixed(1)})`;
+          if (tf !== lastTotemTf) {
+            lastTotemTf = tf;
+            leadTotemRef.current.setAttribute('transform', tf);
+          }
+          if (lastTotemOp !== '1') {
+            lastTotemOp = '1';
+            leadTotemRef.current.setAttribute('opacity', '1');
+          }
+        } else if (lastTotemOp !== '0') {
+          lastTotemOp = '0';
           leadTotemRef.current.setAttribute('opacity', '0');
         }
-      }
-
-      const vis = wRect.top < vh * 0.72 && wRect.bottom > vh * 0.25;
-      if (vis !== lastVis) {
-        lastVis = vis;
-        setNarratorVisible(vis);
       }
 
       let actIdx = 0;
@@ -463,7 +656,7 @@ export default function StoryPainterRibbon({ children }) {
       ro.disconnect();
       window.removeEventListener('pointermove', onPointerMove);
       world.removeEventListener('pointerleave', onPointerLeave);
-      window.removeEventListener('resize', measureCircuit);
+      window.removeEventListener('resize', onWindowResize);
     };
   }, [reducedMotion]);
 

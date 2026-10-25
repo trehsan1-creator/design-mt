@@ -48,15 +48,22 @@ export default function HardwareTrackerCanvas({ explodeRef, reducedMotion }) {
     );
     obs.observe(container);
 
-    const width = container.clientWidth || 640;
-    const height = container.clientHeight || 460;
-    const maxDpr = window.innerWidth <= 768 ? 1.5 : 2;
+    let width = container.clientWidth || 640;
+    let height = container.clientHeight || 460;
+    const isMobile = window.innerWidth <= 900;
+    const isCoarsePointer =
+      typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches;
+    const maxDpr = isMobile ? 1.45 : 2;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(34, width / height, 1, 2500);
     camera.position.set(270, 215, 360);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true,
+      powerPreference: 'high-performance',
+    });
     const gl = renderer.getContext();
     const dbg = gl.getExtension('WEBGL_debug_renderer_info');
     const rendererInfo = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) || '' : '';
@@ -77,14 +84,55 @@ export default function HardwareTrackerCanvas({ explodeRef, reducedMotion }) {
     controls.enableDamping = true;
     controls.dampingFactor = 0.07;
     controls.enableZoom = false;
+    controls.enablePan = false;
     controls.autoRotate = !reducedRef.current;
     controls.autoRotateSpeed = 1.25;
     controls.minDistance = 260;
     controls.maxDistance = 680;
+
+    // در موبایل و نمایشگرهای لمسی، اسکرول عمودی صفحه هرگز روی بوم سه‌بعدی قفل نشود
+    if (isCoarsePointer || isMobile) {
+      controls.enabled = false;
+      renderer.domElement.style.touchAction = 'pan-y';
+    }
     controlsRef.current = controls;
 
     const deviceGroup = new THREE.Group();
     scene.add(deviceGroup);
+
+    // چرخش افقی نرم با انگشت روی موبایل بدون مسدود کردن اسکرول عمودی صفحه
+    let touchLastX = null;
+    let touchLastY = null;
+    let touchSpinVel = 0;
+
+    const onTouchStart = (e) => {
+      if (e.touches && e.touches.length === 1) {
+        touchLastX = e.touches[0].clientX;
+        touchLastY = e.touches[0].clientY;
+      }
+    };
+    const onTouchMove = (e) => {
+      if (touchLastX === null || !e.touches || e.touches.length !== 1) return;
+      const cx = e.touches[0].clientX;
+      const cy = e.touches[0].clientY;
+      const dx = cx - touchLastX;
+      const dy = cy - touchLastY;
+      touchLastX = cx;
+      touchLastY = cy;
+      if (Math.abs(dx) > Math.abs(dy) * 0.85) {
+        touchSpinVel = Math.max(-0.08, Math.min(0.08, dx * 0.008));
+        deviceGroup.rotation.y += touchSpinVel;
+      }
+    };
+    const onTouchEnd = () => {
+      touchLastX = null;
+      touchLastY = null;
+    };
+
+    const canvasEl = renderer.domElement;
+    canvasEl.addEventListener('touchstart', onTouchStart, { passive: true });
+    canvasEl.addEventListener('touchmove', onTouchMove, { passive: true });
+    canvasEl.addEventListener('touchend', onTouchEnd, { passive: true });
 
     const disposables = [];
     const cOrange = new THREE.Color(DESIGN_TOKENS.color.signalOrange);
@@ -97,8 +145,8 @@ export default function HardwareTrackerCanvas({ explodeRef, reducedMotion }) {
       bevelEnabled: true,
       bevelThickness: 7,
       bevelSize: 6,
-      bevelSegments: 6,
-      curveSegments: 28,
+      bevelSegments: isSoftwareGpu ? 2 : isMobile ? 3 : 6,
+      curveSegments: isSoftwareGpu ? 16 : isMobile ? 18 : 28,
     });
     shellGeo.rotateX(Math.PI / 2);
     const shellMat = createClearcoatMaterial({
@@ -120,8 +168,8 @@ export default function HardwareTrackerCanvas({ explodeRef, reducedMotion }) {
       bevelEnabled: true,
       bevelThickness: 2.2,
       bevelSize: 1.8,
-      bevelSegments: 3,
-      curveSegments: 24,
+      bevelSegments: isMobile ? 2 : 3,
+      curveSegments: isMobile ? 16 : 24,
     });
     logoGeo.center();
     const logoMat = createClearcoatMaterial({ color: cSand });
@@ -132,7 +180,7 @@ export default function HardwareTrackerCanvas({ explodeRef, reducedMotion }) {
     topLayer.add(logoMesh);
     disposables.push(logoGeo, logoMat);
 
-    const ledGeo = new THREE.CapsuleGeometry(2.6, 36, 8, 16);
+    const ledGeo = new THREE.CapsuleGeometry(2.6, 36, 6, 12);
     ledGeo.rotateZ(Math.PI / 2);
     const ledMat = new THREE.MeshStandardMaterial({
       color: cOrange,
@@ -154,6 +202,7 @@ export default function HardwareTrackerCanvas({ explodeRef, reducedMotion }) {
       bevelThickness: 2,
       bevelSize: 2,
       bevelSegments: 2,
+      curveSegments: isMobile ? 16 : 22,
     });
     antGeo.rotateX(Math.PI / 2);
     const antMat = createClearcoatMaterial({ color: cSand });
@@ -173,7 +222,11 @@ export default function HardwareTrackerCanvas({ explodeRef, reducedMotion }) {
 
     const pcbLayer = new THREE.Group();
     const pcbShape = createSquircleShape(156, 0.28);
-    const pcbGeo = new THREE.ExtrudeGeometry(pcbShape, { depth: 5, bevelEnabled: false });
+    const pcbGeo = new THREE.ExtrudeGeometry(pcbShape, {
+      depth: 5,
+      bevelEnabled: false,
+      curveSegments: isMobile ? 14 : 20,
+    });
     pcbGeo.rotateX(Math.PI / 2);
     const pcbMat = new THREE.MeshStandardMaterial({
       color: new THREE.Color(DESIGN_TOKENS.color.neutral.pcb),
@@ -207,7 +260,8 @@ export default function HardwareTrackerCanvas({ explodeRef, reducedMotion }) {
       bevelEnabled: true,
       bevelThickness: 4,
       bevelSize: 4,
-      bevelSegments: 4,
+      bevelSegments: isMobile ? 2 : 4,
+      curveSegments: isMobile ? 16 : 24,
     });
     baseGeo.rotateX(Math.PI / 2);
     const baseMat = createClearcoatMaterial({
@@ -240,7 +294,7 @@ export default function HardwareTrackerCanvas({ explodeRef, reducedMotion }) {
 
     const animate = (now) => {
       rafId = requestAnimationFrame(animate);
-      if (!inViewRef.current) return;
+      if (!inViewRef.current || document.hidden) return;
       if (isSoftwareGpu && renderedFrames >= 2 && now - lastSwRender < 450) return;
 
       const t = (now - t0) * 0.001;
@@ -254,6 +308,13 @@ export default function HardwareTrackerCanvas({ explodeRef, reducedMotion }) {
           ly.grp.position.y += (targetY - ly.grp.position.y) * 0.14;
         }
       });
+
+      if (Math.abs(touchSpinVel) > 0.0004) {
+        deviceGroup.rotation.y += touchSpinVel;
+        touchSpinVel *= 0.92;
+      } else {
+        touchSpinVel = 0;
+      }
 
       deviceGroup.position.y = reducedRef.current ? 0 : Math.sin(t * 1.8) * 4;
       ledMat.emissiveIntensity = reducedRef.current ? 1.8 : 1.6 + Math.sin(t * 4.2) * 0.8;
@@ -269,9 +330,17 @@ export default function HardwareTrackerCanvas({ explodeRef, reducedMotion }) {
       if (!container) return;
       const w = container.clientWidth || 640;
       const h = container.clientHeight || 460;
+      if (Math.abs(w - width) < 2 && Math.abs(h - height) < 2) return;
+      width = w;
+      height = h;
+      const mobileNow = window.innerWidth <= 900;
+      controls.enabled = !(isCoarsePointer || mobileNow);
+      canvasEl.style.touchAction = isCoarsePointer || mobileNow ? 'pan-y' : 'none';
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.innerWidth <= 768 ? 1.5 : 2));
+      renderer.setPixelRatio(
+        isSoftwareGpu ? 0.75 : Math.min(window.devicePixelRatio || 1, mobileNow ? 1.45 : 2)
+      );
       renderer.setSize(w, h);
     };
     const ro = new ResizeObserver(onResize);
@@ -281,6 +350,9 @@ export default function HardwareTrackerCanvas({ explodeRef, reducedMotion }) {
       cancelAnimationFrame(rafId);
       obs.disconnect();
       ro.disconnect();
+      canvasEl.removeEventListener('touchstart', onTouchStart);
+      canvasEl.removeEventListener('touchmove', onTouchMove);
+      canvasEl.removeEventListener('touchend', onTouchEnd);
       controls.dispose();
       disposables.forEach((d) => d.dispose());
       envRT.dispose();

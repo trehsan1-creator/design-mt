@@ -8,6 +8,16 @@ function clamp(v, min, max) {
   return Math.max(min, Math.min(max, v));
 }
 
+function evalCubic1D(p0, p1, p2, p3, t) {
+  const mt = 1 - t;
+  return (
+    mt * mt * mt * p0 +
+    3 * mt * mt * t * p1 +
+    3 * mt * t * t * p2 +
+    t * t * t * p3
+  );
+}
+
 export default function Hero3DStage() {
   const reducedMotion = usePrefersReducedMotion();
   const trackRef = useRef(null);
@@ -16,6 +26,8 @@ export default function Hero3DStage() {
   const pointerRef = useRef({ x: 0, y: 0 });
   const pulseIdRef = useRef(0);
   const copyRef = useRef(null);
+  const stickyBoundsRef = useRef(null);
+  const ptrRafRef = useRef(0);
 
   const svgRef = useRef(null);
   const skyArcRef = useRef(null);
@@ -26,116 +38,211 @@ export default function Hero3DStage() {
   const glowPathRef = useRef(null);
   const strokePathRef = useRef(null);
   const handoffSparkRef = useRef(null);
+  const gatewayCacheRef = useRef({
+    w: 0,
+    h: 0,
+    exitX: -999,
+    exitY: -999,
+    skyX: -999,
+    skyY: -999,
+    c1x: 0,
+    c1y: 0,
+    c2x: 0,
+    c2y: 0,
+    endX: 0,
+    endY: 0,
+    lastDash: '',
+    lastSkyOp: '',
+    lastSparkOp: '',
+    lastSparkTf: '',
+  });
 
   useEffect(() => {
-    const updateScroll = () => {
+    let scrollable = 520;
+    let lastFadeStr = '';
+    let lastYStr = '';
+
+    const measureTrack = () => {
       if (!trackRef.current) return;
-      const scrollTop = Math.max(0, window.scrollY || window.pageYOffset || 0);
       const vh = window.innerHeight || 800;
-      const scrollable = Math.max(240, trackRef.current.offsetHeight - vh);
+      scrollable = Math.max(240, trackRef.current.offsetHeight - vh);
+      stickyBoundsRef.current = null;
+    };
+
+    const updateScroll = () => {
+      const scrollTop = Math.max(0, window.scrollY || window.pageYOffset || 0);
       const p = scrollTop <= 4 ? 0 : clamp((scrollTop - 4) / scrollable, 0, 1);
       scrollProgressRef.current = p;
 
       const fade = p <= 0.08 ? 1 : clamp(1 - (p - 0.08) * 1.85, 0, 1);
-      if (stickyRef.current) {
-        stickyRef.current.style.setProperty('--hero-copy-op', fade.toFixed(3));
+      const fadeStr = fade.toFixed(3);
+      const yStr = `${(p * 26).toFixed(1)}px`;
+
+      if (fadeStr !== lastFadeStr) {
+        lastFadeStr = fadeStr;
+        if (stickyRef.current) {
+          stickyRef.current.style.setProperty('--hero-copy-op', fadeStr);
+        }
+        if (copyRef.current) {
+          copyRef.current.style.setProperty('--hero-copy-op', fadeStr);
+        }
       }
-      if (copyRef.current) {
-        copyRef.current.style.setProperty('--hero-copy-op', fade.toFixed(3));
-        copyRef.current.style.setProperty('--hero-copy-y', `${(p * 26).toFixed(1)}px`);
+      if (yStr !== lastYStr && copyRef.current) {
+        lastYStr = yStr;
+        copyRef.current.style.setProperty('--hero-copy-y', yStr);
       }
     };
 
+    measureTrack();
     updateScroll();
+
+    const ro = new ResizeObserver(() => {
+      measureTrack();
+      updateScroll();
+    });
+    if (trackRef.current) ro.observe(trackRef.current);
+
     window.addEventListener('scroll', updateScroll, { passive: true });
-    window.addEventListener('resize', updateScroll, { passive: true });
     return () => {
+      ro.disconnect();
+      if (ptrRafRef.current) cancelAnimationFrame(ptrRafRef.current);
       window.removeEventListener('scroll', updateScroll);
-      window.removeEventListener('resize', updateScroll);
     };
   }, []);
 
   const handleGatewayScreenUpdate = useCallback(
     (exitX, exitY, skyX, skyY, w, h, corridorAppear, smoothScroll) => {
       if (!svgRef.current || !strokePathRef.current) return;
-      svgRef.current.setAttribute('viewBox', `0 0 ${w} ${h}`);
+      const cache = gatewayCacheRef.current;
 
-      if (skyArcRef.current && skyStrokeRef.current) {
-        const satStartX = Math.min(w - 24, skyX + w * 0.14);
-        const satStartY = Math.max(24, skyY - h * 0.1);
-        const dSat = `M ${satStartX.toFixed(1)},${satStartY.toFixed(1)} C ${(satStartX - w * 0.06).toFixed(1)},${(satStartY + h * 0.07).toFixed(1)} ${(skyX + 34).toFixed(1)},${(skyY - 10).toFixed(1)} ${skyX.toFixed(1)},${skyY.toFixed(1)}`;
-        skyArcRef.current.setAttribute('d', dSat);
-        skyStrokeRef.current.setAttribute('d', dSat);
-        skyStrokeRef.current.setAttribute('opacity', `${(corridorAppear * 0.78).toFixed(3)}`);
+      if (w !== cache.w || h !== cache.h) {
+        cache.w = w;
+        cache.h = h;
+        svgRef.current.setAttribute('viewBox', `0 0 ${w} ${h}`);
+        cache.exitX = -999;
       }
 
-      const endX = w * 0.5;
-      const endY = h;
-      const spanY = Math.max(54, endY - exitY);
-      const isCompact = w <= 900;
-      const bankPush = isCompact ? 54 : Math.min(96, Math.abs(endX - exitX) * 0.4 + 46);
-      const c1x = isCompact ? exitX - bankPush : exitX - bankPush * 0.5;
-      const c1y = exitY + spanY * 0.36;
-      const c2x = isCompact ? endX + bankPush : endX + bankPush * 0.72;
-      const c2y = endY - spanY * 0.34;
+      const geomMoved =
+        Math.abs(exitX - cache.exitX) > 0.25 ||
+        Math.abs(exitY - cache.exitY) > 0.25 ||
+        Math.abs(skyX - cache.skyX) > 0.25 ||
+        Math.abs(skyY - cache.skyY) > 0.25;
 
-      const dMain = `M ${exitX.toFixed(1)},${exitY.toFixed(1)} C ${c1x.toFixed(1)},${c1y.toFixed(1)} ${c2x.toFixed(1)},${c2y.toFixed(1)} ${endX.toFixed(1)},${endY.toFixed(1)}`;
-      const dLaneL = `M ${(exitX - 10).toFixed(1)},${exitY.toFixed(1)} C ${(c1x - 11).toFixed(1)},${c1y.toFixed(1)} ${(c2x - 9).toFixed(1)},${c2y.toFixed(1)} ${(endX - 7).toFixed(1)},${endY.toFixed(1)}`;
-      const dLaneR = `M ${(exitX + 10).toFixed(1)},${exitY.toFixed(1)} C ${(c1x + 11).toFixed(1)},${c1y.toFixed(1)} ${(c2x + 9).toFixed(1)},${c2y.toFixed(1)} ${(endX + 7).toFixed(1)},${endY.toFixed(1)}`;
+      if (geomMoved) {
+        cache.exitX = exitX;
+        cache.exitY = exitY;
+        cache.skyX = skyX;
+        cache.skyY = skyY;
 
-      if (railLeftRef.current) railLeftRef.current.setAttribute('d', dLaneL);
-      if (railRightRef.current) railRightRef.current.setAttribute('d', dLaneR);
-      if (pulseTrackRef.current) pulseTrackRef.current.setAttribute('d', dMain);
-      if (glowPathRef.current) glowPathRef.current.setAttribute('d', dMain);
-      strokePathRef.current.setAttribute('d', dMain);
+        if (skyArcRef.current && skyStrokeRef.current) {
+          const satStartX = Math.min(w - 24, skyX + w * 0.14);
+          const satStartY = Math.max(24, skyY - h * 0.1);
+          const dSat = `M ${satStartX.toFixed(1)},${satStartY.toFixed(1)} C ${(satStartX - w * 0.06).toFixed(1)},${(satStartY + h * 0.07).toFixed(1)} ${(skyX + 34).toFixed(1)},${(skyY - 10).toFixed(1)} ${skyX.toFixed(1)},${skyY.toFixed(1)}`;
+          skyArcRef.current.setAttribute('d', dSat);
+          skyStrokeRef.current.setAttribute('d', dSat);
+        }
+
+        const endX = w * 0.5;
+        const endY = h;
+        const spanY = Math.max(54, endY - exitY);
+        const isCompact = w <= 900;
+        const bankPush = isCompact ? 54 : Math.min(96, Math.abs(endX - exitX) * 0.4 + 46);
+        const c1x = isCompact ? exitX - bankPush : exitX - bankPush * 0.5;
+        const c1y = exitY + spanY * 0.36;
+        const c2x = isCompact ? endX + bankPush : endX + bankPush * 0.72;
+        const c2y = endY - spanY * 0.34;
+
+        cache.c1x = c1x;
+        cache.c1y = c1y;
+        cache.c2x = c2x;
+        cache.c2y = c2y;
+        cache.endX = endX;
+        cache.endY = endY;
+
+        const dMain = `M ${exitX.toFixed(1)},${exitY.toFixed(1)} C ${c1x.toFixed(1)},${c1y.toFixed(1)} ${c2x.toFixed(1)},${c2y.toFixed(1)} ${endX.toFixed(1)},${endY.toFixed(1)}`;
+        const dLaneL = `M ${(exitX - 10).toFixed(1)},${exitY.toFixed(1)} C ${(c1x - 11).toFixed(1)},${c1y.toFixed(1)} ${(c2x - 9).toFixed(1)},${c2y.toFixed(1)} ${(endX - 7).toFixed(1)},${endY.toFixed(1)}`;
+        const dLaneR = `M ${(exitX + 10).toFixed(1)},${exitY.toFixed(1)} C ${(c1x + 11).toFixed(1)},${c1y.toFixed(1)} ${(c2x + 9).toFixed(1)},${c2y.toFixed(1)} ${(endX + 7).toFixed(1)},${endY.toFixed(1)}`;
+
+        if (railLeftRef.current) railLeftRef.current.setAttribute('d', dLaneL);
+        if (railRightRef.current) railRightRef.current.setAttribute('d', dLaneR);
+        if (pulseTrackRef.current) pulseTrackRef.current.setAttribute('d', dMain);
+        if (glowPathRef.current) glowPathRef.current.setAttribute('d', dMain);
+        strokePathRef.current.setAttribute('d', dMain);
+      }
+
+      if (skyStrokeRef.current) {
+        const skyOp = (corridorAppear * 0.78).toFixed(3);
+        if (skyOp !== cache.lastSkyOp) {
+          cache.lastSkyOp = skyOp;
+          skyStrokeRef.current.setAttribute('opacity', skyOp);
+        }
+      }
 
       const draw = clamp(corridorAppear * (0.48 + smoothScroll * 0.52), 0, 1);
-      const dashOffset = `${(1 - draw).toFixed(4)}`;
-      strokePathRef.current.setAttribute('stroke-dashoffset', dashOffset);
-      if (glowPathRef.current) glowPathRef.current.setAttribute('stroke-dashoffset', dashOffset);
+      const dashOffset = (1 - draw).toFixed(4);
+      if (dashOffset !== cache.lastDash) {
+        cache.lastDash = dashOffset;
+        strokePathRef.current.setAttribute('stroke-dashoffset', dashOffset);
+        if (glowPathRef.current) glowPathRef.current.setAttribute('stroke-dashoffset', dashOffset);
+      }
 
-      if (handoffSparkRef.current && strokePathRef.current.getTotalLength) {
-        try {
-          const total = strokePathRef.current.getTotalLength();
-          if (total > 1) {
-            const pt = strokePathRef.current.getPointAtLength(total * draw);
-            if (pt) {
-              handoffSparkRef.current.setAttribute(
-                'transform',
-                `translate(${pt.x.toFixed(1)}, ${pt.y.toFixed(1)})`
-              );
-              handoffSparkRef.current.setAttribute('opacity', `${corridorAppear.toFixed(3)}`);
-            }
-          }
-        } catch {
-          // ignore layout shift
+      if (handoffSparkRef.current) {
+        const sx = evalCubic1D(cache.exitX, cache.c1x, cache.c2x, cache.endX, draw);
+        const sy = evalCubic1D(cache.exitY, cache.c1y, cache.c2y, cache.endY, draw);
+        const tf = `translate(${sx.toFixed(1)}, ${sy.toFixed(1)})`;
+        const op = corridorAppear.toFixed(3);
+        if (tf !== cache.lastSparkTf) {
+          cache.lastSparkTf = tf;
+          handoffSparkRef.current.setAttribute('transform', tf);
+        }
+        if (op !== cache.lastSparkOp) {
+          cache.lastSparkOp = op;
+          handoffSparkRef.current.setAttribute('opacity', op);
         }
       }
     },
     []
   );
 
-  const updatePointerCoords = (clientX, clientY, targetEl) => {
-    if (reducedMotion || !targetEl) return;
-    const rect = targetEl.getBoundingClientRect();
-    const px = ((clientX - rect.left) / rect.width) * 100;
-    const py = ((clientY - rect.top) / rect.height) * 100;
-    const nx = (px / 100) * 2 - 1;
-    const ny = (py / 100) * 2 - 1;
-    pointerRef.current = { x: clamp(nx, -1, 1), y: clamp(ny, -1, 1) };
+  const schedulePointerUpdate = (clientX, clientY) => {
+    if (reducedMotion || !stickyRef.current) return;
+    if (!stickyBoundsRef.current) {
+      stickyBoundsRef.current = stickyRef.current.getBoundingClientRect();
+    }
+    const rect = stickyBoundsRef.current;
+    if (!rect || rect.width < 10 || rect.height < 10) return;
+
+    const px = clamp(((clientX - rect.left) / rect.width) * 100, 0, 100);
+    const py = clamp(((clientY - rect.top) / rect.height) * 100, 0, 100);
+    pointerRef.current = {
+      x: (px / 100) * 2 - 1,
+      y: (py / 100) * 2 - 1,
+    };
+
+    if (!ptrRafRef.current) {
+      ptrRafRef.current = requestAnimationFrame(() => {
+        ptrRafRef.current = 0;
+        if (stickyRef.current) {
+          stickyRef.current.style.setProperty('--hero-spot-x', `${px.toFixed(1)}%`);
+          stickyRef.current.style.setProperty('--hero-spot-y', `${py.toFixed(1)}%`);
+        }
+      });
+    }
+  };
+
+  const refreshBounds = () => {
     if (stickyRef.current) {
-      stickyRef.current.style.setProperty('--hero-spot-x', `${px.toFixed(1)}%`);
-      stickyRef.current.style.setProperty('--hero-spot-y', `${py.toFixed(1)}%`);
+      stickyBoundsRef.current = stickyRef.current.getBoundingClientRect();
     }
   };
 
   const handlePointerMove = (e) => {
-    updatePointerCoords(e.clientX, e.clientY, e.currentTarget);
+    schedulePointerUpdate(e.clientX, e.clientY);
   };
 
   const handleTouchMove = (e) => {
     if (e.touches && e.touches[0]) {
-      updatePointerCoords(e.touches[0].clientX, e.touches[0].clientY, e.currentTarget);
+      schedulePointerUpdate(e.touches[0].clientX, e.touches[0].clientY);
     }
   };
 
@@ -154,6 +261,8 @@ export default function Hero3DStage() {
         ref={stickyRef}
         className="hero-cinema-sticky"
         data-polarity="nocturnal"
+        onPointerEnter={refreshBounds}
+        onTouchStart={refreshBounds}
         onPointerMove={handlePointerMove}
         onTouchMove={handleTouchMove}
         onPointerLeave={handlePointerLeave}

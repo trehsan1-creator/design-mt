@@ -66,6 +66,7 @@ export default function LivingCorridorChapter() {
   const highwayStrokeRef = useRef(null);
   const highwayGlowRef = useRef(null);
   const highwayCometRef = useRef(null);
+  const highwayLenRef = useRef(0);
 
   const [hoveredIdx, setHoveredIdx] = useState(null);
   const [scrollCityIdx, setScrollCityIdx] = useState(1);
@@ -79,7 +80,10 @@ export default function LivingCorridorChapter() {
     if (highwayCometRef.current && highwayStrokeRef.current?.getTotalLength) {
       if (p > 0.01 && p < 0.99) {
         try {
-          const len = highwayStrokeRef.current.getTotalLength();
+          if (!highwayLenRef.current) {
+            highwayLenRef.current = highwayStrokeRef.current.getTotalLength();
+          }
+          const len = highwayLenRef.current;
           if (len > 1) {
             const pt = highwayStrokeRef.current.getPointAtLength(len * p);
             if (pt) {
@@ -104,7 +108,7 @@ export default function LivingCorridorChapter() {
     CORRIDOR_NODES.forEach((n, idx) => {
       if (p >= n.threshold) reached = idx;
     });
-    setScrollCityIdx(reached);
+    setScrollCityIdx((prev) => (prev === reached ? prev : reached));
   });
 
   const activeIdx = hoveredIdx !== null ? hoveredIdx : scrollCityIdx;

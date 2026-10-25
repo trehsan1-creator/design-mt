@@ -306,7 +306,7 @@ export default function HeroEmblemCanvas({
     const isSoftwareGpu = /swiftshader|llvmpipe|software/i.test(rendererInfo);
 
     renderer.setPixelRatio(
-      isSoftwareGpu ? 0.75 : Math.min(window.devicePixelRatio || 1, isCompactInit ? 1.6 : 2)
+      isSoftwareGpu ? 0.75 : Math.min(window.devicePixelRatio || 1, isCompactInit ? 1.5 : 2)
     );
     renderer.setSize(width, height);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -370,8 +370,8 @@ export default function HeroEmblemCanvas({
       bevelThickness: 8.5,
       bevelSize: 5.2,
       bevelOffset: -1.1,
-      bevelSegments: isSoftwareGpu ? 2 : 5,
-      curveSegments: isSoftwareGpu ? 14 : 26,
+      bevelSegments: isSoftwareGpu ? 2 : isCompactInit ? 3 : 5,
+      curveSegments: isSoftwareGpu ? 14 : isCompactInit ? 18 : 26,
     });
     sharedGeo.translate(0, 0, -19);
 
@@ -553,7 +553,7 @@ export default function HeroEmblemCanvas({
 
     const tick = (now) => {
       rafId = requestAnimationFrame(tick);
-      if (!inView) return;
+      if (!inView || document.hidden) return;
 
       const elapsed = Math.max(0, (now - startTime) * 0.001);
       const isReduced = Boolean(reducedMotion);
@@ -718,14 +718,17 @@ export default function HeroEmblemCanvas({
 
     const ro = new ResizeObserver(() => {
       if (!container) return;
-      width = container.clientWidth || window.innerWidth || 1280;
-      height = container.clientHeight || window.innerHeight || 800;
+      const nextW = container.clientWidth || window.innerWidth || 1280;
+      const nextH = container.clientHeight || window.innerHeight || 800;
+      if (Math.abs(nextW - width) < 2 && Math.abs(nextH - height) < 2) return;
+      width = nextW;
+      height = nextH;
       const compact = width <= 900;
       camera.aspect = width / height;
       camera.position.z = compact ? 860 : 820;
       camera.updateProjectionMatrix();
       renderer.setPixelRatio(
-        isSoftwareGpu ? 0.75 : Math.min(window.devicePixelRatio || 1, compact ? 1.6 : 2)
+        isSoftwareGpu ? 0.75 : Math.min(window.devicePixelRatio || 1, compact ? 1.5 : 2)
       );
       renderer.setSize(width, height);
     });
