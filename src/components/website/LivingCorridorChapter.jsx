@@ -11,9 +11,9 @@ const CORRIDOR_NODES = [
   {
     id: 'tabriz',
     city: 'تبریز',
-    corridor: 'آزادراه شمال‌غرب · قوس کلوتوئید ۱.۲°',
-    temp: '-۱۸.۲°C زنجیره سرد',
-    eta: 'در حال حرکت به‌سمت قزوین',
+    corridor: 'آزادراه شمال‌غرب · محموله صادراتی سردخانه‌ای',
+    temp: '-۱۸.۲°C زنجیره سرد پایدار',
+    eta: 'زمان تحویل تخمینی: ۴ ساعت دیگر در قزوین',
     x: 32,
     y: 20,
     threshold: 0.18,
@@ -24,9 +24,9 @@ const CORRIDOR_NODES = [
   {
     id: 'tehran',
     city: 'تهران',
-    corridor: 'کمربندی آزادگان · تبادل بار مرکزی',
-    temp: '+۴.۰°C کابین ایزوله',
-    eta: 'عبور از دروازه هوشمند بدون توقف',
+    corridor: 'کمربندی آزادگان · هاب توزیع مرکزی',
+    temp: '+۴.۰°C کابین دارو و لبنیات',
+    eta: 'عبور از گیت هوشمند بدون معطلی',
     x: 44,
     y: 39,
     threshold: 0.4,
@@ -37,9 +37,9 @@ const CORRIDOR_NODES = [
   {
     id: 'isfahan',
     city: 'اصفهان',
-    corridor: 'کریدور مرکزی شمال-جنوب · پایداری کامل',
-    temp: '-۱۹.۰°C زنجیره سرد',
-    eta: '۲۱۰ کیلومتر تا شیراز',
+    corridor: 'کریدور شمال-جنوب · رانندگی ایمن بدون تخلف',
+    temp: '-۱۹.۰°C زنجیره سرد پایدار',
+    eta: '۲۱۰ کیلومتر تا ایستگاه بعدی',
     x: 57,
     y: 56.5,
     threshold: 0.62,
@@ -50,9 +50,9 @@ const CORRIDOR_NODES = [
   {
     id: 'bandar',
     city: 'بندرعباس',
-    corridor: 'پایانه شهید رجایی · قفل مقصد',
-    temp: '+۲.۱°C محموله حساس',
-    eta: 'آماده تخلیه در اسکله شماره ۴',
+    corridor: 'بندر شهید رجایی · تایید نهایی تحویل بار',
+    temp: '+۲.۱°C ثبت سلامت کامل محموله',
+    eta: 'تخلیه در اسکله شماره ۴ تکمیل شد',
     x: 51.5,
     y: 71.5,
     threshold: 0.78,
@@ -78,13 +78,21 @@ export default function LivingCorridorChapter() {
 
     if (highwayCometRef.current && highwayStrokeRef.current?.getTotalLength) {
       if (p > 0.01 && p < 0.99) {
-        const len = highwayStrokeRef.current.getTotalLength();
-        const pt = highwayStrokeRef.current.getPointAtLength(len * p);
-        highwayCometRef.current.setAttribute(
-          'transform',
-          `translate(${pt.x.toFixed(1)}, ${pt.y.toFixed(1)})`
-        );
-        highwayCometRef.current.setAttribute('opacity', '1');
+        try {
+          const len = highwayStrokeRef.current.getTotalLength();
+          if (len > 1) {
+            const pt = highwayStrokeRef.current.getPointAtLength(len * p);
+            if (pt) {
+              highwayCometRef.current.setAttribute(
+                'transform',
+                `translate(${pt.x.toFixed(1)}, ${pt.y.toFixed(1)})`
+              );
+              highwayCometRef.current.setAttribute('opacity', '1');
+            }
+          }
+        } catch {
+          highwayCometRef.current.setAttribute('opacity', '0');
+        }
       } else {
         highwayCometRef.current.setAttribute('opacity', '0');
       }
@@ -108,13 +116,16 @@ export default function LivingCorridorChapter() {
         <div className="story-chapter-head">
           <LogoAnatomyBadge
             activeParts={['p0']}
-            code="فصل ۰۲"
-            elementTitle="کمان کلوتوئیدی لوگو (R = 117.6)"
-            morphTarget="هندسه قوس آزادراه‌های ایران"
+            code="گام ۰۲"
+            elementTitle="اشراف سراسری بدون یک تماس تلفنی"
+            morphTarget="اتاق فرمان کریدورهای ترانزیتی ایران"
           />
           <h2 className="story-chapter-title">
-            کمانِ کلوتوئیدی لوگو باز می‌شود و شریانِ تبریز تا بندرعباس را می‌سازد.
+            تمام ناوگانِ تبریز تا بندرعباس، زنده جلوی چشم شماست.
           </h2>
+          <p className="story-chapter-sub">
+            روی هر شهر بزنید تا سرعت، دمای یخچال، پلاک خودرو و زمان دقیق تحویل محموله را در لحظه ببینید.
+          </p>
         </div>
 
         <PaintedCard
@@ -131,7 +142,6 @@ export default function LivingCorridorChapter() {
               className="corridor-3d-slab__svg"
               aria-hidden="true"
             >
-              {/* شبکه توپوگرافی و قوس‌های کلوتوئیدی منشعب از قطعه اول لوگو (LOGO_PARTS[0]) */}
               <g transform="translate(26, 24) scale(1.45)" className="corridor-clothoid-origin">
                 <path d={LOGO_PARTS[0].d} />
               </g>
@@ -191,7 +201,6 @@ export default function LivingCorridorChapter() {
               );
             })}
 
-            {/* پنل شیشه‌ای زنده اطلاعات واحد انتخاب‌شده در کریدور */}
             <div className="corridor-telemetry-dock">
               <div className="corridor-telemetry-dock__main">
                 <StatusChip status={activeNode.status} pulse size="sm">

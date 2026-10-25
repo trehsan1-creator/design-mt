@@ -1051,7 +1051,7 @@
 /* 1. Full-Bleed Sticky 3D Hero Stage & Gateway Highway */
 .hero-cinema-track {
   position: relative;
-  min-block-size: 138vh;
+  min-block-size: 188vh;
   margin-block-start: -88px;
 }
 
@@ -2575,21 +2575,285 @@
   }
 }
 
-@media (max-width: 640px) {
+/* ═══════════════════════════════════════════════════════════════════
+   9. Tectonic Spotlight, Progressive Signal-Forged Cards,
+      Highway Customer Waypoints & Unobstructed Mobile Hero Stage
+   ═══════════════════════════════════════════════════════════════════ */
+
+.hero-cinema-sticky {
+  --hero-spot-x: 34%;
+  --hero-spot-y: 38%;
+}
+
+.hero-interactive-spotlight {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(
+    480px circle at var(--hero-spot-x) var(--hero-spot-y),
+    color-mix(in srgb, var(--ds-color-signal-orange) 17%, transparent) 0%,
+    color-mix(in srgb, var(--ds-status-corridor) 8%, transparent) 44%,
+    transparent 74%
+  );
+}
+
+.hero-painter-handoff__pulse,
+.story-painter-svg__pulse {
+  fill: none;
+  stroke: var(--ds-sand-50);
+  stroke-width: 2;
+  stroke-dasharray: 3 22;
+  stroke-linecap: round;
+  animation: signalPacketStream 2s linear infinite;
+}
+
+.story-painter-svg__cyan-lane {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ds-status-corridor) 34%, transparent);
+  stroke-width: 1.3;
+  stroke-dasharray: 5 10;
+}
+
+@keyframes signalPacketStream {
+  to {
+    stroke-dashoffset: -50;
+  }
+}
+
+/* بج تعاملی لمس تندیس در موبایل (در دسکتاپ مخفی است) */
+.hero-mobile-touch-chip {
+  display: none;
+}
+
+/* شکل‌گیری زنده کامپوننت‌ها با ورود مسیر سیگنال (Blueprint -> Laser Forge -> Solid Surface) */
+.painted-card__blueprint {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--ds-radius-card-lg);
+  border: 1.5px dashed color-mix(in srgb, var(--ds-navy-600) 22%, transparent);
+  background:
+    repeating-linear-gradient(
+      -26.84deg,
+      color-mix(in srgb, var(--ds-navy-600) 3%, transparent) 0,
+      color-mix(in srgb, var(--ds-navy-600) 3%, transparent) 1px,
+      transparent 1px,
+      transparent 16px
+    );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 1;
+  opacity: calc(1 - var(--card-rise, 1) * 0.92);
+}
+
+.painted-card[data-tone="command"] .painted-card__blueprint {
+  border-color: color-mix(in srgb, var(--ds-color-signal-orange) 32%, transparent);
+  background: color-mix(in srgb, var(--ds-navy-900) 26%, transparent);
+}
+
+.painted-card__blueprint-tag {
+  padding: 5px 14px;
+  border-radius: var(--ds-radius-capsule);
+  background: color-mix(in srgb, var(--ds-sand-50) 86%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ds-navy-600) 14%, transparent);
+  font-size: var(--ds-text-xs);
+  font-weight: var(--ds-weight-bold);
+  color: var(--ds-navy-500);
+}
+
+.painted-card__forge-horizon {
+  position: absolute;
+  inset-inline: 10px;
+  inset-block-start: calc(var(--card-rise, 1) * 100%);
+  block-size: 3px;
+  border-radius: var(--ds-radius-capsule);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--ds-color-signal-orange) 18%,
+    var(--ds-sand-50) 50%,
+    var(--ds-color-signal-orange) 82%,
+    transparent 100%
+  );
+  box-shadow: var(--ds-shadow-glow-accent);
+  pointer-events: none;
+  z-index: 8;
+  opacity: 0;
+  transform: translateY(-50%);
+}
+
+.painted-card[data-awake="true"]:not([data-formed="true"]) .painted-card__forge-horizon {
+  opacity: 1;
+}
+
+.painted-card__surface {
+  position: relative;
+  z-index: 2;
+  clip-path: inset(0 0 calc((1 - var(--card-rise, 1)) * 100%) 0 round var(--ds-radius-card-lg));
+  transform:
+    perspective(1100px)
+    translateY(calc((1 - var(--card-rise, 1)) * 10px))
+    rotateX(var(--card-rx, 0deg))
+    rotateY(var(--card-ry, 0deg));
+  opacity: 1;
+}
+
+/* ایستگاه‌های مفهومی زنده مشتری در پیچ‌وخم مسیر بین کامپوننت‌ها */
+.highway-waypoints-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9;
+}
+
+.highway-waypoint-pill {
+  position: absolute;
+  left: var(--wp-x, 50%);
+  top: var(--wp-top, 0px);
+  transform: translate(-50%, -50%) scale(0.92);
+  display: none;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px 6px 10px;
+  border-radius: var(--ds-radius-capsule);
+  background: color-mix(in srgb, var(--ds-sand-50) 94%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ds-navy-600) 16%, transparent);
+  box-shadow: var(--ds-shadow-cushion-light);
+  white-space: nowrap;
+  opacity: 0.42;
+  transition:
+    opacity var(--ds-dur-morph) var(--ds-ease-clothoid-cruise),
+    transform var(--ds-dur-morph) var(--ds-ease-spring-lock),
+    border-color var(--ds-dur-morph) var(--ds-ease-clothoid-cruise),
+    background var(--ds-dur-morph) var(--ds-ease-clothoid-cruise);
+}
+
+.highway-waypoint-pill[data-passed="true"] {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  background: var(--ds-navy-800);
+  border-color: var(--ds-color-signal-orange);
+  box-shadow: var(--ds-shadow-card);
+}
+
+.highway-waypoint-pill__dot {
+  inline-size: 8px;
+  block-size: 8px;
+  border-radius: var(--ds-radius-capsule);
+  background: color-mix(in srgb, var(--ds-navy-600) 28%, transparent);
+  flex-shrink: 0;
+}
+
+.highway-waypoint-pill[data-passed="true"] .highway-waypoint-pill__dot {
+  background: var(--ds-color-signal-orange);
+  box-shadow: var(--ds-shadow-glow-dot);
+}
+
+.highway-waypoint-pill__code {
+  font-size: var(--ds-text-xs);
+  font-weight: var(--ds-weight-black);
+  color: var(--ds-orange-800);
+}
+
+.highway-waypoint-pill[data-passed="true"] .highway-waypoint-pill__code {
+  color: var(--ds-orange-300);
+}
+
+.highway-waypoint-pill__title {
+  font-size: var(--ds-text-xs);
+  font-weight: var(--ds-weight-semibold);
+  color: var(--ds-navy-600);
+}
+
+.highway-waypoint-pill[data-passed="true"] .highway-waypoint-pill__title {
+  color: var(--ds-sand-50);
+}
+
+/* چیدمان دوتکه باز و جذاب در موبایل و پنل‌های باریک (<=900px) — لوگو کاملاً سالم در فضای باز بالا و نوشته‌ها تمیز و پرکنتراست در پایین */
+@media (max-width: 900px) {
   .hero-cinema-track {
-    min-block-size: 124vh;
+    min-block-size: 182vh;
   }
+
   .hero-cinema-sticky {
+    block-size: 100vh;
+    block-size: 100svh;
+    min-block-size: 590px;
     align-items: flex-end;
-    padding-block-end: var(--ds-space-3s);
+    padding-block-end: 28px;
   }
+
+  .hero-cinema-overlay {
+    padding-block-start: 0;
+    justify-content: center;
+  }
+
+  .hero-mobile-touch-chip {
+    position: absolute;
+    inset-block-start: 44%;
+    inset-inline: 0;
+    margin-inline: auto;
+    inline-size: fit-content;
+    z-index: 4;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 14px;
+    border-radius: var(--ds-radius-capsule);
+    background: color-mix(in srgb, var(--ds-navy-900) 86%, transparent);
+    border: 1px solid color-mix(in srgb, var(--ds-color-signal-orange) 42%, transparent);
+    backdrop-filter: blur(10px);
+    color: var(--ds-sand-50);
+    font-size: var(--ds-text-xs);
+    font-weight: var(--ds-weight-semibold);
+    opacity: var(--hero-copy-op, 1);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
   .hero-cinema-copy {
-    max-inline-size: 100%;
-    padding: var(--ds-space-1s);
+    inline-size: 100%;
+    max-inline-size: 520px;
+    gap: 8px;
+    padding: 15px 16px;
     border-radius: var(--ds-radius-card-md);
-    background: color-mix(in srgb, var(--ds-navy-900) 72%, transparent);
-    backdrop-filter: blur(14px);
+    background: color-mix(in srgb, var(--ds-navy-900) 93%, transparent);
+    border: 1px solid color-mix(in srgb, var(--ds-sand-100) 20%, transparent);
+    box-shadow: var(--ds-shadow-card);
+    backdrop-filter: blur(18px);
   }
+
+  .hero-cinema-title {
+    font-size: clamp(1.62rem, 5.2vw, 2.15rem);
+    line-height: 1.18;
+  }
+
+  .hero-cinema-lead {
+    font-size: var(--ds-text-xs);
+    line-height: 1.72;
+    color: var(--ds-sand-100);
+  }
+
+  .hero-concept-flow {
+    padding-block: 5px;
+    padding-inline: 10px;
+    gap: 6px;
+    background: color-mix(in srgb, var(--ds-navy-800) 88%, transparent);
+  }
+
+  .hero-cinema-cta .ds-btn {
+    inline-size: 100%;
+    justify-content: center;
+  }
+
+  .story-stagger-grid {
+    gap: 88px;
+  }
+}
+
+@media (max-width: 640px) {
   .finale-compass-cluster {
     flex-direction: column;
     align-items: flex-start;
@@ -2612,6 +2876,25 @@
     max-inline-size: calc(100vw - 24px);
   }
   .story-narrator-pill__label {
-    font-size: var(--ds-text-sm);
+    font-size: var(--ds-text-xs);
+  }
+  .highway-waypoint-pill {
+    max-inline-size: calc(100vw - 32px);
+    padding: 5px 11px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .painted-card__surface {
+    clip-path: none !important;
+    transform: none !important;
+  }
+  .painted-card__forge-horizon,
+  .painted-card__blueprint {
+    display: none !important;
+  }
+  .hero-painter-handoff__pulse,
+  .story-painter-svg__pulse {
+    animation: none !important;
   }
 }

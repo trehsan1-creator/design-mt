@@ -31,12 +31,12 @@ export default function SmartFinaleChapter() {
         <div className="story-chapter-head">
           <LogoAnatomyBadge
             activeParts={['p3']}
-            code="فصل ۰۴"
-            elementTitle="تیغه مکان‌نمای ۱۳۶.۵۴° لوگو"
-            morphTarget="عقربه قطب‌نمای سود و فرمان شروع"
+            code="گام ۰۴"
+            elementTitle="بازگشت کامل سرمایه در کمتر از ۴ ماه"
+            morphTarget="ماشین‌حساب شفاف سود ناوگان"
           />
           <h2 className="story-chapter-title">
-            تیغهٔ پیکان لوگو به عقربهٔ قطب‌نمای سود تبدیل می‌شود و مدار را کامل می‌کند.
+            دقیق ببینید سامانه چقدر از هزینه‌های سالانهٔ ناوگان شما کم می‌کند.
           </h2>
         </div>
 

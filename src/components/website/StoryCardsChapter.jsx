@@ -13,7 +13,7 @@ const FLEET_PLATES = [
     iranCode: '۱۱',
     route: 'تهران — بندرعباس',
     speed: '۸۴',
-    weight: '۲۲.۴ تن',
+    weight: '۲۲.۴ تن · ثبت خودکار باسکول',
   },
   {
     digitsLeft: '۶۲',
@@ -22,7 +22,7 @@ const FLEET_PLATES = [
     iranCode: '۲۱',
     route: 'تبریز — قزوین',
     speed: '۷۹',
-    weight: '۱۸.۶ تن',
+    weight: '۱۸.۶ تن · خروج از انبار مرکزی',
   },
   {
     digitsLeft: '۱۹',
@@ -31,7 +31,7 @@ const FLEET_PLATES = [
     iranCode: '۵۳',
     route: 'اصفهان — شیراز',
     speed: '۹۱',
-    weight: '۲۴.۱ تن',
+    weight: '۲۴.۱ تن · تحویل بدون توقف',
   },
 ];
 
@@ -77,17 +77,16 @@ export default function StoryCardsChapter() {
     <section id="story-cards" className="story-sand-chapter" data-polarity="daylight">
       <div className="site-container">
         <div className="story-chapter-head">
-          <span className="story-step-kicker">۰۱ · کالبدشکافی کاربردی لوگو</span>
+          <span className="story-step-kicker">گام ۰۱ · شکل‌گیری ابزارها با ورود سیگنال</span>
           <h2 className="story-chapter-title">
-            عناصر هندسی لوگو جدا می‌شوند و ابزارهای زندهٔ ناوگان را می‌سازند.
+            با ورود مسیر، هر دغدغهٔ ناوگان به یک ابزارِ کنترلی زنده تبدیل می‌شود.
           </h2>
           <p className="story-chapter-sub">
-            هر قطعه از نشان فرزام یک وظیفهٔ مهندسی دارد؛ با رسیدن خط سیگنال، هر عنصر به یک حسگر تعاملی تبدیل می‌شود.
+            اسکرول کنید تا ببینید چگونه خط سیگنال هر کامپوننت را از بالا به پایین می‌سازد و سه گلوگاه پرهزینهٔ ناوگان را حل می‌کند.
           </p>
         </div>
 
         <div className="story-stagger-grid">
-          {/* کارت ۰۱: ستون عمودی دروازه لوگو (p1) -> ستون اسکنر لیزری پلاک‌خوان */}
           <PaintedCard
             nodeId="node-plate"
             tone="alabaster"
@@ -97,18 +96,18 @@ export default function StoryCardsChapter() {
             <div className="smart-card-toprow">
               <LogoAnatomyBadge
                 activeParts={['p1']}
-                code="عنصر ۰۱"
-                elementTitle="ستون دروازه لوگو"
-                morphTarget="پرتال لیزری پلاک‌خوان"
+                code="مزیت ۰۱"
+                elementTitle="حذف صف و قبض کاغذی انبار"
+                morphTarget="پلاک‌خوان لیزری + باسکول"
               />
               <StatusChip status={plateLocked ? 'moving' : 'signal'} pulse size="sm">
-                {plateLocked ? `قفل ۰.۰۲ ثانیه · ${activePlate.speed} km/h` : 'آماده اسکن'}
+                {plateLocked ? `ثبت ۰.۰۲ ثانیه · ${activePlate.speed} km/h` : 'آماده اسکن'}
               </StatusChip>
             </div>
 
-            <h3 className="smart-card-title">تبدیل ستون لوگو به دروازهٔ اسکن پلاک</h3>
+            <h3 className="smart-card-title">ثبت خودکار ورود، خروج و وزن بار بدون توقف کامیون</h3>
             <p className="smart-card-desc">
-              ستون عمودی سمت چپ لوگو دقیقاً در نقش دکل دروازهٔ جاده‌ای قرار می‌گیرد و پرتو لیزر را روی پلاک عبوری می‌تاباند. روی پلاک کلیک کنید:
+              به‌محض عبور خودرو از دروازه، پلاک، ساعت دقیق و تناژ باسکول ثبت می‌شود. روی پلاک بزنید:
             </p>
 
             <button
@@ -119,7 +118,6 @@ export default function StoryCardsChapter() {
               onClick={() => setPlateIdx((i) => (i + 1) % FLEET_PLATES.length)}
               aria-label="اسکن پلاک خودرو بعدی ناوگان"
             >
-              {/* قطعه واقعی ستون دروازه لوگو (LOGO_PARTS[1]) که کالبد فیزیکی دکل اسکنر را ساخته است */}
               <div className="gantry-scanner-well__pillar" aria-hidden="true">
                 <svg viewBox="0 118 44 212" className="gantry-scanner-well__pillar-svg">
                   <path d={LOGO_PARTS[1].d} fill="currentColor" />
@@ -137,13 +135,12 @@ export default function StoryCardsChapter() {
                 />
                 <div className="gantry-scanner-well__telemetry">
                   <strong>{activePlate.route}</strong>
-                  <span>باسکول محوری: {activePlate.weight} · کلیک برای واحد بعدی</span>
+                  <span>{activePlate.weight} · کلیک برای خودروی بعدی</span>
                 </div>
               </div>
             </button>
           </PaintedCard>
 
-          {/* کارت ۰۲: بازوی افقی افق لوگو (p2) -> ریل کالیبراسیون تیغه‌های -۲۶.۸۴ درجه سوخت */}
           <PaintedCard
             nodeId="node-fuel"
             tone="alabaster"
@@ -153,38 +150,37 @@ export default function StoryCardsChapter() {
             <div className="smart-card-toprow">
               <LogoAnatomyBadge
                 activeParts={['p2']}
-                code="عنصر ۰۲"
-                elementTitle="بازوی افقی لوگو"
-                morphTarget="ریل تیغه‌های -۲۶.۸۴° سوخت"
+                code="مزیت ۰۲"
+                elementTitle="جلوگیری از سرقت و هدررفت سوخت"
+                morphTarget="سنسور باک + دیاگ ECU"
               />
               <span className="smart-card-metric">{toFa(savedPercent)}٪ کاهش مصرف</span>
             </div>
 
-            <h3 className="smart-card-title">تبدیل بازوی افق به کنسول کالیبراسیون سوخت</h3>
+            <h3 className="smart-card-title">تشخیص آنی تخلیهٔ شبانه باک و رانندگی پرمصرف</h3>
             <p className="smart-card-desc">
-              بازوی افقی بالای لوگو به ریل مرجع تبدیل شده و به ۱۴ تیغهٔ موازی با زاویهٔ برند (`-۲۶.۸۴°`) برش می‌خورد. موس را روی تیغه‌ها بکشید:
+              هرگونه افت ناگهانی سطح سوخت در توقف‌ها را با مکان دقیق هشدار می‌دهد. روی تیغه‌ها بکشید:
             </p>
 
             <div
               className="smart-gauge-scrub"
               data-polarity="nocturnal"
               onPointerMove={handleGaugeScrub}
+              onClick={handleGaugeScrub}
             >
-              {/* قطعه واقعی بازوی افق لوگو (LOGO_PARTS[2]) به عنوان ریل کالیبراسیون بالای گیج */}
               <div className="horizon-wing-rail" aria-hidden="true">
                 <svg viewBox="115 -2 122 42" preserveAspectRatio="none" className="horizon-wing-rail__svg">
                   <path d={LOGO_PARTS[2].d} fill="currentColor" />
                 </svg>
                 <span className="horizon-wing-rail__tag">
-                  ذخیره ماهانه هر خودرو: {toFa(savedLiters)} لیتر
+                  صرفه‌جویی ماهانه هر خودرو: {toFa(savedLiters)} لیتر
                 </span>
               </div>
 
-              <Gauge value={fuelEfficiency} max={100} segments={14} label="بازده لحظه‌ای احتراق و دور موتور" />
+              <Gauge value={fuelEfficiency} max={100} segments={14} label="راندمان احتراق و سلامت مصرف ناوگان" />
             </div>
           </PaintedCard>
 
-          {/* کارت ۰۳: هم‌نشینی دروازه و تیغه مکان‌نما (p1 + p3) -> رادار ژئوفنس */}
           <PaintedCard
             nodeId="node-geofence"
             tone="alabaster"
@@ -193,24 +189,25 @@ export default function StoryCardsChapter() {
             <div className="smart-card-toprow">
               <LogoAnatomyBadge
                 activeParts={['p1', 'p3']}
-                code="عنصر ۰۳"
-                elementTitle="دروازه + تیغه ۱۳۶.۵۴°"
-                morphTarget="رادار حصار فضایی (Geofence)"
+                code="مزیت ۰۳"
+                elementTitle="امنیت محموله‌های حساس"
+                morphTarget="حصار جغرافیایی (Geofence)"
               />
               <StatusChip status={geofencePin.inside ? 'moving' : 'critical'} pulse size="sm">
-                {geofencePin.inside ? 'درون محدوده مجاز' : 'هشدار خروج از مرز'}
+                {geofencePin.inside ? 'در مسیر مجاز شرکت' : 'هشدار خروج از مسیر!'}
               </StatusChip>
             </div>
 
-            <h3 className="smart-card-title">تبدیل تیغهٔ لوگو به مکان‌نمای حساس به مرز</h3>
+            <h3 className="smart-card-title">هشدار فوری انحراف از مسیر و توقف غیرمجاز</h3>
             <p className="smart-card-desc">
-              قطعهٔ چهارم لوگو مستقیماً به مکان‌نمای `۱۳۶.۵۴°` ناوگان بدل می‌شود؛ موس را از حلقهٔ سبز بیرون ببرید تا واکنش آنی حصار را ببینید:
+              محدودهٔ مجاز حرکت هر خودرو را تعیین کنید؛ مکان‌نما را از حلقهٔ سبز بیرون ببرید تا هشدار آنی را ببینید:
             </p>
 
             <div
               className={`smart-geofence-pad ${geofencePin.inside ? 'is-safe' : 'is-alert'}`}
               data-polarity="nocturnal"
               onPointerMove={handleGeofenceMove}
+              onClick={handleGeofenceMove}
             >
               <svg viewBox="0 0 400 170" className="smart-geofence-pad__grid" aria-hidden="true">
                 <line x1="0" y1="85" x2="400" y2="85" />

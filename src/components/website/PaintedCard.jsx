@@ -1,13 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { usePrefersReducedMotion } from '../../utils/usePrefersReducedMotion.js';
 
-function clamp(v, min, max) {
-  return Math.max(min, Math.min(max, v));
-}
-
 /**
- * گره مدار نقاش با سوکت ورودی بالا، انشعاب دوطرفه هم‌زمان دور کادر و سوکت خروجی پایین
- * پیشرفت رسم کادر مستقیماً توسط موتور مرکزی StoryPainterRibbon هدایت می‌شود تا هماهنگی صددرصد باشد.
+ * گره کالبدساز مدار زنده:
+ * پیش از رسیدن سیگنال، فقط شبح مهندسی (Blueprint) کامپوننت دیده می‌شود؛
+ * به محض ورود خط نارنجی به سوکت بالا، پرتو افقی کالیبراسیون همراه با دو شاخه کناری پایین می‌آید
+ * و کالبد واقعی کامپوننت را میلی‌متر به میلی‌متر شکل می‌دهد.
  */
 export default function PaintedCard({
   children,
@@ -26,7 +24,6 @@ export default function PaintedCard({
   const leftSparkRef = useRef(null);
   const rightSparkRef = useRef(null);
 
-  // ساخت دو مسیر متقارن چپ و راست دقیقاً منطبق بر ابعاد پیکسلی واقعی کارت (شروع از سوکت بالا، تلاقی در سوکت پایین)
   useEffect(() => {
     const el = rootRef.current;
     if (!el) return undefined;
@@ -42,7 +39,6 @@ export default function PaintedCard({
         svgRef.current.setAttribute('viewBox', `0 0 ${w} ${h}`);
       }
 
-      // نیم‌مسیر راست: از مرکز بالا (cx, s) -> گوشه بالا راست -> پایین راست -> مرکز پایین (cx, h-s)
       const dRight = [
         `M ${cx},${s}`,
         `L ${w - r},${s}`,
@@ -52,7 +48,6 @@ export default function PaintedCard({
         `L ${cx},${h - s}`,
       ].join(' ');
 
-      // نیم‌مسیر چپ: از مرکز بالا (cx, s) -> گوشه بالا چپ -> پایین چپ -> مرکز پایین (cx, h-s)
       const dLeft = [
         `M ${cx},${s}`,
         `L ${r},${s}`,
@@ -94,8 +89,8 @@ export default function PaintedCard({
     const rect = rootRef.current.getBoundingClientRect();
     const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
     const ny = ((e.clientY - rect.top) / rect.height) * 2 - 1;
-    rootRef.current.style.setProperty('--card-rx', `${(-ny * 4.2).toFixed(2)}deg`);
-    rootRef.current.style.setProperty('--card-ry', `${(nx * 5.2).toFixed(2)}deg`);
+    rootRef.current.style.setProperty('--card-rx', `${(-ny * 4.0).toFixed(2)}deg`);
+    rootRef.current.style.setProperty('--card-ry', `${(nx * 5.0).toFixed(2)}deg`);
     rootRef.current.style.setProperty('--glare-x', `${((nx * 0.5 + 0.5) * 100).toFixed(1)}%`);
     rootRef.current.style.setProperty('--glare-y', `${((ny * 0.5 + 0.5) * 100).toFixed(1)}%`);
   };
@@ -115,12 +110,17 @@ export default function PaintedCard({
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
     >
+      {/* شبح مهندسی اولیه پیش از ورود مسیر به کامپوننت */}
+      <div className="painted-card__blueprint" aria-hidden="true">
+        <span className="painted-card__blueprint-tag">در انتظار تزریق سیگنال…</span>
+      </div>
+
       {/* سوکت ورودی سیگنال در مرکز دقیق لبه بالایی */}
       <span className="circuit-socket circuit-socket--in" data-port-in aria-hidden="true">
         <span className="circuit-socket__core" />
       </span>
 
-      {/* دو شاخه متقارن نوار نقاش که از سوکت بالا شکافته شده و در سوکت پایین به هم می‌رسند */}
+      {/* دو شاخه نوار نقاش که هم در موبایل و هم دسکتاپ هم‌زمان دور کادر کشیده می‌شوند */}
       <svg
         ref={svgRef}
         viewBox="0 0 400 260"
@@ -146,16 +146,18 @@ export default function PaintedCard({
           strokeDashoffset={reducedMotion ? '0' : '1'}
           className="painted-card__stroke"
         />
-        <circle ref={rightSparkRef} data-spark-right r="4.5" opacity="0" className="painted-card__spark" />
-        <circle ref={leftSparkRef} data-spark-left r="4.5" opacity="0" className="painted-card__spark" />
+        <circle ref={rightSparkRef} data-spark-right r="4.8" opacity="0" className="painted-card__spark" />
+        <circle ref={leftSparkRef} data-spark-left r="4.8" opacity="0" className="painted-card__spark" />
       </svg>
+
+      {/* تیغه نوری افقی که هم‌پای سیگنال پایین می‌آید و بدنه کامپوننت را شکل می‌دهد */}
+      <div className="painted-card__forge-horizon" aria-hidden="true" />
 
       <div className="painted-card__surface">
         <div className="painted-card__glare" aria-hidden="true" />
         <div className="painted-card__body">{children}</div>
       </div>
 
-      {/* سوکت خروجی سیگنال در مرکز دقیق لبه پایینی */}
       {hasBottomPort && (
         <span className="circuit-socket circuit-socket--out" data-port-out aria-hidden="true">
           <span className="circuit-socket__core" />

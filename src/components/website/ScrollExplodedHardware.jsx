@@ -71,12 +71,12 @@ export default function ScrollExplodedHardware() {
         <div className="story-chapter-head">
           <LogoAnatomyBadge
             activeParts={['p0', 'p1', 'p2', 'p3']}
-            code="فصل ۰۳"
-            elementTitle="چهارگوش نرم ۳۱.۲۵٪ + نشان کامل"
-            morphTarget="کالبد چهارلایه ردیاب سخت‌افزاری"
+            code="گام ۰۳"
+            elementTitle="ضدضربه IP68 + حافظه آفلاین ۷۲ ساعته"
+            morphTarget="کالبد چهارلایه ردیاب صنعتی"
           />
           <h2 className="story-chapter-title">
-            چهارگوشِ نرم لوگو به کالبدِ فیزیکی ردیاب تبدیل شده و لایه‌به‌لایه باز می‌شود.
+            حتی در گردنه‌های بدون آنتن، هیچ نقطه‌ای از مسیر ناوگان گم نمی‌شود.
           </h2>
         </div>
 
