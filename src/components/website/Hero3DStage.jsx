@@ -57,20 +57,37 @@ export default function Hero3DStage() {
     lastSparkTf: '',
   });
 
+  const syncHeroScrollRef = useRef(null);
+
   useEffect(() => {
     let scrollable = 520;
+    let baseTrackTop = 0;
     let lastFadeStr = '';
     let lastYStr = '';
+
+    const getAnyScrollTop = () =>
+      Math.max(
+        window.scrollY || 0,
+        window.pageYOffset || 0,
+        document.scrollingElement?.scrollTop || 0,
+        document.documentElement?.scrollTop || 0,
+        document.body?.scrollTop || 0
+      );
 
     const measureTrack = () => {
       if (!trackRef.current) return;
       const vh = window.innerHeight || 800;
       scrollable = Math.max(240, trackRef.current.offsetHeight - vh);
+      const rect = trackRef.current.getBoundingClientRect();
+      baseTrackTop = rect.top + getAnyScrollTop();
       stickyBoundsRef.current = null;
     };
 
     const updateScroll = () => {
-      const scrollTop = Math.max(0, window.scrollY || window.pageYOffset || 0);
+      if (!trackRef.current) return;
+      const rectTop = trackRef.current.getBoundingClientRect().top;
+      const byRect = Math.max(0, baseTrackTop - rectTop);
+      const scrollTop = Math.max(getAnyScrollTop(), byRect);
       const p = scrollTop <= 4 ? 0 : clamp((scrollTop - 4) / scrollable, 0, 1);
       scrollProgressRef.current = p;
 
@@ -93,6 +110,7 @@ export default function Hero3DStage() {
       }
     };
 
+    syncHeroScrollRef.current = updateScroll;
     measureTrack();
     updateScroll();
 
@@ -102,16 +120,27 @@ export default function Hero3DStage() {
     });
     if (trackRef.current) ro.observe(trackRef.current);
 
-    window.addEventListener('scroll', updateScroll, { passive: true });
+    // پشتیبانی از ژیروسکوپ موبایل برای چرخش زنده سه‌بعدی با تکان دادن گوشی
+    const onDeviceOrientation = (e) => {
+      if (e.gamma == null || e.beta == null) return;
+      const gx = clamp(e.gamma / 28, -1, 1);
+      const gy = clamp((e.beta - 42) / 28, -1, 1);
+      pointerRef.current = { x: gx, y: gy };
+    };
+
+    window.addEventListener('scroll', updateScroll, { passive: true, capture: true });
+    window.addEventListener('deviceorientation', onDeviceOrientation, { passive: true });
     return () => {
       ro.disconnect();
       if (ptrRafRef.current) cancelAnimationFrame(ptrRafRef.current);
-      window.removeEventListener('scroll', updateScroll);
+      window.removeEventListener('scroll', updateScroll, { capture: true });
+      window.removeEventListener('deviceorientation', onDeviceOrientation);
     };
   }, []);
 
   const handleGatewayScreenUpdate = useCallback(
     (exitX, exitY, skyX, skyY, w, h, corridorAppear, smoothScroll) => {
+      if (syncHeroScrollRef.current) syncHeroScrollRef.current();
       if (!svgRef.current || !strokePathRef.current) return;
       const cache = gatewayCacheRef.current;
 
@@ -205,7 +234,7 @@ export default function Hero3DStage() {
   );
 
   const schedulePointerUpdate = (clientX, clientY) => {
-    if (reducedMotion || !stickyRef.current) return;
+    if (!stickyRef.current) return;
     if (!stickyBoundsRef.current) {
       stickyBoundsRef.current = stickyRef.current.getBoundingClientRect();
     }

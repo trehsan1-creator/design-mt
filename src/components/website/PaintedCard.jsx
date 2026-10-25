@@ -168,7 +168,7 @@ export default function PaintedCard({
           data-split-right
           pathLength="1"
           strokeDasharray="1"
-          strokeDashoffset={reducedMotion ? '0' : '1'}
+          strokeDashoffset="1"
           className="painted-card__stroke"
         />
         <path
@@ -176,7 +176,7 @@ export default function PaintedCard({
           data-split-left
           pathLength="1"
           strokeDasharray="1"
-          strokeDashoffset={reducedMotion ? '0' : '1'}
+          strokeDashoffset="1"
           className="painted-card__stroke"
         />
         <circle ref={rightSparkRef} data-spark-right r="4.8" opacity="0" className="painted-card__spark" />

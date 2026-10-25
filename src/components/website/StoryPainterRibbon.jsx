@@ -446,14 +446,22 @@ export default function StoryPainterRibbon({ children }) {
     };
 
     const ptr = { x: 0, y: -9999, inside: false };
-    const onPointerMove = (e) => {
-      if (reducedMotion || e.pointerType === 'touch') return;
-      const scrollY = window.scrollY || window.pageYOffset || 0;
-      const wTop = worldDocTop - scrollY;
-      ptr.x = e.clientX;
-      ptr.y = e.clientY - wTop;
+    let lastLiveWTop = 0;
+
+    const updatePtrFromClient = (clientX, clientY) => {
+      ptr.x = clientX;
+      ptr.y = clientY - lastLiveWTop;
       ptr.inside = ptr.y >= 0 && ptr.y <= worldHeight;
       if (ptr.inside) cablesSleeping = false;
+    };
+
+    const onPointerMove = (e) => {
+      updatePtrFromClient(e.clientX, e.clientY);
+    };
+    const onTouchMove = (e) => {
+      if (e.touches && e.touches[0]) {
+        updatePtrFromClient(e.touches[0].clientX, e.touches[0].clientY);
+      }
     };
     const onPointerLeave = () => {
       ptr.inside = false;
@@ -462,7 +470,6 @@ export default function StoryPainterRibbon({ children }) {
     const onWindowResize = () => {
       cachedVh = window.innerHeight || 800;
       const nextWinW = window.innerWidth || 1280;
-      // نادیده گرفتن تغییر ارتفاع نوار آدرس مرورگر موبایل حین اسکرول و اندازه‌گیری مجدد فقط در تغییر عرض واقعی
       if (Math.abs(nextWinW - cachedWinW) >= 2) {
         measureCircuit();
       }
@@ -477,6 +484,7 @@ export default function StoryPainterRibbon({ children }) {
     };
 
     window.addEventListener('pointermove', onPointerMove, { passive: true });
+    window.addEventListener('touchmove', onTouchMove, { passive: true });
     world.addEventListener('pointerleave', onPointerLeave, { passive: true });
 
     measureCircuit();
@@ -492,13 +500,12 @@ export default function StoryPainterRibbon({ children }) {
       rafId = requestAnimationFrame(tick);
       if (document.hidden) return;
 
-      const scrollY = window.scrollY || window.pageYOffset || 0;
-      const wTop = worldDocTop - scrollY;
+      // خوانش تک‌مختصات در ابتدای فریم (قبل از هرگونه نوشتار DOM -> بدون Reflow اجباری و سازگار با هر کانتینر اسکرول موبایل)
+      const wTop = world.getBoundingClientRect().top;
+      lastLiveWTop = wTop;
       const vh = cachedVh;
 
-      const targetPlayhead = reducedMotion
-        ? worldHeight
-        : clamp(vh * 0.68 - wTop, 0, worldHeight);
+      const targetPlayhead = clamp(vh * 0.68 - wTop, 0, worldHeight);
 
       if (smoothPlayhead < 0 || Math.abs(targetPlayhead - smoothPlayhead) > 360) {
         smoothPlayhead = targetPlayhead;
@@ -523,7 +530,7 @@ export default function StoryPainterRibbon({ children }) {
 
       cablesMeta.forEach((cb) => {
         const lenY = Math.max(14, cb.endY - cb.startY);
-        const p = reducedMotion ? 1 : clamp((smoothPlayhead - cb.startY) / lenY, 0, 1);
+        const p = clamp((smoothPlayhead - cb.startY) / lenY, 0, 1);
         const dash = (1 - p).toFixed(4);
 
         if (dash !== cb.lastDash) {
@@ -555,7 +562,7 @@ export default function StoryPainterRibbon({ children }) {
       });
 
       nodesMeta.forEach((nd) => {
-        const p = reducedMotion ? 1 : clamp((smoothPlayhead - nd.topY) / nd.height, 0, 1);
+        const p = clamp((smoothPlayhead - nd.topY) / nd.height, 0, 1);
         const dash = (1 - p).toFixed(4);
         const rise = p.toFixed(3);
         const awake = p > 0.03 ? 'true' : 'false';
@@ -590,7 +597,7 @@ export default function StoryPainterRibbon({ children }) {
           nd.portOut.setAttribute('data-lit', litOut);
         }
 
-        const showSplitSparks = !reducedMotion && p > 0.02 && p < 0.98;
+        const showSplitSparks = p > 0.02 && p < 0.98;
         if (showSplitSparks) {
           if (nd.sparkRight) {
             const ptR = evalCardHalfPerimeter(nd.width, nd.height, p, true);
@@ -655,6 +662,7 @@ export default function StoryPainterRibbon({ children }) {
       cancelAnimationFrame(rafId);
       ro.disconnect();
       window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('touchmove', onTouchMove);
       world.removeEventListener('pointerleave', onPointerLeave);
       window.removeEventListener('resize', onWindowResize);
     };

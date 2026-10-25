@@ -2698,7 +2698,8 @@
   clip-path: inset(0 0 calc((1 - var(--card-rise, 1)) * 100%) 0 round var(--ds-radius-card-lg));
   transform:
     perspective(1100px)
-    translateY(calc((1 - var(--card-rise, 1)) * 10px))
+    translateY(calc((1 - var(--card-rise, 1)) * 16px))
+    scale(calc(0.97 + var(--card-rise, 1) * 0.03))
     rotateX(var(--card-rx, 0deg))
     rotateY(var(--card-ry, 0deg));
   opacity: 1;
@@ -2708,7 +2709,7 @@
   visibility: hidden;
 }
 
-/* آزادسازی ماسک سنگین clip-path پس از تکمیل شکل‌گیری کارت بدون هیچ تغییر ظاهری */
+/* آزادسازی ماسک سنگین clip-path پس از تکمیل شکل‌گیری کارت بدون حذف حرکت سه‌بعدی */
 .painted-card[data-formed="true"] .painted-card__surface {
   clip-path: none;
 }
@@ -2857,10 +2858,6 @@
     will-change: transform, opacity;
   }
 
-  .painted-card[data-formed="true"] .painted-card__surface {
-    transform: none;
-  }
-
   .story-narrator-pill {
     backdrop-filter: blur(8px);
     will-change: transform, opacity;
@@ -2926,14 +2923,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .painted-card__surface {
-    clip-path: none !important;
-    transform: none !important;
-  }
-  .painted-card__forge-horizon,
-  .painted-card__blueprint {
-    display: none !important;
-  }
   .hero-painter-handoff__pulse,
   .story-painter-svg__pulse {
     animation: none !important;
