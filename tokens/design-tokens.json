@@ -154,6 +154,14 @@
     "alabaster-stage": {
       "$value": "linear-gradient(180deg, var(--ds-sand-50) 0%, var(--ds-sand-200) 52%, var(--ds-sand-300) 100%)",
       "$type": "gradient"
+    },
+    "command-deck": {
+      "$value": "radial-gradient(circle at 82% 18%, color-mix(in srgb, var(--ds-color-signal-orange) 18%, transparent) 0%, transparent 46%), radial-gradient(circle at 18% 82%, color-mix(in srgb, var(--ds-status-corridor) 14%, transparent) 0%, transparent 52%), linear-gradient(155deg, var(--ds-navy-400) 0%, var(--ds-navy-600) 54%, var(--ds-navy-800) 100%)",
+      "$type": "gradient"
+    },
+    "cushion-card": {
+      "$value": "linear-gradient(160deg, var(--ds-sand-50) 0%, var(--ds-sand-100) 64%, var(--ds-sand-200) 100%)",
+      "$type": "gradient"
     }
   },
   "typography": {

@@ -59,6 +59,8 @@
   --ds-grad-card-nocturnal: linear-gradient(155deg, color-mix(in srgb, var(--ds-navy-400) 86%, transparent) 0%, color-mix(in srgb, var(--ds-navy-800) 94%, transparent) 100%);
   --ds-grad-hero-horizon: radial-gradient(circle at 28% 36%, color-mix(in srgb, var(--ds-navy-100) 72%, transparent) 0%, transparent 56%), radial-gradient(circle at 74% 68%, color-mix(in srgb, var(--ds-color-signal-orange) 16%, transparent) 0%, transparent 48%), linear-gradient(140.24deg, var(--ds-navy-100) 0%, var(--ds-navy-400) 46%, var(--ds-navy-300) 78%, var(--ds-navy-500) 100%);
   --ds-grad-alabaster-stage: linear-gradient(180deg, var(--ds-sand-50) 0%, var(--ds-sand-200) 52%, var(--ds-sand-300) 100%);
+  --ds-grad-command-deck: radial-gradient(circle at 82% 18%, color-mix(in srgb, var(--ds-color-signal-orange) 18%, transparent) 0%, transparent 46%), radial-gradient(circle at 18% 82%, color-mix(in srgb, var(--ds-status-corridor) 14%, transparent) 0%, transparent 52%), linear-gradient(155deg, var(--ds-navy-400) 0%, var(--ds-navy-600) 54%, var(--ds-navy-800) 100%);
+  --ds-grad-cushion-card: linear-gradient(160deg, var(--ds-sand-50) 0%, var(--ds-sand-100) 64%, var(--ds-sand-200) 100%);
   --ds-font-sans: 'Peyda', Tahoma, sans-serif;
   --ds-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --ds-weight-light: 300;

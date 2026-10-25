@@ -57,7 +57,12 @@ export default function HardwareTrackerCanvas({ explodeRef, reducedMotion }) {
     camera.position.set(270, 215, 360);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, maxDpr));
+    const gl = renderer.getContext();
+    const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+    const rendererInfo = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) || '' : '';
+    const isSoftwareGpu = /swiftshader|llvmpipe|software/i.test(rendererInfo);
+
+    renderer.setPixelRatio(isSoftwareGpu ? 0.75 : Math.min(window.devicePixelRatio || 1, maxDpr));
     renderer.setSize(width, height);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.15;
@@ -229,18 +234,25 @@ export default function HardwareTrackerCanvas({ explodeRef, reducedMotion }) {
     ];
 
     let rafId;
+    let renderedFrames = 0;
+    let lastSwRender = 0;
     const t0 = performance.now();
 
     const animate = (now) => {
       rafId = requestAnimationFrame(animate);
       if (!inViewRef.current) return;
+      if (isSoftwareGpu && renderedFrames >= 2 && now - lastSwRender < 450) return;
 
       const t = (now - t0) * 0.001;
       const ex = explodeRef.current;
 
       layers.forEach((ly) => {
         const targetY = ly.closedY + (ly.openY - ly.closedY) * ex;
-        ly.grp.position.y += (targetY - ly.grp.position.y) * 0.14;
+        if (renderedFrames === 0 || isSoftwareGpu) {
+          ly.grp.position.y = targetY;
+        } else {
+          ly.grp.position.y += (targetY - ly.grp.position.y) * 0.14;
+        }
       });
 
       deviceGroup.position.y = reducedRef.current ? 0 : Math.sin(t * 1.8) * 4;
@@ -248,6 +260,8 @@ export default function HardwareTrackerCanvas({ explodeRef, reducedMotion }) {
 
       controls.update();
       renderer.render(scene, camera);
+      renderedFrames += 1;
+      lastSwRender = now;
     };
     rafId = requestAnimationFrame(animate);
 

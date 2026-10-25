@@ -1048,7 +1048,7 @@
   color: var(--ds-navy-600);
 }
 
-/* 1. Full-Bleed Sticky 3D Hero Stage */
+/* 1. Full-Bleed Sticky 3D Hero Stage & Gateway Highway */
 .hero-cinema-track {
   position: relative;
   min-block-size: 138vh;
@@ -1060,11 +1060,44 @@
   inset-block-start: 0;
   inline-size: 100%;
   block-size: 100vh;
-  min-block-size: 640px;
+  min-block-size: 650px;
   overflow: hidden;
   background: var(--ds-grad-hero-horizon);
   display: flex;
   align-items: center;
+}
+
+.hero-blueprint-backdrop {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-blueprint-ring {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ds-sand-100) 9%, transparent);
+  stroke-width: 1.2;
+}
+
+.hero-blueprint-ring--dashed {
+  stroke-dasharray: 6 10;
+  stroke: color-mix(in srgb, var(--ds-sand-100) 7%, transparent);
+}
+
+.hero-blueprint-axis {
+  stroke: color-mix(in srgb, var(--ds-color-signal-orange) 18%, transparent);
+  stroke-width: 1;
+  stroke-dasharray: 4 7;
+}
+
+.hero-blueprint-tag {
+  fill: color-mix(in srgb, var(--ds-sand-100) 28%, transparent);
+  font-size: var(--ds-text-xs);
+  font-family: var(--ds-font-sans);
+  letter-spacing: 0.12em;
 }
 
 .hero-fullbleed-webgl {
@@ -1081,28 +1114,42 @@
   inline-size: 100%;
   block-size: 100%;
   pointer-events: none;
-  z-index: 1;
+  z-index: 3;
 }
 
 .hero-painter-handoff__rail {
   fill: none;
-  stroke: color-mix(in srgb, var(--ds-sand-100) 18%, transparent);
+  stroke: color-mix(in srgb, var(--ds-sand-100) 16%, transparent);
+  stroke-width: 2;
+  stroke-dasharray: 4 8;
+}
+
+.hero-painter-handoff__sky {
+  fill: none;
+  stroke: var(--ds-color-signal-orange);
   stroke-width: 2.5;
-  stroke-dasharray: 5 8;
+  stroke-dasharray: 6 6;
   stroke-linecap: round;
+}
+
+.hero-painter-handoff__lane {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ds-sand-100) 22%, transparent);
+  stroke-width: 1.4;
+  stroke-dasharray: 6 8;
 }
 
 .hero-painter-handoff__glow {
   fill: none;
-  stroke: color-mix(in srgb, var(--ds-color-signal-orange) 36%, transparent);
-  stroke-width: 14;
+  stroke: color-mix(in srgb, var(--ds-color-signal-orange) 38%, transparent);
+  stroke-width: 16;
   stroke-linecap: round;
 }
 
 .hero-painter-handoff__stroke {
   fill: none;
   stroke: var(--ds-color-signal-orange);
-  stroke-width: 4.5;
+  stroke-width: 5;
   stroke-linecap: round;
 }
 
@@ -1127,20 +1174,20 @@
 }
 
 .hero-cinema-copy {
-  max-inline-size: 520px;
+  max-inline-size: 540px;
   display: flex;
   flex-direction: column;
-  gap: var(--ds-space-1s);
+  gap: var(--ds-space-0_75s);
   pointer-events: auto;
   transform: translateY(var(--hero-copy-y, 0px));
   opacity: var(--hero-copy-op, 1);
-  transition: opacity var(--ds-dur-fast) var(--ds-ease-clothoid-cruise);
+  transition: opacity var(--ds-dur-tactile) var(--ds-ease-clothoid-cruise);
 }
 
 .hero-cinema-title {
   font-size: var(--ds-text-display);
   font-weight: var(--ds-weight-black);
-  line-height: 1.16;
+  line-height: 1.15;
   letter-spacing: -0.02em;
   color: var(--ds-sand-50);
 }
@@ -1150,10 +1197,49 @@
 }
 
 .hero-cinema-lead {
-  font-size: var(--ds-text-lg);
+  font-size: var(--ds-text-md);
   line-height: 1.85;
-  color: color-mix(in srgb, var(--ds-sand-100) 88%, transparent);
-  max-inline-size: 42ch;
+  color: color-mix(in srgb, var(--ds-sand-100) 90%, transparent);
+  max-inline-size: 46ch;
+}
+
+.hero-concept-flow {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  padding-block: 8px;
+  padding-inline: var(--ds-space-0_75s);
+  border-radius: var(--ds-radius-capsule);
+  background: color-mix(in srgb, var(--ds-navy-800) 68%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ds-sand-100) 18%, transparent);
+  backdrop-filter: blur(12px);
+  font-size: var(--ds-text-xs);
+  font-weight: var(--ds-weight-semibold);
+  color: color-mix(in srgb, var(--ds-sand-100) 86%, transparent);
+}
+
+.hero-concept-flow__step {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hero-concept-flow__dot {
+  inline-size: 7px;
+  block-size: 7px;
+  border-radius: var(--ds-radius-capsule);
+  background: var(--ds-color-signal-orange);
+}
+
+.hero-concept-flow__step--active {
+  color: var(--ds-sand-50);
+  font-weight: var(--ds-weight-extrabold);
+}
+
+.hero-concept-flow__sep {
+  color: var(--ds-color-signal-orange);
 }
 
 .hero-cinema-cta {
@@ -1169,8 +1255,8 @@
   inset-block-end: 6px;
   inset-inline-start: 50%;
   transform: translateX(50%);
-  inline-size: 24px;
-  block-size: 24px;
+  inline-size: 26px;
+  block-size: 26px;
   display: grid;
   place-items: center;
   z-index: 4;
@@ -1181,8 +1267,9 @@
   position: absolute;
   inset: 0;
   border-radius: var(--ds-radius-capsule);
-  border: 2px solid color-mix(in srgb, var(--ds-color-signal-orange) 55%, transparent);
-  background: color-mix(in srgb, var(--ds-sand-50) 85%, transparent);
+  border: 2px solid var(--ds-color-signal-orange);
+  background: color-mix(in srgb, var(--ds-sand-50) 90%, transparent);
+  box-shadow: var(--ds-shadow-glow-accent);
 }
 
 .hero-handoff-port__dot {
@@ -1196,23 +1283,109 @@
   position: absolute;
   inset-inline: 0;
   inset-block-end: 0;
-  block-size: 96px;
+  block-size: 92px;
   background: linear-gradient(180deg, transparent 0%, var(--ds-sand-200) 100%);
   pointer-events: none;
-  z-index: 3;
+  z-index: 2;
 }
 
-/* 2. Unified Continuous World & Real DOM-Locked Signal Circuit */
+/* 2. Logo Anatomy DNA Badge (نشانگر تبدیل هر قطعه لوگو به کامپوننت) */
+.logo-dna-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-space-0_5s);
+  padding-block: 6px;
+  padding-inline-start: 8px;
+  padding-inline-end: var(--ds-space-0_75s);
+  border-radius: var(--ds-radius-card-md);
+  background: color-mix(in srgb, var(--ds-sand-50) 92%, var(--ds-sand-200));
+  border: 1px solid color-mix(in srgb, var(--ds-navy-600) 14%, transparent);
+  box-shadow: var(--ds-shadow-cushion-light);
+}
+
+.logo-dna-badge__emblem {
+  inline-size: 38px;
+  block-size: 46px;
+  border-radius: var(--ds-radius-sm);
+  background: var(--ds-navy-600);
+  display: grid;
+  place-items: center;
+  padding: 4px;
+  flex-shrink: 0;
+}
+
+.logo-dna-badge__svg {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.logo-dna-badge__guide {
+  stroke: color-mix(in srgb, var(--ds-sand-100) 18%, transparent);
+  stroke-width: 5;
+  stroke-dasharray: 12 12;
+}
+
+.logo-dna-badge__part {
+  fill: color-mix(in srgb, var(--ds-sand-100) 22%, transparent);
+  transition: fill var(--ds-dur-tactile) var(--ds-ease-clothoid-cruise);
+}
+
+.logo-dna-badge__part--active {
+  fill: var(--ds-color-signal-orange);
+}
+
+.logo-dna-badge__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: start;
+  gap: 2px;
+}
+
+.logo-dna-badge__top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--ds-text-xs);
+}
+
+.logo-dna-badge__code {
+  font-weight: var(--ds-weight-black);
+  color: var(--ds-orange-800);
+}
+
+.logo-dna-badge__origin {
+  color: var(--ds-on-surface-muted);
+  font-weight: var(--ds-weight-semibold);
+}
+
+.logo-dna-badge__morph {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--ds-text-xs);
+  color: var(--ds-navy-600);
+}
+
+.logo-dna-badge__arrow {
+  color: var(--ds-orange-800);
+  font-weight: var(--ds-weight-black);
+}
+
+/* 3. Unified Continuous World & Traveling 4-Piece Logo Totem */
 .story-painter-world {
   position: relative;
   isolation: isolate;
-  background: linear-gradient(
-    180deg,
-    var(--ds-sand-200) 0%,
-    var(--ds-sand-50) 38%,
-    var(--ds-sand-100) 72%,
-    var(--ds-sand-200) 100%
-  );
+  background:
+    radial-gradient(circle at 15% 18%, color-mix(in srgb, var(--ds-sand-50) 80%, transparent) 0%, transparent 45%),
+    radial-gradient(circle at 85% 58%, color-mix(in srgb, var(--ds-color-signal-orange) 7%, transparent) 0%, transparent 42%),
+    linear-gradient(
+      180deg,
+      var(--ds-sand-200) 0%,
+      var(--ds-sand-50) 36%,
+      var(--ds-sand-100) 72%,
+      var(--ds-sand-200) 100%
+    );
 }
 
 .story-painter-svg {
@@ -1225,18 +1398,25 @@
   z-index: 8;
 }
 
+.story-painter-svg__lane {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ds-navy-600) 8%, transparent);
+  stroke-width: 1.2;
+  stroke-dasharray: 4 8;
+}
+
 .story-painter-svg__rail {
   fill: none;
-  stroke: color-mix(in srgb, var(--ds-navy-600) 16%, transparent);
+  stroke: color-mix(in srgb, var(--ds-navy-600) 18%, transparent);
   stroke-width: 2.2;
-  stroke-dasharray: 5 9;
+  stroke-dasharray: 5 8;
   stroke-linecap: round;
 }
 
 .story-painter-svg__glow {
   fill: none;
   stroke: color-mix(in srgb, var(--ds-color-signal-orange) 30%, transparent);
-  stroke-width: 14;
+  stroke-width: 15;
   stroke-linecap: round;
 }
 
@@ -1245,6 +1425,24 @@
   stroke: var(--ds-color-signal-orange);
   stroke-width: 4.5;
   stroke-linecap: round;
+}
+
+.totem-carrier-halo {
+  fill: color-mix(in srgb, var(--ds-color-signal-orange) 26%, transparent);
+}
+
+.totem-carrier-disc {
+  fill: var(--ds-navy-600);
+  stroke: var(--ds-color-signal-orange);
+  stroke-width: 2.5;
+}
+
+.totem-carrier-part {
+  fill: color-mix(in srgb, var(--ds-sand-100) 34%, transparent);
+}
+
+.totem-carrier-part--active {
+  fill: var(--ds-color-signal-orange);
 }
 
 .story-narrator-pill {
@@ -1259,8 +1457,8 @@
   padding-block: 8px;
   padding-inline: var(--ds-space-0_75s);
   border-radius: var(--ds-radius-capsule);
-  background: color-mix(in srgb, var(--ds-navy-500) 90%, transparent);
-  border: 1px solid color-mix(in srgb, var(--ds-sand-100) 24%, transparent);
+  background: color-mix(in srgb, var(--ds-navy-600) 94%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ds-sand-100) 22%, transparent);
   backdrop-filter: blur(16px);
   color: var(--ds-sand-50);
   box-shadow: var(--ds-shadow-card);
@@ -1276,12 +1474,21 @@
   transform: translateX(50%) translateY(0);
 }
 
+.story-narrator-pill__emblem {
+  inline-size: 28px;
+  block-size: 28px;
+  border-radius: var(--ds-radius-capsule);
+  background: var(--ds-navy-800);
+  display: grid;
+  place-items: center;
+}
+
 .story-narrator-pill__step {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-inline-size: 28px;
-  block-size: 28px;
+  min-inline-size: 26px;
+  block-size: 26px;
   border-radius: var(--ds-radius-capsule);
   background: var(--ds-color-signal-orange);
   color: var(--ds-navy-900);
@@ -1295,7 +1502,7 @@
   padding-inline-end: var(--ds-space-0_25s);
 }
 
-/* 3. Dual-Split Circuit Cards & Machined Signal Sockets (<PaintedCard />) */
+/* 4. Dual-Split Circuit Cards & Machined Signal Sockets */
 .painted-card {
   position: relative;
   z-index: 6;
@@ -1305,19 +1512,18 @@
 .circuit-socket {
   position: absolute;
   inset-inline-start: 50%;
-  inline-size: 18px;
-  block-size: 18px;
+  inline-size: 20px;
+  block-size: 20px;
   border-radius: var(--ds-radius-capsule);
   background: var(--ds-sand-50);
-  border: 2px solid color-mix(in srgb, var(--ds-navy-600) 24%, transparent);
+  border: 2px solid color-mix(in srgb, var(--ds-navy-600) 26%, transparent);
   display: grid;
   place-items: center;
   z-index: 9;
   pointer-events: none;
   transition:
-    border-color var(--ds-dur-fast) var(--ds-ease-clothoid-cruise),
-    box-shadow var(--ds-dur-fast) var(--ds-ease-clothoid-cruise),
-    transform var(--ds-dur-fast) var(--ds-ease-spring-lock);
+    border-color var(--ds-dur-tactile) var(--ds-ease-clothoid-cruise),
+    box-shadow var(--ds-dur-tactile) var(--ds-ease-clothoid-cruise);
 }
 
 .circuit-socket--in {
@@ -1331,16 +1537,16 @@
 }
 
 .circuit-socket__core {
-  inline-size: 6px;
-  block-size: 6px;
+  inline-size: 7px;
+  block-size: 7px;
   border-radius: var(--ds-radius-capsule);
-  background: color-mix(in srgb, var(--ds-navy-600) 28%, transparent);
-  transition: background var(--ds-dur-fast) var(--ds-ease-clothoid-cruise);
+  background: color-mix(in srgb, var(--ds-navy-600) 30%, transparent);
+  transition: background var(--ds-dur-tactile) var(--ds-ease-clothoid-cruise);
 }
 
 .circuit-socket[data-lit="true"] {
   border-color: var(--ds-color-signal-orange);
-  box-shadow: var(--ds-shadow-glow-orange);
+  box-shadow: var(--ds-shadow-glow-accent);
 }
 
 .circuit-socket[data-lit="true"] .circuit-socket__core {
@@ -1359,14 +1565,14 @@
 
 .painted-card__rail {
   fill: none;
-  stroke: color-mix(in srgb, var(--ds-navy-600) 12%, transparent);
+  stroke: color-mix(in srgb, var(--ds-navy-600) 14%, transparent);
   stroke-width: 1.5;
 }
 
 .painted-card__stroke {
   fill: none;
   stroke: var(--ds-color-signal-orange);
-  stroke-width: 3.5;
+  stroke-width: 3.8;
   stroke-linecap: round;
 }
 
@@ -1382,20 +1588,21 @@
   border-radius: var(--ds-radius-card-lg);
   padding: var(--ds-space-2s);
   background: var(--ds-grad-cushion-card);
-  border: 1px solid color-mix(in srgb, var(--ds-navy-600) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ds-navy-600) 10%, transparent);
   box-shadow: var(--ds-shadow-cushion-light);
   transform:
     perspective(1100px)
-    translateY(calc((1 - var(--card-rise, 1)) * 18px))
+    translateY(calc((1 - var(--card-rise, 1)) * 16px))
     rotateX(var(--card-rx, 0deg))
     rotateY(var(--card-ry, 0deg));
-  opacity: calc(0.92 + var(--card-rise, 1) * 0.08);
+  opacity: calc(0.94 + var(--card-rise, 1) * 0.06);
 }
 
+.painted-card[data-tone="command"] .painted-card__surface,
 .painted-card[data-tone="horizon"] .painted-card__surface {
-  background: var(--ds-grad-hero-horizon);
+  background: var(--ds-grad-command-deck);
   color: var(--ds-sand-50);
-  border-color: color-mix(in srgb, var(--ds-sand-100) 18%, transparent);
+  border-color: color-mix(in srgb, var(--ds-sand-100) 20%, transparent);
   box-shadow: var(--ds-shadow-chisel-navy);
 }
 
@@ -1404,17 +1611,18 @@
   inset: 0;
   pointer-events: none;
   background: radial-gradient(
-    circle 280px at var(--glare-x, 50%) var(--glare-y, 20%),
-    color-mix(in srgb, var(--ds-sand-50) 44%, transparent),
+    circle 300px at var(--glare-x, 50%) var(--glare-y, 20%),
+    color-mix(in srgb, var(--ds-sand-50) 48%, transparent),
     transparent 72%
   );
-  opacity: 0.6;
+  opacity: 0.62;
 }
 
+.painted-card[data-tone="command"] .painted-card__glare,
 .painted-card[data-tone="horizon"] .painted-card__glare {
   background: radial-gradient(
-    circle 340px at var(--glare-x, 50%) var(--glare-y, 20%),
-    color-mix(in srgb, var(--ds-color-signal-orange) 18%, transparent),
+    circle 360px at var(--glare-x, 50%) var(--glare-y, 20%),
+    color-mix(in srgb, var(--ds-color-signal-orange) 20%, transparent),
     transparent 74%
   );
 }
@@ -1427,7 +1635,7 @@
   gap: var(--ds-space-0_75s);
 }
 
-/* 4. Seamless Transparent Section Rhythm (Zero Patchwork Seams) */
+/* 5. Chapter Headers & Act 1 — Logo-Shaped Sensor Cards */
 .story-sand-chapter,
 .story-corridor-section,
 .hardware-alabaster-chapter,
@@ -1444,19 +1652,20 @@
 .story-chapter-head {
   position: relative;
   z-index: 9;
-  max-inline-size: 640px;
+  max-inline-size: 680px;
   margin-inline: auto;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--ds-space-0_5s);
+  gap: var(--ds-space-0_75s);
   margin-block-end: var(--ds-space-2s);
-  padding-block: var(--ds-space-0_5s);
-  padding-inline: var(--ds-space-1s);
-  border-radius: var(--ds-radius-card-md);
-  background: color-mix(in srgb, var(--ds-sand-50) 82%, transparent);
-  backdrop-filter: blur(8px);
+  padding-block: var(--ds-space-0_75s);
+  padding-inline: var(--ds-space-1_5s);
+  border-radius: var(--ds-radius-card-lg);
+  background: color-mix(in srgb, var(--ds-sand-50) 88%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ds-navy-600) 8%, transparent);
+  backdrop-filter: blur(10px);
 }
 
 .story-step-kicker {
@@ -1478,16 +1687,23 @@
   color: var(--ds-navy-600);
 }
 
+.story-chapter-sub {
+  font-size: var(--ds-text-md);
+  line-height: 1.75;
+  color: var(--ds-on-surface-muted);
+  max-inline-size: 52ch;
+}
+
 .story-stagger-grid {
   display: flex;
   flex-direction: column;
   gap: var(--ds-space-4s);
-  max-inline-size: 980px;
+  max-inline-size: 1020px;
   margin-inline: auto;
 }
 
 .story-stagger-item {
-  inline-size: min(100%, 510px);
+  inline-size: min(100%, 560px);
 }
 
 .story-stagger-item--start {
@@ -1498,28 +1714,16 @@
   align-self: flex-end;
 }
 
-.smart-card-head {
+.smart-card-toprow {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--ds-space-0_5s);
 }
 
-.smart-card-index {
-  inline-size: 36px;
-  block-size: 36px;
-  border-radius: var(--ds-radius-capsule);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--ds-navy-600);
-  color: var(--ds-sand-50);
-  font-size: var(--ds-text-sm);
-  font-weight: var(--ds-weight-black);
-}
-
 .smart-card-metric {
-  font-size: var(--ds-text-h2);
+  font-size: var(--ds-text-h3);
   font-weight: var(--ds-weight-black);
   color: var(--ds-orange-800);
 }
@@ -1531,72 +1735,164 @@
 }
 
 .smart-card-desc {
-  font-size: var(--ds-text-base);
+  font-size: var(--ds-text-md);
   line-height: 1.75;
   color: var(--ds-on-surface-muted);
 }
 
-.smart-plate-trigger {
-  min-block-size: 64px;
-  padding: var(--ds-space-0_75s);
+/* پورتال لیزری پلاک‌خوان ساخته‌شده از ستون دروازه لوگو */
+.gantry-scanner-well {
+  position: relative;
+  min-block-size: 92px;
+  padding: var(--ds-space-1s);
   border-radius: var(--ds-radius-card-md);
-  border: 1px solid color-mix(in srgb, var(--ds-navy-600) 14%, transparent);
-  background: var(--ds-sand-50);
+  background: var(--ds-grad-command-deck);
+  border: 1px solid color-mix(in srgb, var(--ds-sand-100) 16%, transparent);
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-1s);
+  cursor: pointer;
+  overflow: hidden;
+  text-align: start;
+  transition: border-color var(--ds-dur-tactile) var(--ds-ease-clothoid-cruise);
+}
+
+.gantry-scanner-well:hover {
+  border-color: var(--ds-color-signal-orange);
+}
+
+.gantry-scanner-well__pillar {
+  position: relative;
+  inline-size: 26px;
+  block-size: 72px;
+  color: var(--ds-color-signal-orange);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.gantry-scanner-well__pillar-svg {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.gantry-scanner-well__beam {
+  position: absolute;
+  inset-block-start: 46%;
+  inset-inline-start: 18px;
+  inline-size: 460px;
+  block-size: 2px;
+  background: linear-gradient(
+    270deg,
+    var(--ds-color-signal-orange) 0%,
+    color-mix(in srgb, var(--ds-color-signal-orange) 22%, transparent) 65%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.gantry-scanner-well__content {
+  position: relative;
+  z-index: 2;
+  flex: 1;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--ds-space-0_75s);
-  cursor: pointer;
-  transition:
-    border-color var(--ds-dur-fast) var(--ds-ease-clothoid-cruise),
-    transform var(--ds-dur-fast) var(--ds-ease-spring-lock);
 }
 
-.smart-plate-trigger:hover {
-  border-color: var(--ds-color-signal-orange);
-  transform: translateY(-2px);
+.gantry-scanner-well__telemetry {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
 
-.smart-plate-route {
-  font-size: var(--ds-text-sm);
-  font-weight: var(--ds-weight-bold);
-  color: var(--ds-navy-600);
+.gantry-scanner-well__telemetry strong {
+  font-size: var(--ds-text-md);
+  font-weight: var(--ds-weight-extrabold);
+  color: var(--ds-sand-50);
 }
 
+.gantry-scanner-well__telemetry span {
+  font-size: var(--ds-text-xs);
+  color: color-mix(in srgb, var(--ds-sand-100) 78%, transparent);
+}
+
+/* ریل بازوی افق لوگو روی گیج سوخت */
 .smart-gauge-scrub {
   padding: var(--ds-space-1s);
   border-radius: var(--ds-radius-card-md);
-  background: var(--ds-navy-500);
+  background: var(--ds-grad-command-deck);
   color: var(--ds-sand-50);
   cursor: ew-resize;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-0_75s);
+}
+
+.horizon-wing-rail {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-space-0_75s);
+  padding-block-end: 6px;
+  border-block-end: 1px solid color-mix(in srgb, var(--ds-sand-100) 12%, transparent);
+}
+
+.horizon-wing-rail__svg {
+  inline-size: 128px;
+  block-size: 22px;
+  color: var(--ds-color-signal-orange);
+}
+
+.horizon-wing-rail__tag {
+  font-size: var(--ds-text-xs);
+  font-weight: var(--ds-weight-bold);
+  color: var(--ds-sand-100);
 }
 
 .smart-geofence-pad {
   position: relative;
-  block-size: 164px;
+  block-size: 174px;
   border-radius: var(--ds-radius-card-md);
-  background: var(--ds-navy-600);
+  background: var(--ds-grad-command-deck);
   overflow: hidden;
   cursor: crosshair;
   display: grid;
   place-items: center;
 }
 
+.smart-geofence-pad__grid {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  pointer-events: none;
+}
+
+.smart-geofence-pad__grid line,
+.smart-geofence-pad__grid circle {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ds-sand-100) 10%, transparent);
+  stroke-width: 1;
+  stroke-dasharray: 4 6;
+}
+
 .smart-geofence-ring {
   inline-size: 112px;
   block-size: 112px;
   border-radius: var(--ds-radius-capsule);
-  border: 2px dashed var(--ds-semantic-moving);
-  background: color-mix(in srgb, var(--ds-semantic-moving) 14%, transparent);
+  border: 2px dashed var(--ds-status-moving);
+  background: color-mix(in srgb, var(--ds-status-moving) 14%, transparent);
   transition:
-    border-color var(--ds-dur-fast) var(--ds-ease-clothoid-cruise),
-    background var(--ds-dur-fast) var(--ds-ease-clothoid-cruise);
+    border-color var(--ds-dur-tactile) var(--ds-ease-clothoid-cruise),
+    background var(--ds-dur-tactile) var(--ds-ease-clothoid-cruise);
 }
 
 .smart-geofence-pad.is-alert .smart-geofence-ring {
-  border-color: var(--ds-semantic-critical);
-  background: color-mix(in srgb, var(--ds-semantic-critical) 18%, transparent);
+  border-color: var(--ds-status-critical);
+  background: color-mix(in srgb, var(--ds-status-critical) 18%, transparent);
 }
 
 .smart-geofence-cursor {
@@ -1607,9 +1903,9 @@
   pointer-events: none;
 }
 
-/* 5. Chapter 2 — Circuit-Connected Corridor Deck */
+/* 6. Chapter 2 — Clothoid Corridor Command Deck */
 .corridor-circuit-card {
-  max-inline-size: 980px;
+  max-inline-size: 1020px;
   margin-inline: auto;
 }
 
@@ -1619,26 +1915,37 @@
 
 .corridor-deck-stage {
   position: relative;
-  min-block-size: 460px;
+  min-block-size: 500px;
   overflow: hidden;
 }
 
 .corridor-3d-slab__svg {
   inline-size: 100%;
-  block-size: 460px;
+  block-size: 500px;
   display: block;
+}
+
+.corridor-clothoid-origin path {
+  fill: color-mix(in srgb, var(--ds-color-signal-orange) 10%, transparent);
+  stroke: color-mix(in srgb, var(--ds-color-signal-orange) 36%, transparent);
+  stroke-width: 1.5;
 }
 
 .corridor-contour {
   fill: none;
-  stroke: color-mix(in srgb, var(--ds-sand-100) 10%, transparent);
-  stroke-width: 1.4;
+  stroke: color-mix(in srgb, var(--ds-sand-100) 11%, transparent);
+  stroke-width: 1.2;
   stroke-dasharray: 6 8;
+}
+
+.corridor-axis-line {
+  stroke: color-mix(in srgb, var(--ds-sand-100) 7%, transparent);
+  stroke-width: 1;
 }
 
 .corridor-highway-rail {
   fill: none;
-  stroke: color-mix(in srgb, var(--ds-sand-100) 18%, transparent);
+  stroke: color-mix(in srgb, var(--ds-sand-100) 20%, transparent);
   stroke-width: 3.5;
   stroke-dasharray: 5 8;
   stroke-linecap: round;
@@ -1646,7 +1953,7 @@
 
 .corridor-highway-glow {
   fill: none;
-  stroke: color-mix(in srgb, var(--ds-color-signal-orange) 34%, transparent);
+  stroke: color-mix(in srgb, var(--ds-color-signal-orange) 36%, transparent);
   stroke-width: 18;
   stroke-linecap: round;
 }
@@ -1668,10 +1975,10 @@
   align-items: center;
   gap: 4px;
   z-index: 4;
-  opacity: 0.52;
+  opacity: 0.65;
   transition:
-    opacity var(--ds-dur-fast) var(--ds-ease-clothoid-cruise),
-    transform var(--ds-dur-fast) var(--ds-ease-spring-lock);
+    opacity var(--ds-dur-tactile) var(--ds-ease-clothoid-cruise),
+    transform var(--ds-dur-tactile) var(--ds-ease-spring-lock);
 }
 
 .corridor-pin-anchor[data-reached="true"] {
@@ -1687,46 +1994,72 @@
   padding-block: 3px;
   padding-inline: 10px;
   border-radius: var(--ds-radius-capsule);
-  background: color-mix(in srgb, var(--ds-navy-700) 88%, transparent);
+  background: color-mix(in srgb, var(--ds-navy-900) 88%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ds-sand-100) 16%, transparent);
   color: var(--ds-sand-50);
   font-size: var(--ds-text-xs);
   font-weight: var(--ds-weight-bold);
   white-space: nowrap;
 }
 
-.corridor-floating-hud {
+.corridor-telemetry-dock {
   position: absolute;
   inset-block-end: var(--ds-space-1s);
-  inset-inline-start: var(--ds-space-1s);
-  display: inline-flex;
+  inset-inline: var(--ds-space-1_5s);
+  display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
   gap: var(--ds-space-0_75s);
-  padding-block: 8px;
+  padding-block: 10px;
   padding-inline: var(--ds-space-1s);
-  border-radius: var(--ds-radius-capsule);
-  background: color-mix(in srgb, var(--ds-navy-800) 88%, transparent);
+  border-radius: var(--ds-radius-card-md);
+  background: color-mix(in srgb, var(--ds-navy-900) 84%, transparent);
   border: 1px solid color-mix(in srgb, var(--ds-sand-100) 20%, transparent);
-  backdrop-filter: blur(14px);
+  backdrop-filter: blur(16px);
   z-index: 5;
 }
 
-/* 6. Chapter 3 — Open-Air Borderless 3D Hardware Stage */
+.corridor-telemetry-dock__main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ds-space-0_75s);
+}
+
+.corridor-telemetry-dock__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.corridor-telemetry-dock__meta strong {
+  font-size: var(--ds-text-sm);
+  font-weight: var(--ds-weight-extrabold);
+  color: var(--ds-sand-50);
+}
+
+.corridor-telemetry-dock__meta span {
+  font-size: var(--ds-text-xs);
+  color: color-mix(in srgb, var(--ds-sand-100) 78%, transparent);
+}
+
+/* 7. Chapter 3 — Superellipse CAD Halo & 4-Layer Hardware */
 .hardware-circuit-card {
-  max-inline-size: 980px;
+  max-inline-size: 1020px;
   margin-inline: auto;
 }
 
 .hardware-sculpture-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
   align-items: center;
   gap: var(--ds-space-2s);
 }
 
 .hardware-open-air-stage {
   position: relative;
-  block-size: 450px;
+  block-size: 470px;
   border-radius: var(--ds-radius-card-lg);
   background: radial-gradient(
     circle at 50% 48%,
@@ -1737,6 +2070,37 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.hardware-cad-halo {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  pointer-events: none;
+}
+
+.hardware-cad-halo__squircle {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ds-color-signal-orange) 24%, transparent);
+  stroke-width: 1.5;
+  stroke-dasharray: 8 8;
+}
+
+.hardware-cad-halo__ring {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ds-navy-600) 12%, transparent);
+  stroke-width: 1.2;
+}
+
+.hardware-cad-halo__axis {
+  stroke: color-mix(in srgb, var(--ds-navy-600) 12%, transparent);
+  stroke-width: 1;
+  stroke-dasharray: 4 6;
+}
+
+.hardware-cad-halo__watermark path {
+  fill: color-mix(in srgb, var(--ds-navy-600) 5%, transparent);
 }
 
 .hardware-floor-shadow {
@@ -1755,7 +2119,9 @@
   pointer-events: none;
 }
 
-.hardware-open-air-stage > div {
+.hardware-open-air-stage > div:not(.hardware-floor-shadow) {
+  position: relative;
+  z-index: 2;
   inline-size: 100%;
   block-size: 100%;
 }
@@ -1767,13 +2133,14 @@
 
 .hardware-orbit-whisper {
   position: absolute;
+  z-index: 3;
   inset-block-end: var(--ds-space-0_5s);
   inset-inline-start: 50%;
   transform: translateX(50%);
   padding-block: 5px;
   padding-inline: var(--ds-space-0_75s);
   border-radius: var(--ds-radius-capsule);
-  background: color-mix(in srgb, var(--ds-navy-600) 88%, transparent);
+  background: color-mix(in srgb, var(--ds-navy-600) 90%, transparent);
   color: var(--ds-sand-50);
   font-size: var(--ds-text-xs);
   font-weight: var(--ds-weight-semibold);
@@ -1784,33 +2151,43 @@
 .hardware-callouts-col {
   display: flex;
   flex-direction: column;
-  gap: var(--ds-space-1_5s);
+  gap: var(--ds-space-0_75s);
 }
 
 .hardware-callout-item {
+  width: 100%;
+  text-align: start;
+  cursor: pointer;
   display: flex;
   flex-direction: column;
   gap: 8px;
   padding: var(--ds-space-0_75s);
   border-radius: var(--ds-radius-card-md);
-  background: color-mix(in srgb, var(--ds-sand-50) 75%, transparent);
-  border: 1px solid color-mix(in srgb, var(--ds-navy-600) 8%, transparent);
-  opacity: 0.55;
+  background: color-mix(in srgb, var(--ds-sand-50) 85%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ds-navy-600) 10%, transparent);
+  opacity: 0.65;
+  font-family: var(--ds-font-sans);
   transition:
-    opacity var(--ds-dur-morph) var(--ds-ease-clothoid-cruise),
-    border-color var(--ds-dur-morph) var(--ds-ease-clothoid-cruise),
-    transform var(--ds-dur-morph) var(--ds-ease-spring-lock);
+    opacity var(--ds-dur-tactile) var(--ds-ease-clothoid-cruise),
+    border-color var(--ds-dur-tactile) var(--ds-ease-clothoid-cruise),
+    transform var(--ds-dur-tactile) var(--ds-ease-spring-lock);
 }
 
 .hardware-callout-item[data-lit="true"] {
   opacity: 1;
-  border-color: color-mix(in srgb, var(--ds-color-signal-orange) 45%, transparent);
+  border-color: color-mix(in srgb, var(--ds-color-signal-orange) 46%, transparent);
+}
+
+.hardware-callout-item[data-focused="true"],
+.hardware-callout-item:hover {
+  opacity: 1;
+  border-color: var(--ds-color-signal-orange);
   transform: translateX(-4px);
 }
 
 .hardware-callout-item__row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--ds-space-0_75s);
 }
 
@@ -1826,7 +2203,7 @@
   font-size: var(--ds-text-xs);
   font-weight: var(--ds-weight-black);
   flex-shrink: 0;
-  transition: background var(--ds-dur-fast) var(--ds-ease-clothoid-cruise);
+  margin-block-start: 2px;
 }
 
 .hardware-callout-item[data-lit="true"] .hardware-callout-item__idx {
@@ -1840,14 +2217,21 @@
   gap: 2px;
 }
 
+.hardware-callout-item__text small {
+  font-size: var(--ds-text-xs);
+  font-weight: var(--ds-weight-bold);
+  color: var(--ds-orange-800);
+}
+
 .hardware-callout-item__text strong {
-  font-size: var(--ds-text-h4);
+  font-size: var(--ds-text-md);
   font-weight: var(--ds-weight-extrabold);
   color: var(--ds-navy-600);
 }
 
 .hardware-callout-item__text span {
   font-size: var(--ds-text-sm);
+  line-height: 1.65;
   color: var(--ds-on-surface-muted);
 }
 
@@ -1872,9 +2256,9 @@
   transform: scaleX(1);
 }
 
-/* 7. Chapter 4 — Unified Terminal Launch Portal */
+/* 8. Chapter 4 — Logo Shield Blade ROI Compass & Finale Portal */
 .finale-launch-portal {
-  max-inline-size: 980px;
+  max-inline-size: 1020px;
   margin-inline: auto;
 }
 
@@ -1886,31 +2270,84 @@
 
 .finale-dial-band {
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
   align-items: center;
   gap: var(--ds-space-2s);
+}
+
+.finale-compass-cluster {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-1_5s);
+}
+
+.logo-blade-compass {
+  inline-size: 132px;
+  block-size: 132px;
+  border-radius: var(--ds-radius-capsule);
+  background: color-mix(in srgb, var(--ds-navy-900) 64%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ds-sand-100) 18%, transparent);
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+}
+
+.logo-blade-compass__svg {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.logo-blade-compass__ring {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ds-sand-100) 14%, transparent);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 6;
+}
+
+.logo-blade-compass__arc {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ds-color-signal-orange) 45%, transparent);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.logo-blade-compass__needle {
+  transform-origin: 90px 98px;
+  transform: rotate(var(--needle-rot, 0deg));
+  transition: transform var(--ds-dur-tactile) var(--ds-ease-spring-lock);
+}
+
+.logo-blade-compass__blade {
+  fill: var(--ds-color-signal-orange);
+}
+
+.logo-blade-compass__pivot {
+  fill: var(--ds-sand-50);
+  stroke: var(--ds-navy-900);
+  stroke-width: 2;
 }
 
 .finale-dial-readout {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .finale-dial-caption {
   font-size: var(--ds-text-sm);
   font-weight: var(--ds-weight-semibold);
-  color: color-mix(in srgb, var(--ds-sand-100) 80%, transparent);
+  color: color-mix(in srgb, var(--ds-sand-100) 82%, transparent);
 }
 
 .finale-dial-giant {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   gap: var(--ds-space-0_5s);
 }
 
 .finale-dial-giant strong {
-  font-size: clamp(2.6rem, 5.4vw, 4.3rem);
+  font-size: clamp(2.5rem, 5vw, 4.1rem);
   font-weight: var(--ds-weight-black);
   line-height: 1;
   color: var(--ds-sand-50);
@@ -1918,22 +2355,41 @@
 }
 
 .finale-dial-giant span {
-  font-size: var(--ds-text-base);
+  font-size: var(--ds-text-md);
   font-weight: var(--ds-weight-extrabold);
   color: var(--ds-color-signal-orange);
+}
+
+.finale-breakdown-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-block-start: 4px;
+}
+
+.finale-breakdown-pills span {
+  padding-block: 4px;
+  padding-inline: 10px;
+  border-radius: var(--ds-radius-capsule);
+  background: color-mix(in srgb, var(--ds-navy-900) 58%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ds-sand-100) 14%, transparent);
+  font-size: var(--ds-text-xs);
+  font-weight: var(--ds-weight-semibold);
+  color: var(--ds-sand-100);
 }
 
 .finale-dial-control {
   display: flex;
   flex-direction: column;
-  gap: var(--ds-space-0_75s);
+  gap: var(--ds-space-0_5s);
 }
 
 .finale-dial-control__labels {
   display: flex;
   justify-content: space-between;
+  gap: var(--ds-space-0_5s);
   font-size: var(--ds-text-sm);
-  color: color-mix(in srgb, var(--ds-sand-100) 84%, transparent);
+  color: color-mix(in srgb, var(--ds-sand-100) 86%, transparent);
 }
 
 .finale-dial-control__labels strong {
@@ -1975,7 +2431,7 @@
   border-radius: var(--ds-radius-capsule);
   background: var(--ds-sand-50);
   border: 4px solid var(--ds-color-signal-orange);
-  box-shadow: var(--ds-shadow-glow-orange);
+  box-shadow: var(--ds-shadow-glow-accent);
 }
 
 .finale-ribbon-slider__input {
@@ -1985,6 +2441,13 @@
   block-size: 100%;
   opacity: 0;
   cursor: pointer;
+}
+
+.finale-scale-ticks {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--ds-text-xs);
+  color: color-mix(in srgb, var(--ds-sand-100) 64%, transparent);
 }
 
 .finale-portal-divider {
@@ -1997,6 +2460,25 @@
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
   align-items: center;
   gap: var(--ds-space-2s);
+}
+
+.finale-seal-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--ds-text-xs);
+  font-weight: var(--ds-weight-bold);
+  color: var(--ds-color-signal-orange);
+}
+
+.finale-seal-emblem {
+  inline-size: 32px;
+  block-size: 32px;
+  border-radius: var(--ds-radius-capsule);
+  background: color-mix(in srgb, var(--ds-color-signal-orange) 18%, transparent);
+  color: var(--ds-color-signal-orange);
+  display: grid;
+  place-items: center;
 }
 
 .finale-launch-portal__copy {
@@ -2012,7 +2494,7 @@
 }
 
 .finale-launch-portal__copy p {
-  font-size: var(--ds-text-base);
+  font-size: var(--ds-text-md);
   line-height: 1.75;
   color: color-mix(in srgb, var(--ds-sand-100) 84%, transparent);
 }
@@ -2029,10 +2511,10 @@
   padding-inline: var(--ds-space-1s);
   border-radius: var(--ds-radius-capsule);
   border: 1px solid color-mix(in srgb, var(--ds-sand-100) 26%, transparent);
-  background: color-mix(in srgb, var(--ds-navy-900) 58%, transparent);
+  background: color-mix(in srgb, var(--ds-navy-900) 64%, transparent);
   color: var(--ds-sand-50);
   font-family: var(--ds-font-sans);
-  font-size: var(--ds-text-base);
+  font-size: var(--ds-text-md);
 }
 
 .finale-launch-portal__input::placeholder {
@@ -2060,7 +2542,7 @@
   align-items: center;
   gap: var(--ds-space-0_5s);
   color: var(--ds-navy-600);
-  font-size: var(--ds-text-base);
+  font-size: var(--ds-text-md);
   font-weight: var(--ds-weight-extrabold);
 }
 
@@ -2095,7 +2577,7 @@
 
 @media (max-width: 640px) {
   .hero-cinema-track {
-    min-block-size: 122vh;
+    min-block-size: 124vh;
   }
   .hero-cinema-sticky {
     align-items: flex-end;
@@ -2105,20 +2587,23 @@
     max-inline-size: 100%;
     padding: var(--ds-space-1s);
     border-radius: var(--ds-radius-card-md);
-    background: color-mix(in srgb, var(--ds-navy-900) 68%, transparent);
-    backdrop-filter: blur(12px);
+    background: color-mix(in srgb, var(--ds-navy-900) 72%, transparent);
+    backdrop-filter: blur(14px);
+  }
+  .finale-compass-cluster {
+    flex-direction: column;
+    align-items: flex-start;
   }
   .corridor-deck-stage,
   .corridor-3d-slab__svg {
-    min-block-size: 380px;
-    block-size: 380px;
+    min-block-size: 420px;
+    block-size: 420px;
   }
-  .corridor-floating-hud {
+  .corridor-telemetry-dock {
     inset-inline: var(--ds-space-0_5s);
-    justify-content: center;
   }
   .hardware-open-air-stage {
-    block-size: 340px;
+    block-size: 350px;
   }
   .painted-card__surface {
     padding: var(--ds-space-1s);

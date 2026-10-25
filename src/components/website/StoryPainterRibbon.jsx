@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { LOGO_PARTS } from '../../data/geometryData.js';
 import { usePrefersReducedMotion } from '../../utils/usePrefersReducedMotion.js';
 
 function clamp(v, min, max) {
@@ -6,24 +7,34 @@ function clamp(v, min, max) {
 }
 
 const STORY_ACTS = [
-  { id: '۰۱', label: 'فصل اول · قفل شدن حسگرها روی مدار سیگنال' },
-  { id: '۰۲', label: 'فصل دوم · جریان زنده کریدور تبریز تا بندرعباس' },
-  { id: '۰۳', label: 'فصل سوم · شکافته شدن کالبد سه‌بعدی ردیاب' },
-  { id: '۰۴', label: 'فصل چهارم · تبدیل داده مسیر به سود خالص' },
+  {
+    id: '۰۱',
+    activeParts: ['p1', 'p2'],
+    label: 'فصل اول · ستون دروازه و بازوی افق ← پلاک‌خوان و گیج سوخت',
+  },
+  {
+    id: '۰۲',
+    activeParts: ['p0'],
+    label: 'فصل دوم · کمان کلوتوئیدی لوگو ← بزرگراه هوشمند ایران',
+  },
+  {
+    id: '۰۳',
+    activeParts: ['p0', 'p1', 'p2', 'p3'],
+    label: 'فصل سوم · چهارگوش نرم لوگو ← کالبد چهارلایه ردیاب',
+  },
+  {
+    id: '۰۴',
+    activeParts: ['p3'],
+    label: 'فصل چهارم · تیغه مکان‌نمای ۱۳۶.۵۴° ← قطب‌نمای سود ناوگان',
+  },
 ];
 
-/**
- * موتور هماهنگ‌ساز مدار زنده سیگنال (Unified Signal Choreographer):
- * مختصات واقعی تمام گره‌های [data-circuit-node] را در صفحه می‌سنجد، کابل‌های دقیق بین سوکت خروجی هر کارت
- * تا سوکت ورودی کارت بعدی را رسم می‌کند، با حرکت موس مثل سیم کشسان ارتعاش می‌یابد و با یک Playhead واحد
- * تمام کارت‌ها، نقشه کریدور و کالبد سه‌بعدی سخت‌افزار را دقیقاً در لحظه رسیدن خط نارنجی بیدار می‌کند.
- */
 export default function StoryPainterRibbon({ children }) {
   const reducedMotion = usePrefersReducedMotion();
   const worldRef = useRef(null);
   const svgRef = useRef(null);
   const cablesGroupRef = useRef(null);
-  const leadCometRef = useRef(null);
+  const leadTotemRef = useRef(null);
   const pluckRingRef = useRef(null);
 
   const [activeAct, setActiveAct] = useState(0);
@@ -40,7 +51,6 @@ export default function StoryPainterRibbon({ children }) {
     let worldWidth = world.clientWidth || 1280;
     let worldHeight = Math.max(800, world.scrollHeight || 3200);
 
-    // محاسبه مختصات دقیق پیکسلی هر گره نسبت به ظرف .story-painter-world
     const measureCircuit = () => {
       const wRect = world.getBoundingClientRect();
       worldWidth = Math.max(320, wRect.width);
@@ -69,7 +79,6 @@ export default function StoryPainterRibbon({ children }) {
         };
       });
 
-      // ساخت کابل‌های SVG بین خروجی هیرو (center, 0) -> گره ۰ -> گره ۱ -> ... -> گره آخر
       cablesGroup.innerHTML = '';
       cablesMeta = [];
 
@@ -80,6 +89,12 @@ export default function StoryPainterRibbon({ children }) {
         const endY = nodesMeta[i].topY;
 
         const ns = 'http://www.w3.org/2000/svg';
+        const laneL = document.createElementNS(ns, 'path');
+        laneL.setAttribute('class', 'story-painter-svg__lane');
+
+        const laneR = document.createElementNS(ns, 'path');
+        laneR.setAttribute('class', 'story-painter-svg__lane');
+
         const rail = document.createElementNS(ns, 'path');
         rail.setAttribute('class', 'story-painter-svg__rail');
 
@@ -95,6 +110,8 @@ export default function StoryPainterRibbon({ children }) {
         stroke.setAttribute('stroke-dasharray', '1');
         stroke.setAttribute('stroke-dashoffset', reducedMotion ? '0' : '1');
 
+        cablesGroup.appendChild(laneL);
+        cablesGroup.appendChild(laneR);
         cablesGroup.appendChild(rail);
         cablesGroup.appendChild(glow);
         cablesGroup.appendChild(stroke);
@@ -110,6 +127,8 @@ export default function StoryPainterRibbon({ children }) {
           lastOy: 9999,
           vx: 0,
           vy: 0,
+          laneL,
+          laneR,
           rail,
           glow,
           stroke,
@@ -121,7 +140,7 @@ export default function StoryPainterRibbon({ children }) {
 
     const updateCableGeometry = (ptrX, ptrY, ptrInside) => {
       let nearestPluck = null;
-      let bestDist = 145;
+      let bestDist = 155;
 
       cablesMeta.forEach((cb) => {
         const midX = (cb.startX + cb.endX) * 0.5;
@@ -133,8 +152,8 @@ export default function StoryPainterRibbon({ children }) {
           const dx = ptrX - midX;
           const dy = ptrY - midY;
           const dist = Math.hypot(dx, dy);
-          if (dist < 145) {
-            const pull = (1 - dist / 145) * 46;
+          if (dist < 155) {
+            const pull = (1 - dist / 155) * 48;
             tx = (dx / (dist || 1)) * pull;
             ty = (dy / (dist || 1)) * pull * 0.35;
             if (dist < bestDist) {
@@ -159,6 +178,11 @@ export default function StoryPainterRibbon({ children }) {
           const c2y = cb.endY - spanY * 0.48 + cb.oy;
 
           const d = `M ${cb.startX.toFixed(1)},${cb.startY.toFixed(1)} C ${c1x.toFixed(1)},${c1y.toFixed(1)} ${c2x.toFixed(1)},${c2y.toFixed(1)} ${cb.endX.toFixed(1)},${cb.endY.toFixed(1)}`;
+          const dL = `M ${(cb.startX - 7).toFixed(1)},${cb.startY.toFixed(1)} C ${(c1x - 7).toFixed(1)},${c1y.toFixed(1)} ${(c2x - 7).toFixed(1)},${c2y.toFixed(1)} ${(cb.endX - 7).toFixed(1)},${cb.endY.toFixed(1)}`;
+          const dR = `M ${(cb.startX + 7).toFixed(1)},${cb.startY.toFixed(1)} C ${(c1x + 7).toFixed(1)},${c1y.toFixed(1)} ${(c2x + 7).toFixed(1)},${c2y.toFixed(1)} ${(cb.endX + 7).toFixed(1)},${cb.endY.toFixed(1)}`;
+
+          cb.laneL.setAttribute('d', dL);
+          cb.laneR.setAttribute('d', dR);
           cb.rail.setAttribute('d', d);
           cb.glow.setAttribute('d', d);
           cb.stroke.setAttribute('d', d);
@@ -171,7 +195,7 @@ export default function StoryPainterRibbon({ children }) {
             'transform',
             `translate(${nearestPluck.x.toFixed(1)}, ${nearestPluck.y.toFixed(1)})`
           );
-          pluckRingRef.current.setAttribute('opacity', '0.9');
+          pluckRingRef.current.setAttribute('opacity', '0.92');
         } else {
           pluckRingRef.current.setAttribute('opacity', '0');
         }
@@ -214,7 +238,6 @@ export default function StoryPainterRibbon({ children }) {
       const wRect = world.getBoundingClientRect();
       const vh = window.innerHeight || 800;
 
-      // موقعیت واحد قلم‌موی نقاش در ۶۴٪ ارتفاع دید کاربر
       const targetPlayhead = reducedMotion
         ? worldHeight
         : clamp(vh * 0.64 - wRect.top, 0, worldHeight);
@@ -232,9 +255,8 @@ export default function StoryPainterRibbon({ children }) {
       }
       lastRenderedPlayhead = smoothPlayhead;
 
-      let cometPos = null;
+      let totemPos = null;
 
-      // ۱. به‌روزرسانی دقیق تمام کابل‌های بین کارت‌ها بر اساس Playhead واحد
       cablesMeta.forEach((cb) => {
         const lenY = Math.max(14, cb.endY - cb.startY);
         const p = reducedMotion ? 1 : clamp((smoothPlayhead - cb.startY) / lenY, 0, 1);
@@ -243,15 +265,20 @@ export default function StoryPainterRibbon({ children }) {
         cb.glow.setAttribute('stroke-dashoffset', dash);
 
         if (p > 0.005 && p < 0.995 && cb.stroke.getTotalLength) {
-          const total = cb.stroke.getTotalLength();
-          if (total > 1) {
-            const pt = cb.stroke.getPointAtLength(total * p);
-            cometPos = { x: pt.x, y: pt.y };
+          try {
+            const total = cb.stroke.getTotalLength();
+            if (total > 1) {
+              const pt = cb.stroke.getPointAtLength(total * p);
+              if (pt) totemPos = { x: pt.x, y: pt.y };
+            }
+          } catch {
+            // SVG hidden during breakpoint transition
           }
         }
       });
 
-      // ۲. به‌روزرسانی هم‌زمان انشعاب دوطرفه کادر، سوکت‌ها و رویداد درونی هر گره دقیقاً در لحظه رسیدن خط نارنجی
+      const isMobile = window.innerWidth <= 768;
+
       nodesMeta.forEach((nd) => {
         const p = reducedMotion ? 1 : clamp((smoothPlayhead - nd.topY) / nd.height, 0, 1);
         const dash = `${(1 - p).toFixed(4)}`;
@@ -259,39 +286,52 @@ export default function StoryPainterRibbon({ children }) {
         if (nd.splitRight) nd.splitRight.setAttribute('stroke-dashoffset', dash);
         if (nd.splitLeft) nd.splitLeft.setAttribute('stroke-dashoffset', dash);
 
-        // بالا آمدن سه‌بعدی نرم کارت هم‌گام با رسم کادر
         nd.el.style.setProperty('--card-rise', p.toFixed(3));
         nd.el.setAttribute('data-awake', p > 0.08 ? 'true' : 'false');
 
         if (nd.portIn) nd.portIn.setAttribute('data-lit', smoothPlayhead >= nd.topY - 4 ? 'true' : 'false');
         if (nd.portOut) nd.portOut.setAttribute('data-lit', p >= 0.96 ? 'true' : 'false');
 
-        // نمایش دو گوی جرقه چپ و راست در حین شکافته شدن کادر کارت
-        const showSplitSparks = !reducedMotion && p > 0.02 && p < 0.98;
+        const showSplitSparks = !isMobile && !reducedMotion && p > 0.02 && p < 0.98;
         if (nd.sparkRight && nd.splitRight?.getTotalLength) {
           if (showSplitSparks) {
-            const lenR = nd.splitRight.getTotalLength();
-            const ptR = nd.splitRight.getPointAtLength(lenR * p);
-            nd.sparkRight.setAttribute('cx', ptR.x.toFixed(1));
-            nd.sparkRight.setAttribute('cy', ptR.y.toFixed(1));
-            nd.sparkRight.setAttribute('opacity', '1');
+            try {
+              const lenR = nd.splitRight.getTotalLength();
+              if (lenR > 1) {
+                const ptR = nd.splitRight.getPointAtLength(lenR * p);
+                if (ptR) {
+                  nd.sparkRight.setAttribute('cx', ptR.x.toFixed(1));
+                  nd.sparkRight.setAttribute('cy', ptR.y.toFixed(1));
+                  nd.sparkRight.setAttribute('opacity', '1');
+                }
+              }
+            } catch {
+              nd.sparkRight.setAttribute('opacity', '0');
+            }
           } else {
             nd.sparkRight.setAttribute('opacity', '0');
           }
         }
         if (nd.sparkLeft && nd.splitLeft?.getTotalLength) {
           if (showSplitSparks) {
-            const lenL = nd.splitLeft.getTotalLength();
-            const ptL = nd.splitLeft.getPointAtLength(lenL * p);
-            nd.sparkLeft.setAttribute('cx', ptL.x.toFixed(1));
-            nd.sparkLeft.setAttribute('cy', ptL.y.toFixed(1));
-            nd.sparkLeft.setAttribute('opacity', '1');
+            try {
+              const lenL = nd.splitLeft.getTotalLength();
+              if (lenL > 1) {
+                const ptL = nd.splitLeft.getPointAtLength(lenL * p);
+                if (ptL) {
+                  nd.sparkLeft.setAttribute('cx', ptL.x.toFixed(1));
+                  nd.sparkLeft.setAttribute('cy', ptL.y.toFixed(1));
+                  nd.sparkLeft.setAttribute('opacity', '1');
+                }
+              }
+            } catch {
+              nd.sparkLeft.setAttribute('opacity', '0');
+            }
           } else {
             nd.sparkLeft.setAttribute('opacity', '0');
           }
         }
 
-        // ارسال میزان دقیق پیشروی به گره‌های هوشمند (نقشه کریدور ایران و کالبد سه‌بعدی سخت‌افزار)
         const roundedP = Math.round(p * 200) / 200;
         if (roundedP !== nd.lastSentProgress) {
           nd.lastSentProgress = roundedP;
@@ -299,19 +339,19 @@ export default function StoryPainterRibbon({ children }) {
         }
       });
 
-      if (leadCometRef.current) {
-        if (cometPos) {
-          leadCometRef.current.setAttribute(
+      // حرکت توتم ۴ تکه لوگو روی کابل‌های بین سکشن‌ها
+      if (leadTotemRef.current) {
+        if (totemPos) {
+          leadTotemRef.current.setAttribute(
             'transform',
-            `translate(${cometPos.x.toFixed(1)}, ${cometPos.y.toFixed(1)})`
+            `translate(${totemPos.x.toFixed(1)}, ${totemPos.y.toFixed(1)})`
           );
-          leadCometRef.current.setAttribute('opacity', '1');
+          leadTotemRef.current.setAttribute('opacity', '1');
         } else {
-          leadCometRef.current.setAttribute('opacity', '0');
+          leadTotemRef.current.setAttribute('opacity', '0');
         }
       }
 
-      // کپسول راوی شناور پایین صفحه هماهنگ با موقعیت واقعی گره‌ها
       const vis = wRect.top < vh * 0.72 && wRect.bottom > vh * 0.25;
       if (vis !== lastVis) {
         lastVis = vis;
@@ -319,9 +359,10 @@ export default function StoryPainterRibbon({ children }) {
       }
 
       let actIdx = 0;
-      if (nodesMeta[5] && smoothPlayhead >= nodesMeta[5].topY - 120) actIdx = 3;
-      else if (nodesMeta[4] && smoothPlayhead >= nodesMeta[4].topY - 120) actIdx = 2;
-      else if (nodesMeta[3] && smoothPlayhead >= nodesMeta[3].topY - 120) actIdx = 1;
+      const nLen = nodesMeta.length;
+      if (nLen >= 4 && smoothPlayhead >= nodesMeta[nLen - 1].topY - 120) actIdx = 3;
+      else if (nLen >= 4 && smoothPlayhead >= nodesMeta[nLen - 2].topY - 120) actIdx = 2;
+      else if (nLen >= 4 && smoothPlayhead >= nodesMeta[nLen - 3].topY - 120) actIdx = 1;
 
       if (actIdx !== lastAct) {
         lastAct = actIdx;
@@ -341,6 +382,7 @@ export default function StoryPainterRibbon({ children }) {
   }, [reducedMotion]);
 
   const currentAct = STORY_ACTS[activeAct] || STORY_ACTS[0];
+  const activePartSet = new Set(currentAct.activeParts);
 
   return (
     <div ref={worldRef} className="story-painter-world">
@@ -353,16 +395,28 @@ export default function StoryPainterRibbon({ children }) {
       >
         <g ref={cablesGroupRef} />
 
-        {/* حلقه ارتعاش مغناطیسی روی کابل هنگام نزدیک شدن موس */}
         <g ref={pluckRingRef} opacity="0">
           <circle r="16" className="painter-spark-halo" />
           <circle r="5" className="painter-spark-core" />
         </g>
 
-        {/* گوی نقاش پیشرو که از خروجی هر کارت به ورودی کارت بعدی شلیک می‌شود */}
-        <g ref={leadCometRef} opacity="0">
-          <circle r="15" className="painter-spark-halo" />
-          <circle r="6" className="painter-spark-core" />
+        {/* توتم زنده ۴ تکه لوگو که همراه خط سیگنال پایین می‌آید و قطعه فعال هر فصل در آن می‌درخشد */}
+        <g ref={leadTotemRef} opacity="0">
+          <circle r="22" className="totem-carrier-halo" />
+          <circle r="15" className="totem-carrier-disc" />
+          <g transform="translate(-6.5, -9) scale(0.056)">
+            {LOGO_PARTS.map((part) => (
+              <path
+                key={part.id}
+                d={part.d}
+                className={
+                  activePartSet.has(part.id)
+                    ? 'totem-carrier-part totem-carrier-part--active'
+                    : 'totem-carrier-part'
+                }
+              />
+            ))}
+          </g>
         </g>
       </svg>
 
@@ -371,6 +425,21 @@ export default function StoryPainterRibbon({ children }) {
         data-visible={narratorVisible ? 'true' : 'false'}
         aria-live="polite"
       >
+        <span className="story-narrator-pill__emblem" aria-hidden="true">
+          <svg viewBox="0 0 234.21 324.76" width="14" height="19">
+            {LOGO_PARTS.map((part) => (
+              <path
+                key={part.id}
+                d={part.d}
+                className={
+                  activePartSet.has(part.id)
+                    ? 'totem-carrier-part totem-carrier-part--active'
+                    : 'totem-carrier-part'
+                }
+              />
+            ))}
+          </svg>
+        </span>
         <span className="story-narrator-pill__step">{currentAct.id}</span>
         <span className="story-narrator-pill__label">{currentAct.label}</span>
       </aside>

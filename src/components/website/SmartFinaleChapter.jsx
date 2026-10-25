@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
 import { Button, StatusChip } from '../../ds';
-import { LOGO_PATH_D } from '../../data/geometryData.js';
+import { LOGO_PARTS, LOGO_PATH_D } from '../../data/geometryData.js';
 import { toFa } from '../../utils/faDigits.js';
+import LogoAnatomyBadge from './LogoAnatomyBadge.jsx';
 import PaintedCard from './PaintedCard.jsx';
 
 export default function SmartFinaleChapter() {
-  const [fleetSize, setFleetSize] = useState(65);
+  const [fleetSize, setFleetSize] = useState(75);
   const [phone, setPhone] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
   const annualSavingMillions = Math.round(fleetSize * 48.5);
+  const fuelSavedMillions = Math.round(annualSavingMillions * 0.54);
+  const maintSavedMillions = Math.round(annualSavingMillions * 0.29);
+  const idleSavedMillions = annualSavingMillions - fuelSavedMillions - maintSavedMillions;
+
   const ratio = ((fleetSize - 10) / 290) * 100;
+  // چرخش زنده عقربه تیغه ۱۳۶.۵۴ درجه لوگو متناسب با مقیاس ناوگان (-۵۲ درجه تا +۵۲ درجه)
+  const bladeAngle = -52 + (ratio / 100) * 104;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -22,34 +29,66 @@ export default function SmartFinaleChapter() {
     <section id="finale-portal" className="finale-sand-chapter" data-polarity="daylight">
       <div className="site-container">
         <div className="story-chapter-head">
-          <span className="story-step-kicker">۰۴ · مقصد نهایی مدار</span>
+          <LogoAnatomyBadge
+            activeParts={['p3']}
+            code="فصل ۰۴"
+            elementTitle="تیغه مکان‌نمای ۱۳۶.۵۴° لوگو"
+            morphTarget="عقربه قطب‌نمای سود و فرمان شروع"
+          />
           <h2 className="story-chapter-title">
-            در پایان مسیر، هر داده به سود سالانه و فرمان زنده تبدیل می‌شود.
+            تیغهٔ پیکان لوگو به عقربهٔ قطب‌نمای سود تبدیل می‌شود و مدار را کامل می‌کند.
           </h2>
         </div>
 
-        {/* گره ۵ (مقصد نهایی مدار): درگاه یکپارچه محاسبه بازده و فعال‌سازی دمو */}
         <PaintedCard
           nodeId="node-finale"
-          tone="horizon"
+          tone="command"
           hasBottomPort={false}
           className="finale-launch-portal"
         >
           <div className="finale-unified-portal" data-polarity="nocturnal">
             <div className="finale-dial-band">
-              <div className="finale-dial-readout">
-                <span className="finale-dial-caption">
-                  صرفه‌جویی سالانه ناوگان {toFa(fleetSize)} خودرویی
-                </span>
-                <div className="finale-dial-giant">
-                  <strong>{toFa(annualSavingMillions.toLocaleString('en-US'))}</strong>
-                  <span>میلیون تومان</span>
+              <div className="finale-compass-cluster">
+                {/* قطب‌نمای برداری که عقربه آن مستقیماً از قطعه چهارم لوگو (LOGO_PARTS[3]) ساخته شده است */}
+                <div className="logo-blade-compass" aria-hidden="true">
+                  <svg viewBox="0 0 180 180" className="logo-blade-compass__svg">
+                    <circle cx="90" cy="90" r="78" className="logo-blade-compass__ring" />
+                    <path
+                      d="M 26,112 A 68,68 0 0 1 154,112"
+                      className="logo-blade-compass__arc"
+                    />
+                    <g
+                      className="logo-blade-compass__needle"
+                      style={{ '--needle-rot': `${bladeAngle.toFixed(1)}deg` }}
+                    >
+                      <g transform="translate(52, 24) scale(0.42)">
+                        <path d={LOGO_PARTS[3].d} className="logo-blade-compass__blade" />
+                      </g>
+                    </g>
+                    <circle cx="90" cy="98" r="6" className="logo-blade-compass__pivot" />
+                  </svg>
+                </div>
+
+                <div className="finale-dial-readout">
+                  <span className="finale-dial-caption">
+                    برآورد بازده سالانه برای ناوگان {toFa(fleetSize)} خودرویی
+                  </span>
+                  <div className="finale-dial-giant">
+                    <strong>{toFa(annualSavingMillions.toLocaleString('en-US'))}</strong>
+                    <span>میلیون تومان / سال</span>
+                  </div>
+
+                  <div className="finale-breakdown-pills">
+                    <span>سوخت: {toFa(fuelSavedMillions.toLocaleString('en-US'))} م</span>
+                    <span>استهلاک: {toFa(maintSavedMillions.toLocaleString('en-US'))} م</span>
+                    <span>بهره‌وری سیر: {toFa(idleSavedMillions.toLocaleString('en-US'))} م</span>
+                  </div>
                 </div>
               </div>
 
               <div className="finale-dial-control">
                 <div className="finale-dial-control__labels">
-                  <span>تعداد خودروهای فعال</span>
+                  <span>مقیاس ناوگان فعال (عقربه تیغه را بچرخانید)</span>
                   <strong>{toFa(fleetSize)} دستگاه</strong>
                 </div>
 
@@ -72,6 +111,12 @@ export default function SmartFinaleChapter() {
                     className="finale-ribbon-slider__input"
                   />
                 </div>
+
+                <div className="finale-scale-ticks" aria-hidden="true">
+                  <span>{toFa(10)} خودرو</span>
+                  <span>{toFa(150)} خودرو</span>
+                  <span>{toFa(300)} خودرو</span>
+                </div>
               </div>
             </div>
 
@@ -79,6 +124,14 @@ export default function SmartFinaleChapter() {
 
             <div className="finale-launch-portal__grid">
               <div className="finale-launch-portal__copy">
+                <div className="finale-seal-row">
+                  <span className="finale-seal-emblem" aria-hidden="true">
+                    <svg viewBox="0 0 234.21 324.76" width="20" height="28">
+                      <path d={LOGO_PATH_D} fill="currentColor" />
+                    </svg>
+                  </span>
+                  <span>هم‌گرایی نهایی هر ۴ عنصر در اتاق فرمان شما</span>
+                </div>
                 <h3>ناوگان خود را زنده روی همین مدار ببینید.</h3>
                 <p>شماره همراه خود را بگذارید تا پیش‌نمایش اختصاصی ناوگان شما بلافاصله فعال شود.</p>
               </div>

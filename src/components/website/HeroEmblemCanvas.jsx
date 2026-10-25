@@ -13,7 +13,7 @@ function easeOutExpo(t) {
   return t >= 1 ? 1 : 1 - Math.pow(2, -10 * t);
 }
 
-// در Three.js پلیگون نقطه‌ای زمانی حفظ می‌شود که normal.dot(p) + constant >= 0 باشد
+// صفحات برش GPU هماهنگ با ۴ عنصر معنادار لوگو
 const P_UPPER = new THREE.Plane(new THREE.Vector3(-0.4515, 0.8923, 0), -42);
 const P_LOWER = new THREE.Plane(new THREE.Vector3(0.4515, -0.8923, 0), 42);
 const P_WING_R = new THREE.Plane(new THREE.Vector3(0.8923, 0.4515, 0), -68);
@@ -25,31 +25,26 @@ const P_SHIELD_TIP = new THREE.Plane(new THREE.Vector3(-0.4515, -0.8923, 0), -46
 
 const SHARD_CONFIGS = [
   {
-    // بال افقی بالا-راست
     planes: [P_UPPER, P_WING_R],
     scatter: { x: 265, y: 185, z: 245, rx: 0.68, ry: 0.85, rz: -0.34, delay: 0.12 },
     mag: { x: 14, y: 12, z: 12, rz: -0.025 },
   },
   {
-    // گنبد قوسی بالا-چپ
     planes: [P_UPPER, P_DOME_L],
     scatter: { x: -245, y: 175, z: -185, rx: -0.62, ry: -0.8, rz: 0.32, delay: 0.0 },
     mag: { x: -14, y: 11, z: 10, rz: 0.025 },
   },
   {
-    // ستون عمودی پایین-چپ
     planes: [P_LOWER, P_STEM_L],
     scatter: { x: -255, y: -175, z: 215, rx: 0.58, ry: -0.72, rz: -0.28, delay: 0.06 },
     mag: { x: -15, y: -10, z: 10, rz: 0.02 },
   },
   {
-    // شانه سپر میانی-راست
     planes: [P_LOWER, P_SHIELD_R, P_SHIELD_TOP],
     scatter: { x: 270, y: 38, z: -175, rx: -0.54, ry: 0.78, rz: 0.26, delay: 0.16 },
     mag: { x: 15, y: 4, z: 10, rz: -0.02 },
   },
   {
-    // نوک نیزه ۱۳۶.۵۴ درجه پایین-راست (سرچشمه خط سیگنال)
     planes: [P_LOWER, P_SHIELD_R, P_SHIELD_TIP],
     scatter: { x: 155, y: -245, z: 285, rx: -0.76, ry: 0.9, rz: -0.38, delay: 0.22 },
     mag: { x: 10, y: -16, z: 18, rz: -0.03 },
@@ -60,11 +55,11 @@ export default function HeroEmblemCanvas({
   scrollRef,
   pointerRef,
   reducedMotion = false,
-  onTipScreenUpdate,
+  onGatewayScreenUpdate,
 }) {
   const mountRef = useRef(null);
-  const tipCallbackRef = useRef(onTipScreenUpdate);
-  tipCallbackRef.current = onTipScreenUpdate;
+  const gatewayCallbackRef = useRef(onGatewayScreenUpdate);
+  gatewayCallbackRef.current = onGatewayScreenUpdate;
 
   useEffect(() => {
     const container = mountRef.current;
@@ -76,7 +71,7 @@ export default function HeroEmblemCanvas({
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(34, width / height, 10, 3200);
-    camera.position.set(0, 0, isMobileInit ? 940 : 820);
+    camera.position.set(0, 0, isMobileInit ? 940 : 810);
 
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
@@ -87,9 +82,15 @@ export default function HeroEmblemCanvas({
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobileInit ? 1.5 : 2));
     renderer.setSize(width, height);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.15;
+    renderer.toneMappingExposure = 1.16;
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
+
+    const gl = renderer.getContext();
+    const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+    const gpuName = dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) || '') : '';
+    const isSoftwareGpu = /SwiftShader|llvmpipe|Software/i.test(gpuName);
+    const lowDetail = isMobileInit || isSoftwareGpu;
 
     const envRT = setupClearcoatEnvironment(renderer, scene);
 
@@ -99,7 +100,7 @@ export default function HeroEmblemCanvas({
 
     scene.add(new THREE.HemisphereLight(sandLight, slateCool, 1.08));
 
-    const keyLight = new THREE.DirectionalLight(sandLight, 2.25);
+    const keyLight = new THREE.DirectionalLight(sandLight, 2.28);
     keyLight.position.set(-280, 360, 460);
     scene.add(keyLight);
 
@@ -107,18 +108,19 @@ export default function HeroEmblemCanvas({
     rimLight.position.set(320, 140, -280);
     scene.add(rimLight);
 
-    const cursorSpot = new THREE.PointLight(orangeColor, 2.3, 920, 1.45);
+    const cursorSpot = new THREE.PointLight(orangeColor, 2.2, 920, 1.45);
     cursorSpot.position.set(80, -40, 290);
     scene.add(cursorSpot);
 
     const emblemGroup = new THREE.Group();
     scene.add(emblemGroup);
 
-    const innerCoreLight = new THREE.PointLight(orangeColor, 0, 340, 1.35);
-    innerCoreLight.position.set(6, -18, 20);
-    emblemGroup.add(innerCoreLight);
+    // نور گرم درون طاق دروازه لوگو (بازتاب نوری نارنجی روی دیواره داخلی ستون و سپر)
+    const archTunnelLight = new THREE.PointLight(orangeColor, 3.2, 260, 1.5);
+    archTunnelLight.position.set(-46.9, -18, 12);
+    emblemGroup.add(archTunnelLight);
 
-    const ringGeo = new THREE.RingGeometry(82, 85.2, 80);
+    const ringGeo = new THREE.RingGeometry(86, 89.2, 80);
     const ringMat = new THREE.MeshBasicMaterial({
       color: orangeColor,
       side: THREE.DoubleSide,
@@ -129,7 +131,6 @@ export default function HeroEmblemCanvas({
     const shockRing = new THREE.Mesh(ringGeo, ringMat);
     emblemGroup.add(shockRing);
 
-    // ساخت مش یکپارچه مرجع برند با تصحیح دقیق جهت محور Y
     const loader = new SVGLoader();
     const parsed = loader.parse(
       `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 234.21 324.76"><path d="${LOGO_PATH_D}"/></svg>`
@@ -146,12 +147,6 @@ export default function HeroEmblemCanvas({
       basePts.reverse();
     }
 
-    const gl = renderer.getContext();
-    const dbg = gl.getExtension('WEBGL_debug_renderer_info');
-    const gpuName = dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) || '') : '';
-    const isSoftwareGpu = /SwiftShader|llvmpipe|Software/i.test(gpuName);
-    const lowDetail = isMobileInit || isSoftwareGpu;
-
     const depth = 38;
     const monolithShape = new THREE.Shape(basePts);
     const monolithGeo = new THREE.ExtrudeGeometry(monolithShape, {
@@ -165,7 +160,6 @@ export default function HeroEmblemCanvas({
     });
     monolithGeo.translate(0, 0, -depth / 2);
 
-    // مش یکپارچه نهایی بدون هیچ برشی برای نمایش ۱۰۰٪ یکدست در حالت سکون (و ۵ برابر سبک‌تر روی GPU)
     const solidMonolithMat = createClearcoatMaterial({
       color: new THREE.Color(DESIGN_TOKENS.color.sand['50']),
     });
@@ -173,21 +167,78 @@ export default function HeroEmblemCanvas({
     solidMonolithMesh.visible = Boolean(reducedMotion);
     emblemGroup.add(solidMonolithMesh);
 
-    // ۵ قطعه برش‌خورده GPU از روی همان هندسه واحد (برای ورود تیکه‌تیکه و شناوری مغناطیسی موس)
-    const shardMeshes = SHARD_CONFIGS.map((cfg, idx) => {
+    const shardMeshes = SHARD_CONFIGS.map((cfg) => {
       const worldPlanes = cfg.planes.map((pl) => pl.clone());
       const mat = createClearcoatMaterial({
         color: new THREE.Color(DESIGN_TOKENS.color.sand['50']),
       });
       mat.side = THREE.DoubleSide;
       mat.clippingPlanes = worldPlanes;
-      if (idx === 4) {
-        mat.emissive = orangeColor.clone();
-        mat.emissiveIntensity = 0;
-      }
       const mesh = new THREE.Mesh(monolithGeo, mat);
       emblemGroup.add(mesh);
       return { mesh, mat, cfg, localPlanes: cfg.planes, worldPlanes };
+    });
+
+    // ============================================================================
+    // مسیر مفهومی سه‌بعدی در دل معماری لوگو:
+    // ورود سیگنال ماهواره‌ای از «دهلیز افق بالا» -> عبور از پشت پل پردازشی هسته ->
+    // طلوع و خروج باشکوه از میان «دروازه آزادراه لوگو» (بین ستون چپ و سپر راست، x = -46.9)
+    // ============================================================================
+    const gatewayCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(154, 94, -34),
+      new THREE.Vector3(42, 90, -30),
+      new THREE.Vector3(-28, 62, -28),
+      new THREE.Vector3(-46.9, 12, 10),
+      new THREE.Vector3(-46.9, -78, 18),
+      new THREE.Vector3(-46.9, -158, 22),
+    ]);
+
+    const coreTubeGeo = new THREE.TubeGeometry(gatewayCurve, lowDetail ? 36 : 64, 3.6, 10, false);
+    const coreTubeMat = new THREE.MeshStandardMaterial({
+      color: orangeColor,
+      emissive: orangeColor,
+      emissiveIntensity: 1.85,
+      roughness: 0.22,
+      transparent: true,
+      opacity: reducedMotion ? 1 : 0,
+    });
+    const coreTubeMesh = new THREE.Mesh(coreTubeGeo, coreTubeMat);
+    emblemGroup.add(coreTubeMesh);
+
+    // دو خط راهنمای ظریف موازی درون تونل دروازه آزادراه (حس واقعی لاین‌های عبوری بزرگراه)
+    const railCurveL = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-59, 14, 8),
+      new THREE.Vector3(-59, -78, 16),
+      new THREE.Vector3(-59, -158, 20),
+    ]);
+    const railCurveR = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-34.8, 14, 8),
+      new THREE.Vector3(-34.8, -78, 16),
+      new THREE.Vector3(-34.8, -158, 20),
+    ]);
+    const sideRailGeoL = new THREE.TubeGeometry(railCurveL, 20, 1.0, 6, false);
+    const sideRailGeoR = new THREE.TubeGeometry(railCurveR, 20, 1.0, 6, false);
+    const sideRailMat = new THREE.MeshBasicMaterial({
+      color: sandLight,
+      transparent: true,
+      opacity: 0,
+    });
+    const sideRailL = new THREE.Mesh(sideRailGeoL, sideRailMat);
+    const sideRailR = new THREE.Mesh(sideRailGeoR, sideRailMat);
+    emblemGroup.add(sideRailL);
+    emblemGroup.add(sideRailR);
+
+    // گوی‌های پالس تله‌متری که از افق بالا وارد لوگو شده و از دروازه پایین خارج می‌شوند
+    const pulseSphereGeo = new THREE.SphereGeometry(5.6, 12, 12);
+    const pulseSphereMat = new THREE.MeshBasicMaterial({
+      color: sandLight,
+      transparent: true,
+      opacity: 0,
+    });
+    const pulseBeads = [0, 0.5].map((phase) => {
+      const m = new THREE.Mesh(pulseSphereGeo, pulseSphereMat);
+      emblemGroup.add(m);
+      return { mesh: m, phase };
     });
 
     const particleCount = isMobileInit ? 18 : 34;
@@ -201,9 +252,9 @@ export default function HeroEmblemCanvas({
     pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
     const pMat = new THREE.PointsMaterial({
       color: sandLight,
-      size: 3.4,
+      size: 3.2,
       transparent: true,
-      opacity: 0.24,
+      opacity: 0.22,
     });
     const particles = new THREE.Points(pGeo, pMat);
     scene.add(particles);
@@ -223,7 +274,9 @@ export default function HeroEmblemCanvas({
     let smoothScroll = scrollRef?.current || 0;
     let smoothMag = 0;
     let settledFrames = 0;
-    const tipWorldVec = new THREE.Vector3();
+    const exitWorldVec = new THREE.Vector3();
+    const skyEntryVec = new THREE.Vector3();
+    const tangentVec = new THREE.Vector3();
     let rafId = 0;
 
     const tick = (now) => {
@@ -240,7 +293,7 @@ export default function HeroEmblemCanvas({
       const scrollDelta = Math.abs(targetScroll - smoothScroll);
       const ptrDelta = Math.abs(rawPtr.x - smoothPtrX) + Math.abs(rawPtr.y - smoothPtrY);
 
-      if (isSoftwareGpu && elapsed > 2.25 && scrollDelta < 0.0005 && ptrDelta < 0.001 && smoothMag < 0.002) {
+      if (isSoftwareGpu && elapsed > 2.35 && scrollDelta < 0.0005 && ptrDelta < 0.001 && smoothMag < 0.002) {
         settledFrames += 1;
         if (settledFrames > 2) return;
       } else {
@@ -253,17 +306,17 @@ export default function HeroEmblemCanvas({
 
       const introGlobal = isReduced ? 1 : clamp(elapsed / 2.0, 0, 1);
 
-      const baseX = isMob ? 0 : -195 * (1 - smoothScroll * 0.86);
-      const baseY = isMob ? 124 - smoothScroll * 32 : -6 + smoothScroll * 18;
-      const breatheY = isReduced || isSoftwareGpu ? 0 : Math.sin(elapsed * 1.45) * 4.5;
+      const baseX = isMob ? 0 : -190 * (1 - smoothScroll * 0.78);
+      const baseY = isMob ? 124 - smoothScroll * 30 : 4 + smoothScroll * 20;
+      const breatheY = isReduced || isSoftwareGpu ? 0 : Math.sin(elapsed * 1.4) * 4;
 
       emblemGroup.position.set(
         baseX + smoothPtrX * 20,
         baseY - smoothPtrY * 16 + breatheY,
-        smoothScroll * 36
+        smoothScroll * 34
       );
 
-      const emblemNormX = isMob ? 0 : (-195 * (1 - smoothScroll * 0.86)) / (width * 0.5);
+      const emblemNormX = isMob ? 0 : baseX / (width * 0.5);
       const dist = Math.hypot(rawPtr.x - emblemNormX, rawPtr.y - 0.02);
       const targetMag = !isReduced && introGlobal > 0.88 && dist < 0.42 ? 1 - dist / 0.42 : 0;
       smoothMag += (targetMag - smoothMag) * 0.11;
@@ -271,19 +324,34 @@ export default function HeroEmblemCanvas({
       const lockWindow = !isReduced ? clamp((elapsed - 1.2) / 0.7, 0, 1) : 0;
       const lockPulse = lockWindow > 0 && lockWindow < 1 ? Math.sin(lockWindow * Math.PI) : 0;
       shockRing.scale.setScalar(0.85 + easeOutExpo(lockWindow) * 2.65);
-      ringMat.opacity = lockPulse * 0.58;
-      innerCoreLight.intensity = smoothMag * 4.8 + lockPulse * 3.4;
+      ringMat.opacity = lockPulse * 0.56;
 
-      const introSpinY = isReduced ? 0 : (1 - easeOutExpo(introGlobal)) * -0.45;
-      emblemGroup.rotation.y = introSpinY + smoothPtrX * 0.32 - smoothScroll * 0.22;
-      emblemGroup.rotation.x = -smoothPtrY * 0.22 + smoothScroll * 0.16;
-      emblemGroup.rotation.z = smoothScroll * -0.05;
+      // روشنایی تونل دروازه پس از قفل شدن تندیس
+      const corridorAppear = isReduced ? 1 : easeOutExpo(clamp((elapsed - 1.05) / 0.95, 0, 1));
+      coreTubeMat.opacity = corridorAppear * 0.96;
+      sideRailMat.opacity = corridorAppear * 0.34;
+      pulseSphereMat.opacity = corridorAppear * 0.92;
+      archTunnelLight.intensity = corridorAppear * (3.1 + smoothScroll * 1.6 + smoothMag * 2.2) + lockPulse * 2.5;
 
-      const scaleBase = isMob ? 0.33 : 0.72;
-      emblemGroup.scale.setScalar(scaleBase * (1 + lockPulse * 0.045 - smoothScroll * 0.05));
+      pulseBeads.forEach(({ mesh, phase }) => {
+        const rawU = (elapsed * 0.44 + phase) % 1;
+        const u = isReduced ? 0.82 : clamp(rawU < 0 ? rawU + 1 : rawU, 0.001, 0.999);
+        gatewayCurve.getPointAt(u, tangentVec);
+        mesh.position.copy(tangentVec);
+        const edgeFade = Math.sin(u * Math.PI);
+        mesh.scale.setScalar(0.65 + edgeFade * 0.65);
+      });
+
+      const introSpinY = isReduced ? 0 : (1 - easeOutExpo(introGlobal)) * -0.44;
+      emblemGroup.rotation.y = introSpinY + smoothPtrX * 0.32 - smoothScroll * 0.18;
+      emblemGroup.rotation.x = -smoothPtrY * 0.21 + smoothScroll * 0.15;
+      emblemGroup.rotation.z = smoothScroll * -0.04;
+
+      const scaleBase = isMob ? 0.33 : 0.71;
+      emblemGroup.scale.setScalar(scaleBase * (1 + lockPulse * 0.045 - smoothScroll * 0.04));
 
       let maxScatter = 0;
-      shardMeshes.forEach(({ mesh, mat, cfg }, idx) => {
+      shardMeshes.forEach(({ mesh, cfg }) => {
         const localT = isReduced
           ? 1
           : clamp((elapsed - cfg.scatter.delay) / (1.62 - cfg.scatter.delay * 0.35), 0, 1);
@@ -301,10 +369,6 @@ export default function HeroEmblemCanvas({
           cfg.scatter.ry * scatter,
           cfg.scatter.rz * scatter + cfg.mag.rz * smoothMag
         );
-
-        if (idx === 4) {
-          mat.emissiveIntensity = smoothScroll * 0.42 + smoothMag * 0.25 + lockPulse * 0.32;
-        }
       });
 
       const isFullyFused = maxScatter < 0.009 && smoothMag < 0.005;
@@ -329,16 +393,22 @@ export default function HeroEmblemCanvas({
 
       renderer.render(scene, camera);
 
-      if (tipCallbackRef.current) {
-        tipWorldVec.set(9.4, -159.2, 6);
-        const refMesh = isFullyFused ? solidMonolithMesh : shardMeshes[4].mesh;
-        refMesh.updateMatrixWorld();
-        refMesh.localToWorld(tipWorldVec);
-        tipWorldVec.project(camera);
-        const screenX = (tipWorldVec.x * 0.5 + 0.5) * width;
-        const screenY = (-tipWorldVec.y * 0.5 + 0.5) * height;
-        const tetherReady = isReduced ? 1 : easeOutExpo(clamp((elapsed - 0.85) / 1.0, 0, 1));
-        tipCallbackRef.current(screenX, screenY, width, height, tetherReady, smoothScroll);
+      // تصویرسازی دقیق آستانه خروجی «دروازه آزادراه لوگو» (-46.9, -158, 22) به مختصات صفحه
+      // تا بزرگراه خروجی بدون حتی ۱ پیکسل زاویه شکسته، مستقیماً از میان طاق لوگو به مدار اصلی صفحه جاری شود
+      if (gatewayCallbackRef.current) {
+        exitWorldVec.set(-46.9, -158, 22);
+        emblemGroup.localToWorld(exitWorldVec);
+        exitWorldVec.project(camera);
+        const exitX = (exitWorldVec.x * 0.5 + 0.5) * width;
+        const exitY = (-exitWorldVec.y * 0.5 + 0.5) * height;
+
+        skyEntryVec.set(154, 94, -34);
+        emblemGroup.localToWorld(skyEntryVec);
+        skyEntryVec.project(camera);
+        const skyX = (skyEntryVec.x * 0.5 + 0.5) * width;
+        const skyY = (-skyEntryVec.y * 0.5 + 0.5) * height;
+
+        gatewayCallbackRef.current(exitX, exitY, skyX, skyY, width, height, corridorAppear, smoothScroll);
       }
     };
 
@@ -350,7 +420,7 @@ export default function HeroEmblemCanvas({
       height = container.clientHeight || window.innerHeight || 800;
       const mob = width <= 768;
       camera.aspect = width / height;
-      camera.position.z = mob ? 940 : 820;
+      camera.position.z = mob ? 940 : 810;
       camera.updateProjectionMatrix();
       renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mob ? 1.5 : 2));
       renderer.setSize(width, height);
@@ -364,6 +434,13 @@ export default function HeroEmblemCanvas({
       shardMeshes.forEach(({ mat }) => mat.dispose());
       solidMonolithMat.dispose();
       monolithGeo.dispose();
+      coreTubeGeo.dispose();
+      coreTubeMat.dispose();
+      sideRailGeoL.dispose();
+      sideRailGeoR.dispose();
+      sideRailMat.dispose();
+      pulseSphereGeo.dispose();
+      pulseSphereMat.dispose();
       ringGeo.dispose();
       ringMat.dispose();
       pGeo.dispose();
@@ -379,7 +456,7 @@ export default function HeroEmblemCanvas({
       ref={mountRef}
       className="hero-fullbleed-webgl"
       role="img"
-      aria-label="تندیس سه‌بعدی ناوگان که در لحظه ورود از فضای سه‌بعدی هم‌گرا شده و خط سیگنال زنده را به پایین صفحه متصل می‌کند"
+      aria-label="تندیس سه‌بعدی دروازه ناوگان فرزام که پرتو تله‌متری ماهواره از افق بالای آن وارد شده و به‌صورت بزرگراه زنده از میان طاق دروازه پایینی خارج می‌شود"
     />
   );
 }
