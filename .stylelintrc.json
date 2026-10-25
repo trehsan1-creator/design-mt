@@ -1,0 +1,11 @@
+{
+  "rules": {
+    "color-no-hex": true,
+    "function-disallowed-list": ["rgb", "rgba", "hsl", "hsla", "cubic-bezier"],
+    "declaration-property-value-disallowed-list": {
+      "/^border-.*radius$/": ["/\\b\\d+(\\.\\d+)?px\\b/"],
+      "/^box-shadow$/": ["/\\b\\d+(\\.\\d+)?px\\b/"],
+      "/.*/": ["/var\\(--(brand|beige|navy|grad-stop|horizon-gradient|spring-overshoot|ease-cinematic)/"]
+    }
+  }
+}

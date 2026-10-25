@@ -1,0 +1,224 @@
+{
+  "timestamp": "2026-10-25T11:28:33.614Z",
+  "totalPairs": 24,
+  "passedPairs": 24,
+  "failedPairs": 0,
+  "results": [
+    {
+      "id": "noc-body-on-surface",
+      "label": "متن اصلی شب روی بوم پایه",
+      "fg": "#E8DECD",
+      "bg": "#060E16",
+      "min": 4.5,
+      "ratio": 14.56,
+      "pass": true
+    },
+    {
+      "id": "noc-body-on-raised",
+      "label": "متن اصلی شب روی کارت برجسته",
+      "fg": "#E8DECD",
+      "bg": "#0F2431",
+      "min": 4.5,
+      "ratio": 11.97,
+      "pass": true
+    },
+    {
+      "id": "noc-body-on-clearcoat-top",
+      "label": "متن اصلی شب روی روشن‌ترین نقطه افق (#3D5768)",
+      "fg": "#E8DECD",
+      "bg": "#3D5768",
+      "min": 4.5,
+      "ratio": 5.71,
+      "pass": true
+    },
+    {
+      "id": "noc-muted-on-surface",
+      "label": "متن فرعی (Muted) شب روی بوم پایه",
+      "fg": "#B2ACA1",
+      "bg": "#060E16",
+      "min": 4.5,
+      "ratio": 8.6,
+      "pass": true
+    },
+    {
+      "id": "noc-muted-on-raised",
+      "label": "متن فرعی (Muted) شب روی کارت برجسته",
+      "fg": "#B2ACA1",
+      "bg": "#0F2431",
+      "min": 4.5,
+      "ratio": 7.07,
+      "pass": true
+    },
+    {
+      "id": "noc-dim-on-surface",
+      "label": "متن کم‌رنگ (Dim) شب روی بوم پایه",
+      "fg": "#A09B92",
+      "bg": "#060E16",
+      "min": 4.5,
+      "ratio": 7.02,
+      "pass": true
+    },
+    {
+      "id": "noc-dim-on-raised",
+      "label": "متن کم‌رنگ (Dim) شب روی کارت برجسته",
+      "fg": "#A09B92",
+      "bg": "#0F2431",
+      "min": 4.5,
+      "ratio": 5.77,
+      "pass": true
+    },
+    {
+      "id": "noc-accent-on-surface",
+      "label": "اکسنت نارنجی روی بوم شب",
+      "fg": "#FF742E",
+      "bg": "#060E16",
+      "min": 4.5,
+      "ratio": 7.2,
+      "pass": true
+    },
+    {
+      "id": "noc-accent-on-navy600",
+      "label": "اکسنت نارنجی روی سرمه‌ای برند (#102333)",
+      "fg": "#FF742E",
+      "bg": "#102333",
+      "min": 4.5,
+      "ratio": 5.95,
+      "pass": true
+    },
+    {
+      "id": "noc-accent-soft-on-raised",
+      "label": "نارنجی ملایم کپسول روی کارت برجسته",
+      "fg": "#FFB085",
+      "bg": "#0F2431",
+      "min": 4.5,
+      "ratio": 8.96,
+      "pass": true
+    },
+    {
+      "id": "btn-primary-top",
+      "label": "متن دکمه اصلی (#060E16) روی بالای گرادیان نارنجی",
+      "fg": "#060E16",
+      "bg": "#FF8B4D",
+      "min": 4.5,
+      "ratio": 8.37,
+      "pass": true
+    },
+    {
+      "id": "btn-primary-mid",
+      "label": "متن دکمه اصلی (#060E16) روی میانه نارنجی برند (#FF742E)",
+      "fg": "#060E16",
+      "bg": "#FF742E",
+      "min": 4.5,
+      "ratio": 7.2,
+      "pass": true
+    },
+    {
+      "id": "btn-primary-bot",
+      "label": "متن دکمه اصلی (#060E16) روی پایین گرادیان نارنجی (#EC601B)",
+      "fg": "#060E16",
+      "bg": "#EC601B",
+      "min": 4.5,
+      "ratio": 5.78,
+      "pass": true
+    },
+    {
+      "id": "day-body-on-sand",
+      "label": "متن سرمه‌ای روی بوم بژ گرم روز (#E8DECD)",
+      "fg": "#102333",
+      "bg": "#E8DECD",
+      "min": 4.5,
+      "ratio": 12.03,
+      "pass": true
+    },
+    {
+      "id": "day-body-on-cushion",
+      "label": "متن سرمه‌ای روی کارت بالشتکی روشن",
+      "fg": "#102333",
+      "bg": "#F6EFE4",
+      "min": 4.5,
+      "ratio": 14.03,
+      "pass": true
+    },
+    {
+      "id": "day-muted-on-sand",
+      "label": "متن فرعی (Muted) روز روی بژ گرم",
+      "fg": "#404C55",
+      "bg": "#E8DECD",
+      "min": 4.5,
+      "ratio": 6.61,
+      "pass": true
+    },
+    {
+      "id": "day-muted-on-cushion",
+      "label": "متن فرعی (Muted) روز روی کارت بالشتکی",
+      "fg": "#404C55",
+      "bg": "#F6EFE4",
+      "min": 4.5,
+      "ratio": 7.72,
+      "pass": true
+    },
+    {
+      "id": "day-dim-on-sand",
+      "label": "متن کم‌رنگ (Dim) روز روی بژ گرم",
+      "fg": "#4C575E",
+      "bg": "#E8DECD",
+      "min": 4.5,
+      "ratio": 5.56,
+      "pass": true
+    },
+    {
+      "id": "status-moving",
+      "label": "چیپ وضعیت (moving) روی پس‌زمینه کپسول تیره",
+      "fg": "#45C06A",
+      "bg": "#0E241E",
+      "min": 4.5,
+      "ratio": 6.98,
+      "pass": true
+    },
+    {
+      "id": "status-signal",
+      "label": "چیپ وضعیت (signal) روی پس‌زمینه کپسول تیره",
+      "fg": "#FF742E",
+      "bg": "#281A16",
+      "min": 4.5,
+      "ratio": 6.23,
+      "pass": true
+    },
+    {
+      "id": "status-corridor",
+      "label": "چیپ وضعیت (corridor) روی پس‌زمینه کپسول تیره",
+      "fg": "#00B4EC",
+      "bg": "#042331",
+      "min": 4.5,
+      "ratio": 6.78,
+      "pass": true
+    },
+    {
+      "id": "status-cold-chain",
+      "label": "چیپ وضعیت (cold-chain) روی پس‌زمینه کپسول تیره",
+      "fg": "#00BBC0",
+      "bg": "#04242A",
+      "min": 4.5,
+      "ratio": 6.87,
+      "pass": true
+    },
+    {
+      "id": "status-idle",
+      "label": "چیپ وضعیت (idle) روی پس‌زمینه کپسول تیره",
+      "fg": "#D0A500",
+      "bg": "#21210F",
+      "min": 4.5,
+      "ratio": 7.03,
+      "pass": true
+    },
+    {
+      "id": "status-critical",
+      "label": "چیپ وضعیت (critical) روی پس‌زمینه کپسول تیره",
+      "fg": "#FF6F69",
+      "bg": "#28191E",
+      "min": 4.5,
+      "ratio": 6.19,
+      "pass": true
+    }
+  ]
+}

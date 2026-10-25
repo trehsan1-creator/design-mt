@@ -1,0 +1,995 @@
+/* ============================================================================
+   DESIGN SYSTEM CORE STYLES (src/ds/ds.css)
+   100% Token-Driven — Zero Raw Hex / Zero Raw RGBA / Zero Raw Radius-Shadow PX
+   ============================================================================ */
+
+/* --- 1. Tactile 3D & Semantic Buttons (ds-btn) --- */
+.ds-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-space-0_5s);
+  min-block-size: 44px;
+  min-inline-size: 44px;
+  padding-block: var(--ds-space-0_5s);
+  padding-inline: var(--ds-space-1s);
+  border-radius: var(--ds-radius-capsule);
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-md);
+  font-weight: var(--ds-weight-bold);
+  line-height: 1.3;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition:
+    transform var(--ds-dur-tactile) var(--ds-ease-spring-lock),
+    box-shadow var(--ds-dur-tactile) var(--ds-ease-spring-lock),
+    background var(--ds-dur-tactile) var(--ds-ease-clothoid-cruise),
+    border-color var(--ds-dur-tactile) var(--ds-ease-clothoid-cruise),
+    color var(--ds-dur-tactile) var(--ds-ease-clothoid-cruise);
+}
+
+.ds-btn--sm {
+  padding-block: var(--ds-space-0_25s);
+  padding-inline: var(--ds-space-0_75s);
+  font-size: var(--ds-text-sm);
+}
+
+.ds-btn--lg {
+  padding-block: var(--ds-space-0_75s);
+  padding-inline: var(--ds-space-1_5s);
+  font-size: var(--ds-text-lg);
+  font-weight: var(--ds-weight-extrabold);
+}
+
+.ds-btn--full {
+  inline-size: 100%;
+}
+
+.ds-btn--primary {
+  background: var(--ds-grad-signal-flare);
+  color: var(--ds-on-accent);
+  font-weight: var(--ds-weight-extrabold);
+  box-shadow: var(--ds-shadow-btn-orange);
+}
+
+.ds-btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--ds-shadow-btn-orange-hover);
+}
+
+.ds-btn--primary:active {
+  transform: translateY(3px);
+  box-shadow: var(--ds-shadow-btn-orange-active);
+}
+
+.ds-btn--secondary {
+  background: var(--ds-grad-clearcoat);
+  color: var(--ds-sand-300);
+  border-color: color-mix(in srgb, var(--ds-sand-300) 24%, transparent);
+  box-shadow: var(--ds-shadow-btn-navy);
+}
+
+.ds-btn--secondary:hover {
+  transform: translateY(-2px);
+  border-color: var(--ds-border-strong);
+}
+
+.ds-btn--ghost {
+  background: var(--ds-surface-glass);
+  color: var(--ds-on-surface);
+  border-color: var(--ds-border);
+}
+
+.ds-btn--ghost:hover,
+.ds-btn--ghost.is-active {
+  border-color: var(--ds-accent);
+  background: color-mix(in srgb, var(--ds-accent) 16%, var(--ds-surface-glass));
+  color: var(--ds-on-surface);
+}
+
+.ds-btn--pill {
+  background: color-mix(in srgb, var(--ds-surface-raised) 76%, transparent);
+  color: var(--ds-on-surface-muted);
+  border-color: var(--ds-border);
+  font-size: var(--ds-text-sm);
+}
+
+.ds-btn--pill:hover {
+  color: var(--ds-on-surface);
+  border-color: var(--ds-border-strong);
+}
+
+.ds-btn--pill.is-active {
+  background: var(--ds-accent);
+  color: var(--ds-on-accent);
+  border-color: var(--ds-accent);
+  box-shadow: var(--ds-shadow-glow-accent);
+}
+
+/* --- 2. Semantic & Volumetric Cards (ds-card) --- */
+.ds-card {
+  position: relative;
+  border-radius: var(--ds-radius-card-lg);
+  padding: var(--ds-space-1_5s);
+  color: var(--ds-on-surface);
+  transition:
+    transform var(--ds-dur-morph) var(--ds-ease-tilt),
+    border-color var(--ds-dur-morph) var(--ds-ease-clothoid-cruise),
+    box-shadow var(--ds-dur-morph) var(--ds-ease-clothoid-cruise);
+}
+
+.ds-card--compact {
+  padding: var(--ds-space-1s);
+  border-radius: var(--ds-radius-card-md);
+}
+
+.ds-card--panel {
+  background: var(--ds-surface-raised);
+  border: 1px solid var(--ds-border);
+  box-shadow: var(--ds-shadow-card);
+}
+
+.ds-card--glass {
+  background: var(--ds-surface-glass);
+  border: 1px solid var(--ds-border);
+  backdrop-filter: blur(18px);
+  box-shadow: var(--ds-shadow-card);
+}
+
+.ds-card--cushion {
+  background: var(--ds-grad-cushion-light);
+  color: var(--ds-navy-600);
+  border: 1px solid color-mix(in srgb, var(--ds-neutral-white) 82%, transparent);
+  box-shadow: var(--ds-shadow-cushion-light);
+}
+
+.ds-card--chisel {
+  background: var(--ds-grad-clearcoat);
+  color: var(--ds-sand-300);
+  border: 1px solid color-mix(in srgb, var(--ds-sand-300) 20%, transparent);
+  box-shadow: var(--ds-shadow-chisel-navy);
+}
+
+.ds-card--accent-outline {
+  border-color: var(--ds-accent);
+}
+
+.ds-card--interactive:hover {
+  transform: translateY(-4px);
+  border-color: var(--ds-border-strong);
+}
+
+.ds-card--tilt {
+  transform: perspective(900px) rotateX(var(--ds-tilt-rx, 0deg)) rotateY(var(--ds-tilt-ry, 0deg));
+  transform-style: preserve-3d;
+}
+
+/* --- 3. Capsules & Eyebrows (ds-capsule) --- */
+.ds-capsule {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-space-0_5s);
+  padding-block: var(--ds-space-0_25s);
+  padding-inline: var(--ds-space-0_75s);
+  border-radius: var(--ds-radius-capsule);
+  font-size: var(--ds-text-xs);
+  font-weight: var(--ds-weight-bold);
+  line-height: 1.4;
+}
+
+.ds-capsule--eyebrow {
+  background: color-mix(in srgb, var(--ds-accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ds-accent) 38%, transparent);
+  color: var(--ds-accent-soft);
+}
+
+.ds-capsule--slash {
+  border-radius: var(--ds-radius-sm);
+  background: color-mix(in srgb, var(--ds-accent) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ds-accent) 36%, transparent);
+  color: var(--ds-accent-soft);
+}
+
+.ds-capsule--tag {
+  background: color-mix(in srgb, var(--ds-on-surface) 8%, transparent);
+  border: 1px solid var(--ds-border);
+  color: var(--ds-on-surface-muted);
+}
+
+.ds-pulse-dot {
+  inline-size: 8px;
+  block-size: 8px;
+  border-radius: var(--ds-radius-capsule);
+  background: var(--ds-accent);
+  box-shadow: var(--ds-shadow-glow-accent);
+  flex-shrink: 0;
+  animation: dsSignalPulse var(--ds-dur-sonar) var(--ds-ease-clothoid-cruise) infinite;
+}
+
+@keyframes dsSignalPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.38); opacity: 0.55; }
+}
+
+/* --- 4. Status Chip (ds-status-chip) --- */
+.ds-status-chip {
+  --chip-color: var(--ds-status-moving);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-space-0_25s);
+  padding-block: 4px;
+  padding-inline: var(--ds-space-0_5s);
+  border-radius: var(--ds-radius-capsule);
+  font-size: var(--ds-text-xs);
+  font-weight: var(--ds-weight-bold);
+  background: color-mix(in srgb, var(--chip-color) 14%, var(--ds-navy-950));
+  border: 1px solid color-mix(in srgb, var(--chip-color) 42%, transparent);
+  color: var(--chip-color);
+  white-space: nowrap;
+}
+
+.ds-status-chip[data-status="moving"]     { --chip-color: var(--ds-status-moving); }
+.ds-status-chip[data-status="signal"]     { --chip-color: var(--ds-status-signal); }
+.ds-status-chip[data-status="corridor"]   { --chip-color: var(--ds-status-corridor); }
+.ds-status-chip[data-status="cold-chain"] { --chip-color: var(--ds-status-cold-chain); }
+.ds-status-chip[data-status="idle"]       { --chip-color: var(--ds-status-idle); }
+.ds-status-chip[data-status="critical"]   { --chip-color: var(--ds-status-critical); }
+
+.ds-status-chip__marker {
+  inline-size: 8px;
+  block-size: 8px;
+  background: var(--chip-color);
+  flex-shrink: 0;
+}
+
+.ds-status-chip[data-status="moving"] .ds-status-chip__marker,
+.ds-status-chip[data-status="signal"] .ds-status-chip__marker {
+  border-radius: var(--ds-radius-capsule);
+}
+
+.ds-status-chip[data-status="corridor"] .ds-status-chip__marker,
+.ds-status-chip[data-status="cold-chain"] .ds-status-chip__marker {
+  border-radius: var(--ds-radius-nuqta);
+}
+
+.ds-status-chip[data-status="idle"] .ds-status-chip__marker {
+  border-radius: var(--ds-radius-nuqta);
+  transform: rotate(45deg);
+}
+
+.ds-status-chip[data-status="critical"] .ds-status-chip__marker {
+  border-radius: 0;
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+}
+
+/* --- 5. Authentic Iranian License Plate (ds-iran-plate) --- */
+.ds-iran-plate {
+  display: inline-flex;
+  align-items: stretch;
+  direction: ltr;
+  background: var(--ds-sand-50);
+  color: var(--ds-navy-900);
+  border: 2px solid var(--ds-navy-600);
+  border-radius: var(--ds-radius-plate);
+  overflow: hidden;
+  font-weight: var(--ds-weight-extrabold);
+  font-variant-numeric: tabular-nums;
+  box-shadow: var(--ds-shadow-card);
+  block-size: 36px;
+}
+
+.ds-iran-plate--public {
+  background: var(--ds-plate-yellow);
+}
+
+.ds-iran-plate__flag {
+  background: var(--ds-plate-blue);
+  color: var(--ds-neutral-white);
+  inline-size: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 4px;
+  padding-inline: 2px;
+}
+
+.ds-iran-plate__emblem-svg {
+  inline-size: 14px;
+  block-size: 20px;
+  display: block;
+  flex-shrink: 0;
+}
+
+.ds-iran-plate__code-svg {
+  inline-size: 24px;
+  block-size: 9px;
+  display: block;
+}
+
+.ds-iran-plate__body {
+  padding-inline: 9px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--ds-text-sm);
+  letter-spacing: 0.02em;
+}
+
+.ds-iran-plate__letter {
+  color: var(--ds-orange-700);
+  font-weight: var(--ds-weight-black);
+}
+
+.ds-iran-plate__code {
+  border-inline-start: 1.5px solid var(--ds-navy-600);
+  padding-inline: 7px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.05;
+}
+
+.ds-iran-plate__code-caption {
+  font-size: 8px;
+  font-weight: var(--ds-weight-bold);
+}
+
+.ds-iran-plate__code-num {
+  font-size: var(--ds-text-xs);
+  font-weight: var(--ds-weight-black);
+}
+
+/* --- 6. Kaf-Shear Telemetry Gauge (-26.84deg) --- */
+.ds-gauge {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-0_25s);
+}
+
+.ds-gauge__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-space-0_5s);
+  font-size: var(--ds-text-xs);
+}
+
+.ds-gauge__label {
+  color: var(--ds-on-surface-muted);
+}
+
+.ds-gauge__val {
+  font-weight: var(--ds-weight-extrabold);
+  color: var(--ds-on-surface);
+  font-variant-numeric: tabular-nums;
+}
+
+.ds-gauge__track {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding-inline: 4px;
+}
+
+.ds-gauge__seg {
+  --gauge-color: var(--ds-accent);
+  flex: 1;
+  min-inline-size: 6px;
+  block-size: 16px;
+  border-radius: var(--ds-radius-nuqta);
+  transform: skewX(var(--ds-geo-kaf-skew));
+  background: color-mix(in srgb, var(--ds-on-surface) 14%, transparent);
+  transition:
+    background var(--ds-dur-tactile) var(--ds-ease-clothoid-cruise),
+    box-shadow var(--ds-dur-tactile) var(--ds-ease-clothoid-cruise);
+}
+
+.ds-gauge[data-tone="moving"] .ds-gauge__seg     { --gauge-color: var(--ds-status-moving); }
+.ds-gauge[data-tone="cold-chain"] .ds-gauge__seg { --gauge-color: var(--ds-status-cold-chain); }
+.ds-gauge[data-tone="corridor"] .ds-gauge__seg   { --gauge-color: var(--ds-status-corridor); }
+
+.ds-gauge__seg.is-on {
+  background: var(--gauge-color);
+  box-shadow: var(--ds-shadow-glow-segment);
+}
+
+/* --- 7. Aerodynamic 136.54deg MapPin (ds-map-pin) --- */
+.ds-map-pin {
+  --pin-accent: var(--ds-status-moving);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  padding: 4px 8px 4px 4px;
+  border-radius: var(--ds-radius-capsule);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: transform var(--ds-dur-tactile) var(--ds-ease-spring-lock);
+}
+
+.ds-map-pin[data-status="moving"]     { --pin-accent: var(--ds-status-moving); }
+.ds-map-pin[data-status="signal"]     { --pin-accent: var(--ds-status-signal); }
+.ds-map-pin[data-status="cold-chain"] { --pin-accent: var(--ds-status-cold-chain); }
+.ds-map-pin[data-status="idle"]       { --pin-accent: var(--ds-status-idle); }
+.ds-map-pin[data-status="critical"]   { --pin-accent: var(--ds-status-critical); }
+
+.ds-map-pin:hover,
+.ds-map-pin.is-selected {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.ds-map-pin--static,
+.ds-map-pin--static:hover,
+.ds-map-pin--static.is-selected {
+  transform: none;
+}
+
+.ds-map-pin__glyph {
+  inline-size: 34px;
+  block-size: 39px;
+  display: inline-flex;
+  flex-shrink: 0;
+  filter: drop-shadow(0 6px 12px color-mix(in srgb, var(--ds-neutral-black) 48%, transparent));
+}
+
+.ds-map-pin__svg {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.ds-map-pin__body {
+  fill: var(--ds-navy-600);
+  stroke: var(--pin-accent);
+  stroke-width: 2.2;
+  transition: fill var(--ds-dur-tactile) var(--ds-ease-clothoid-cruise);
+}
+
+.ds-map-pin.is-selected .ds-map-pin__body {
+  fill: var(--ds-accent);
+  stroke: var(--ds-sand-50);
+}
+
+.ds-map-pin__core {
+  fill: color-mix(in srgb, var(--ds-navy-900) 75%, transparent);
+}
+
+.ds-map-pin__arrow {
+  fill: var(--pin-accent);
+}
+
+.ds-map-pin.is-selected .ds-map-pin__arrow {
+  fill: var(--ds-sand-50);
+}
+
+.ds-map-pin__badge {
+  direction: rtl;
+  padding-block: 4px;
+  padding-inline: var(--ds-space-0_5s);
+  border-radius: var(--ds-radius-sm);
+  background: var(--ds-surface-glass);
+  border: 1px solid var(--ds-border);
+  color: var(--ds-on-surface);
+  font-size: var(--ds-text-xs);
+  font-weight: var(--ds-weight-extrabold);
+  white-space: nowrap;
+}
+
+.ds-map-pin.is-selected .ds-map-pin__badge {
+  background: color-mix(in srgb, var(--ds-accent) 24%, var(--ds-surface));
+  border-color: var(--ds-accent);
+}
+
+/* --- 8. Reusable Layout & Typography Primitives (replaces inline styles) --- */
+.ds-stack-xs { display: flex; flex-direction: column; gap: var(--ds-space-0_25s); }
+.ds-stack-sm { display: flex; flex-direction: column; gap: var(--ds-space-0_5s); }
+.ds-stack-md { display: flex; flex-direction: column; gap: var(--ds-space-1s); }
+.ds-stack-lg { display: flex; flex-direction: column; gap: var(--ds-space-1_5s); }
+
+.ds-row { display: flex; align-items: center; gap: var(--ds-space-0_5s); }
+.ds-row-md { display: flex; align-items: center; gap: var(--ds-space-1s); }
+.ds-row-wrap { display: flex; align-items: center; gap: var(--ds-space-0_5s); flex-wrap: wrap; }
+.ds-between { display: flex; align-items: center; justify-content: space-between; gap: var(--ds-space-0_5s); }
+.ds-between-wrap { display: flex; align-items: center; justify-content: space-between; gap: var(--ds-space-0_75s); flex-wrap: wrap; }
+
+.ds-sr-defs {
+  position: absolute;
+  inline-size: 0;
+  block-size: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ds-squircle {
+  border-radius: var(--ds-radius-squircle);
+  clip-path: url(#ds-superellipse-clip);
+}
+
+@supports (corner-shape: squircle) {
+  .ds-squircle {
+    corner-shape: squircle;
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────
+   Phase 6 — Unified Signal Motion & Persian Fleet Operations Suite
+   ─────────────────────────────────────────────────────────────── */
+.ds-signal-svg {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  max-block-size: 54px;
+  overflow: visible;
+}
+
+.ds-signal-svg__rail {
+  fill: none;
+  stroke: var(--ds-navy-200);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.ds-signal-svg__trace {
+  fill: none;
+  stroke: var(--ds-color-signal-orange);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 28 72;
+  animation: ds-signal-flow var(--ds-dur-cruise) linear infinite;
+}
+
+.ds-signal-svg__trace.is-static {
+  stroke-dasharray: none;
+  animation: none;
+  opacity: 0.72;
+}
+
+.ds-signal-svg__halo {
+  fill: color-mix(in srgb, var(--ds-color-signal-orange) 26%, transparent);
+}
+
+.ds-signal-svg__dot {
+  fill: var(--ds-color-signal-orange);
+  stroke: var(--ds-sand-50);
+  stroke-width: 1.5;
+}
+
+@keyframes ds-signal-flow {
+  from { stroke-dashoffset: 100; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* Jalali Range Picker */
+.ds-jalali {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-0_5s);
+  padding: var(--ds-space-0_75s);
+  border-radius: var(--ds-radius-card-sm);
+  background: var(--ds-surface-raised);
+  border: 1px solid var(--ds-border);
+}
+
+.ds-jalali__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-space-0_5s);
+  flex-wrap: wrap;
+  font-size: var(--ds-text-sm);
+}
+
+.ds-jalali__count {
+  font-size: var(--ds-text-xs);
+  font-weight: 700;
+  color: var(--ds-accent-soft);
+  padding-block: 4px;
+  padding-inline: 10px;
+  border-radius: var(--ds-radius-capsule);
+  background: color-mix(in srgb, var(--ds-accent) 14%, var(--ds-surface));
+}
+
+.ds-jalali__presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ds-jalali__preset {
+  flex: 1 1 98px;
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  padding-inline: 10px;
+  border-radius: var(--ds-radius-xs);
+  border: 1px solid var(--ds-border);
+  background: color-mix(in srgb, var(--ds-surface) 60%, transparent);
+  color: var(--ds-on-surface);
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-xs);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ds-jalali__preset.is-active {
+  border-color: var(--ds-border-strong);
+  background: color-mix(in srgb, var(--ds-accent) 18%, var(--ds-surface));
+  color: var(--ds-accent-soft);
+}
+
+.ds-jalali__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-space-0_5s);
+}
+
+.ds-jalali__nav-btn {
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--ds-radius-xs);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-surface);
+  color: var(--ds-on-surface);
+  cursor: pointer;
+}
+
+.ds-jalali__month {
+  font-size: var(--ds-text-base);
+  font-weight: 800;
+}
+
+.ds-jalali__cal-scroll {
+  inline-size: 100%;
+  overflow-x: auto;
+}
+
+.ds-jalali__cal-inner {
+  min-inline-size: 312px;
+}
+
+.ds-jalali__weekdays,
+.ds-jalali__grid {
+  display: flex;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.ds-jalali__weekday,
+.ds-jalali__blank {
+  inline-size: calc(100% / 7);
+  min-inline-size: 44px;
+}
+
+.ds-jalali__weekday {
+  font-size: var(--ds-text-xs);
+  font-weight: 700;
+  color: var(--ds-on-surface-muted);
+  padding-block: 4px;
+}
+
+.ds-jalali__day {
+  inline-size: calc(100% / 7);
+  min-block-size: 44px;
+  min-inline-size: 44px;
+  border-radius: var(--ds-radius-xs);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ds-on-surface);
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ds-jalali__day:hover {
+  border-color: var(--ds-border);
+  background: color-mix(in srgb, var(--ds-on-surface) 8%, transparent);
+}
+
+.ds-jalali__day.is-in-range {
+  background: color-mix(in srgb, var(--ds-accent) 16%, var(--ds-surface));
+  color: var(--ds-on-surface);
+}
+
+.ds-jalali__day.is-edge {
+  background: var(--ds-grad-signal-flare);
+  color: var(--ds-on-accent);
+  font-weight: 800;
+}
+
+/* Telemetry Table */
+.ds-telemetry-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-0_75s);
+}
+
+.ds-telemetry-block__toolbar {
+  padding-block-end: var(--ds-space-0_25s);
+}
+
+.ds-filter-chip {
+  min-block-size: 44px;
+  padding-inline: 14px;
+  border-radius: var(--ds-radius-capsule);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-surface-raised);
+  color: var(--ds-on-surface);
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-xs);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ds-filter-chip.is-active {
+  border-color: var(--ds-border-strong);
+  background: color-mix(in srgb, var(--ds-accent) 18%, var(--ds-surface-raised));
+  color: var(--ds-accent-soft);
+}
+
+.ds-table-scroll {
+  inline-size: 100%;
+  overflow-x: auto;
+  border-radius: var(--ds-radius-card-sm);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-surface-raised);
+}
+
+.ds-telemetry-table {
+  inline-size: 100%;
+  min-inline-size: 680px;
+  border-collapse: collapse;
+  text-align: start;
+  font-size: var(--ds-text-sm);
+}
+
+.ds-telemetry-table th,
+.ds-telemetry-table td {
+  padding-block: 12px;
+  padding-inline: 14px;
+  border-block-end: 1px solid var(--ds-border);
+  vertical-align: middle;
+}
+
+.ds-telemetry-table th {
+  font-size: var(--ds-text-xs);
+  font-weight: 800;
+  color: var(--ds-on-surface-muted);
+  background: color-mix(in srgb, var(--ds-surface) 55%, var(--ds-surface-raised));
+}
+
+.ds-telemetry-table tbody tr:last-child td {
+  border-block-end: none;
+}
+
+.ds-th-sort {
+  min-block-size: 44px;
+  padding-inline: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  border-radius: var(--ds-radius-xs);
+  background: transparent;
+  color: inherit;
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-xs);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.ds-telemetry-table__corridor {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.ds-telemetry-table__num {
+  white-space: nowrap;
+}
+
+/* RTL Telemetry Chart */
+.ds-rtl-chart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-0_5s);
+  padding: var(--ds-space-0_75s);
+  border-radius: var(--ds-radius-card-sm);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-surface-raised);
+}
+
+.ds-rtl-chart__head {
+  font-size: var(--ds-text-sm);
+}
+
+.ds-rtl-chart__readout {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding-block: 6px;
+  padding-inline: 12px;
+  border-radius: var(--ds-radius-capsule);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-surface);
+  font-size: var(--ds-text-xs);
+  font-weight: 700;
+}
+
+.ds-rtl-chart__svg {
+  inline-size: 100%;
+  block-size: auto;
+  overflow: visible;
+}
+
+.ds-rtl-chart__limit-line {
+  stroke: var(--ds-status-critical);
+  stroke-width: 1.25;
+  stroke-dasharray: 5 5;
+  opacity: 0.78;
+}
+
+.ds-rtl-chart__limit-label {
+  fill: var(--ds-status-critical);
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-xs);
+  font-weight: 700;
+}
+
+.ds-rtl-chart__bar {
+  fill: color-mix(in srgb, var(--ds-status-corridor) 26%, transparent);
+  transition: fill var(--ds-dur-fast) var(--ds-ease-smooth);
+}
+
+.ds-rtl-chart__bar.is-selected {
+  fill: color-mix(in srgb, var(--ds-status-corridor) 56%, transparent);
+}
+
+.ds-rtl-chart__area {
+  fill: color-mix(in srgb, var(--ds-color-signal-orange) 14%, transparent);
+}
+
+.ds-rtl-chart__line {
+  fill: none;
+  stroke: var(--ds-color-signal-orange);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ds-rtl-chart__point {
+  fill: var(--ds-surface);
+  stroke: var(--ds-color-signal-orange);
+  stroke-width: 2.5;
+}
+
+.ds-rtl-chart__point.is-over {
+  stroke: var(--ds-status-critical);
+  fill: var(--ds-status-critical);
+}
+
+.ds-rtl-chart__axis-label {
+  fill: var(--ds-on-surface-muted);
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-xs);
+}
+
+.ds-rtl-chart__slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ds-rtl-chart__slot {
+  min-block-size: 44px;
+  min-inline-size: 56px;
+  padding-inline: 10px;
+  border-radius: var(--ds-radius-xs);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-surface);
+  color: var(--ds-on-surface);
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-xs);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ds-rtl-chart__slot.is-active {
+  border-color: var(--ds-border-strong);
+  color: var(--ds-accent-soft);
+  background: color-mix(in srgb, var(--ds-accent) 16%, var(--ds-surface));
+}
+
+/* Operational Alert Banner */
+.ds-alert-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-0_5s);
+}
+
+.ds-alert-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-space-0_75s);
+  flex-wrap: wrap;
+  padding: var(--ds-space-0_75s);
+  border-radius: var(--ds-radius-card-sm);
+  border: 1px solid var(--ds-border);
+  border-inline-start-width: 4px;
+  background: var(--ds-surface-raised);
+}
+
+.ds-alert-card--critical { border-inline-start-color: var(--ds-status-critical); }
+.ds-alert-card--idle { border-inline-start-color: var(--ds-status-idle); }
+.ds-alert-card--cold-chain { border-inline-start-color: var(--ds-status-cold-chain); }
+.ds-alert-card--moving { border-inline-start-color: var(--ds-status-moving); }
+
+.ds-alert-card.is-acked {
+  opacity: 0.74;
+}
+
+.ds-alert-card__body {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ds-space-0_5s);
+  flex: 1 1 280px;
+}
+
+.ds-alert-card__icon {
+  inline-size: 36px;
+  block-size: 36px;
+  border-radius: var(--ds-radius-xs);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: color-mix(in srgb, var(--ds-surface) 72%, transparent);
+  color: var(--ds-accent-soft);
+}
+
+.ds-alert-card--critical .ds-alert-card__icon { color: var(--ds-status-critical); }
+.ds-alert-card--idle .ds-alert-card__icon { color: var(--ds-status-idle); }
+.ds-alert-card--cold-chain .ds-alert-card__icon { color: var(--ds-status-cold-chain); }
+.ds-alert-card--moving .ds-alert-card__icon { color: var(--ds-status-moving); }
+
+.ds-alert-card__title {
+  display: block;
+  font-size: var(--ds-text-sm);
+  margin-block-end: 2px;
+}
+
+.ds-alert-card__meta {
+  font-size: var(--ds-text-xs);
+  color: var(--ds-on-surface-muted);
+}
+
+.ops-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.35fr);
+  gap: var(--ds-space-1s);
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .ops-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+p.ds-muted,
+li.ds-muted {
+  font-size: var(--ds-text-sm);
+}
+
+.ds-tabular { font-variant-numeric: tabular-nums; }
+.ds-muted { color: var(--ds-on-surface-muted); }
+.ds-dim { color: var(--ds-on-surface-dim); }
+.ds-accent-text { color: var(--ds-accent); }
+.ds-accent-soft-text { color: var(--ds-accent-soft); }

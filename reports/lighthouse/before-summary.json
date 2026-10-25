@@ -1,0 +1,86 @@
+{
+  "mode": "before",
+  "timestamp": "2026-10-25T09:25:13.020Z",
+  "scores": {
+    "performance": 29,
+    "accessibility": 91,
+    "bestPractices": 100
+  },
+  "metrics": {
+    "FCP_ms": 9322,
+    "LCP_ms": 9708,
+    "TBT_ms": 1818,
+    "CLS": 0,
+    "SI_ms": 9339
+  },
+  "failingA11yAudits": [
+    {
+      "id": "label",
+      "title": "Form elements do not have associated labels",
+      "score": 0
+    }
+  ],
+  "bundle": {
+    "entryJsKB": 871.8,
+    "totalJsKB": 871.8,
+    "totalCssKB": 15.5,
+    "totalFontKB": 1773,
+    "chunks": [
+      {
+        "file": "Peyda-Black-D8zdc_aa.ttf",
+        "bytes": 199360,
+        "kb": 194.69
+      },
+      {
+        "file": "Peyda-Bold-D274KpBh.ttf",
+        "bytes": 201588,
+        "kb": 196.86
+      },
+      {
+        "file": "Peyda-ExtraBold-BTFb7Npn.ttf",
+        "bytes": 200700,
+        "kb": 196
+      },
+      {
+        "file": "Peyda-Medium-CWPm6Ccw.ttf",
+        "bytes": 202328,
+        "kb": 197.59
+      },
+      {
+        "file": "Peyda-Regular-C_VqATTG.ttf",
+        "bytes": 202264,
+        "kb": 197.52
+      },
+      {
+        "file": "Peyda-SemiBold-D6ZPyq81.ttf",
+        "bytes": 201840,
+        "kb": 197.11
+      },
+      {
+        "file": "Peyda-Thin-DoegNFW1.ttf",
+        "bytes": 203808,
+        "kb": 199.03
+      },
+      {
+        "file": "index-BzrUviLj.css",
+        "bytes": 15883,
+        "kb": 15.51
+      },
+      {
+        "file": "index-xVbLvueZ.js",
+        "bytes": 892672,
+        "kb": 871.75
+      },
+      {
+        "file": "peyda-extralight-Di-vWYRT.ttf",
+        "bytes": 201584,
+        "kb": 196.86
+      },
+      {
+        "file": "peyda-light-BDKtVyXr.ttf",
+        "bytes": 202072,
+        "kb": 197.34
+      }
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "design-mt-system",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 5173",
+    "tokens:build": "node scripts/build-tokens.mjs",
+    "lint:tokens": "node scripts/lint-tokens.mjs",
+    "test:contrast": "node scripts/test-contrast.mjs",
+    "build": "node scripts/build-tokens.mjs && npm run lint:tokens && npm run test:contrast && vite build",
+    "preview": "vite preview --host 0.0.0.0 --port 4173"
+  },
+  "dependencies": {
+    "lucide-react": "^0.469.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "three": "^0.171.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "culori": "^4.0.2",
+    "stylelint": "^17.16.0",
+    "vite": "^6.0.5"
+  }
+}
