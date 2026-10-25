@@ -85,9 +85,10 @@ export default function ArchitectureModal({ open, onClose, onOpenDesignSystem, o
 
           <button
             onClick={onClose}
+            aria-label="بستن نقشه معماری"
             style={{
-              width: 38,
-              height: 38,
+              width: 44,
+              height: 44,
               borderRadius: 12,
               border: '1px solid rgba(232,222,205,0.2)',
               background: 'rgba(16,35,51,0.8)',
@@ -95,6 +96,7 @@ export default function ArchitectureModal({ open, onClose, onOpenDesignSystem, o
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              flexShrink: 0,
             }}
           >
             <X size={18} />
@@ -126,34 +128,30 @@ export default function ArchitectureModal({ open, onClose, onOpenDesignSystem, o
                 border: '1px solid rgba(232,222,205,0.12)',
               }}
             >
-              <div style={{ fontSize: 12, fontWeight: 800, color: '#FF742E' }}>{t}</div>
-              <div style={{ fontSize: 11.5, color: 'var(--beige-muted)', marginTop: 2 }}>{d}</div>
+              <div style={{ fontSize: 12.5, fontWeight: 800, color: '#FF742E' }}>{t}</div>
+              <div style={{ fontSize: 12, color: 'var(--beige-muted)', marginBlockStart: 2 }}>{d}</div>
             </div>
           ))}
         </div>
 
-        {/* 7 Acts Breakdown */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBlockEnd: 20 }}>
           {ARCH_ACTS.map((row, idx) => (
             <div
               key={idx}
+              className="arch-row-grid"
               style={{
                 padding: '13px 16px',
                 borderRadius: 16,
                 background: 'rgba(8, 19, 29, 0.72)',
                 border: '1px solid rgba(232,222,205,0.1)',
-                display: 'grid',
-                gridTemplateColumns: '1.1fr 1.6fr 0.9fr',
-                gap: 12,
-                alignItems: 'center',
               }}
             >
               <div>
                 <div style={{ fontWeight: 800, fontSize: 14 }}>{row.act}</div>
-                <div className="ltr-code" style={{ fontSize: 11, color: '#38BDF8' }}>{row.zLayer}</div>
+                <div className="ltr-code" style={{ fontSize: 12, color: '#38BDF8' }}>{row.zLayer}</div>
               </div>
-              <div style={{ fontSize: 13, color: 'rgba(232,222,205,0.82)' }}>{row.geometry}</div>
-              <div style={{ fontSize: 12, color: '#FFB085', fontWeight: 700, textAlign: 'left' }}>{row.polarity}</div>
+              <div style={{ fontSize: 13.5, color: 'rgba(232,222,205,0.84)' }}>{row.geometry}</div>
+              <div style={{ fontSize: 12.5, color: '#FFB085', fontWeight: 700, textAlign: 'end' }}>{row.polarity}</div>
             </div>
           ))}
         </div>

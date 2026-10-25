@@ -98,27 +98,27 @@ export default function PricingAndFooter({ onOpenArch, onOpenDesignSystem, onSwi
                         borderRadius: 999,
                         background: '#FF742E',
                         color: '#102333',
-                        fontSize: 11.5,
+                        fontSize: 12,
                         fontWeight: 900,
-                        marginBottom: 12,
+                        marginBlockEnd: 12,
                       }}
                     >
                       پیشنهاد ویژه ناوگان حرفه‌ای
                     </span>
                   )}
                   <h3 style={{ fontSize: 22, fontWeight: 900 }}>{pl.name}</h3>
-                  <p style={{ fontSize: 13, color: 'var(--beige-muted)', marginTop: 4, marginBottom: 18 }}>{pl.sub}</p>
+                  <p style={{ fontSize: 14, color: 'var(--beige-muted)', marginBlockStart: 4, marginBlockEnd: 18 }}>{pl.sub}</p>
 
-                  <div style={{ paddingBottom: 18, marginBottom: 18, borderBottom: '1px solid rgba(232,222,205,0.12)' }}>
+                  <div style={{ paddingBlockEnd: 18, marginBlockEnd: 18, borderBlockEnd: '1px solid rgba(232,222,205,0.12)' }}>
                     <div style={{ fontSize: 34, fontWeight: 900, color: pl.featured ? '#FF742E' : '#E8DECD' }}>
                       {pl.price}
                     </div>
-                    <div style={{ fontSize: 12, color: 'rgba(232,222,205,0.68)' }}>{pl.period}</div>
+                    <div style={{ fontSize: 12.5, color: 'rgba(232,222,205,0.72)' }}>{pl.period}</div>
                   </div>
 
-                  <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 11, marginBottom: 26 }}>
+                  <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 11, marginBlockEnd: 26 }}>
                     {pl.features.map((f, i) => (
-                      <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 9, fontSize: 13.5 }}>
+                      <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 9, fontSize: 14.5 }}>
                         <span
                           style={{
                             width: 19,
@@ -311,7 +311,7 @@ export default function PricingAndFooter({ onOpenArch, onOpenDesignSystem, onSwi
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
             <img src="/brand-clean/logo-clean.svg" alt="لوگو" style={{ height: 34, filter: 'brightness(0) invert(0.92)' }} />
             <img src="/brand-clean/typography-clean.svg" alt="لوگوتایپ" style={{ height: 24, filter: 'brightness(0) invert(0.92)' }} />
-            <span style={{ fontSize: 13, color: 'rgba(232,222,205,0.58)', marginRight: 8 }}>
+            <span style={{ fontSize: 13.5, color: 'rgba(232,222,205,0.68)', marginInlineStart: 8 }}>
               © {toFa(1405)} · سامانه هوشمند ردیابی خودرو، GPS و مدیریت ناوگان
             </span>
           </div>
@@ -321,7 +321,7 @@ export default function PricingAndFooter({ onOpenArch, onOpenDesignSystem, onSwi
               پورتال دیزاین سیستم و توکن‌ها
             </button>
             <button onClick={onOpenArch} className="chip-btn">
-              <Layers size={14} style={{ verticalAlign: 'middle', marginLeft: 5 }} />
+              <Layers size={14} style={{ verticalAlign: 'middle', marginInlineEnd: 5 }} />
               نقشه معماری سه‌بعدی سایت
             </button>
             <button onClick={onSwitchToLab} className="chip-btn">

@@ -19,7 +19,7 @@ function PatternClothoidRoutes() {
         </button>
       </div>
 
-      <p style={{ fontSize: 13.5, color: 'var(--beige-muted)', marginBottom: 14 }}>
+      <p style={{ fontSize: 14, color: 'var(--beige-muted)', marginBottom: 14 }}>
         مشتق‌شده از <strong>کمان بالا-چپ لوگو (<span className="ltr-code">κ = 0.50, n = 1.85</span>)</strong> و <strong>فیلت‌های داخلی <span className="ltr-code">R = 14.54 (S/φ)</span></strong>. هیچ پیچی تیز نیست؛ تمام مسیرهای نقشه سایت با هندسه رمپ بزرگراهی نرم می‌شوند.
       </p>
 
@@ -137,7 +137,7 @@ function PatternSquircleRadar() {
         <h3 style={{ fontSize: 19, fontWeight: 800, marginTop: 8 }}>پرتو دید مخروطی رقم «۷» و امواج اسکوئیرکل</h3>
       </div>
 
-      <p style={{ fontSize: 13.5, color: 'var(--beige-muted)', marginBottom: 14 }}>
+      <p style={{ fontSize: 14, color: 'var(--beige-muted)', marginBottom: 14 }}>
         ترکیب <strong>مخروط متقارن رقم «۷» فونت پیدا (<span className="ltr-code">30.6° aperture</span>)</strong> با <strong>شعاع اسکوئیرکل <span className="ltr-code">31.25%</span></strong> قاب گرادیان و حلقه رقم «۰»؛ امواج رادار به جای دایره کلیشه‌ای، اسکوئیرکل هستند!
       </p>
 
@@ -170,7 +170,7 @@ function PatternSquircleRadar() {
         <div
           style={{
             position: 'absolute',
-            left: '50%',
+            insetInlineStart: '50%',
             top: '50%',
             width: 84,
             height: 84,
@@ -219,7 +219,8 @@ function PatternSquircleRadar() {
               key={v.id}
               style={{
                 position: 'absolute',
-                left: `${v.x}%`,
+                direction: 'ltr',
+                insetInlineStart: `${v.x}%`,
                 top: `${v.y}%`,
                 transform: `translate(-50%, -50%) scale(${active ? 1.14 : 0.94})`,
                 transition: 'all 0.25s cubic-bezier(0.34, 1.45, 0.64, 1)',
@@ -241,7 +242,7 @@ function PatternSquircleRadar() {
                 style={{
                   padding: '3px 8px',
                   borderRadius: 8,
-                  fontSize: 10.5,
+                  fontSize: 12,
                   fontWeight: 700,
                   background: active ? 'rgba(255,116,46,0.22)' : 'rgba(10,22,33,0.75)',
                   border: active ? '1px solid #FF742E' : '1px solid rgba(232,222,205,0.16)',
@@ -272,7 +273,7 @@ function PatternMagneticNuqtaGrid() {
         <h3 style={{ fontSize: 19, fontWeight: 800, marginTop: 8 }}>دگردیسی زنده نقطه مربعی ۱×۱ به کپسول ۲×۱</h3>
       </div>
 
-      <p style={{ fontSize: 13.5, color: 'var(--beige-muted)', marginBottom: 14 }}>
+      <p style={{ fontSize: 14, color: 'var(--beige-muted)', marginBottom: 14 }}>
         ماوس را روی ماتریس حرکت دهید: <strong>نقطه‌های مربعی فونت پیدا (<span className="ltr-code">1:1 Square Nuqta</span>)</strong> در شعاع میدان سیگنال خودرو بالا می‌آیند و به <strong>کپسول‌های <span className="ltr-code">2u × 1u</span> لوگوتایپ</strong> تبدیل می‌شوند!
       </p>
 
@@ -323,10 +324,10 @@ function PatternMagneticNuqtaGrid() {
           style={{
             position: 'absolute',
             bottom: 10,
-            right: 16,
+            insetInlineEnd: 16,
             direction: 'rtl',
-            fontSize: 11.5,
-            color: 'rgba(232,222,205,0.65)',
+            fontSize: 12,
+            color: 'rgba(232,222,205,0.72)',
             pointerEvents: 'none',
           }}
         >
@@ -348,7 +349,7 @@ function PatternGoldenBento3D() {
         <h3 style={{ fontSize: 19, fontWeight: 800, marginTop: 8 }}>توپولوژی ۲×۲ لوگو + حجم بالشتکی و پخ تراش‌خورده</h3>
       </div>
 
-      <p style={{ fontSize: 13.5, color: 'var(--beige-muted)', marginBottom: 14 }}>
+      <p style={{ fontSize: 14, color: 'var(--beige-muted)', marginBottom: 14 }}>
         چیدمان دقیقاً از <strong>تقارن قطری لوگو (<span className="ltr-code">Solid / Open</span> در تراز طلایی <span className="ltr-code">38.1%</span>)</strong> و بازتاب نوری <span className="ltr-code">140.24°</span> بدنه خودرو تبعیت می‌کند. ماوس را روی کارت‌ها بچرخانید!
       </p>
 
@@ -401,11 +402,10 @@ function PatternGoldenBento3D() {
               justifyContent: 'space-between',
             }}
           >
-            <div style={{ fontSize: 11.5, color: '#FFB085', fontWeight: 700 }}>حجم بالشتکی (Inflate ۷۶٪)</div>
+            <div style={{ fontSize: 12, color: '#FFB085', fontWeight: 700 }}>حجم بالشتکی (Inflate ۷۶٪)</div>
             <div style={{ fontSize: 18, fontWeight: 900 }}>پوشش سراسری GPS</div>
           </div>
 
-          {/* Q1 Open Glass Portal */}
           <div
             style={{
               borderRadius: 16,
@@ -418,13 +418,12 @@ function PatternGoldenBento3D() {
             }}
           >
             <div>
-              <div style={{ fontSize: 11, color: 'var(--beige-muted)' }}>فضای باز تنفس (Q1)</div>
+              <div style={{ fontSize: 12, color: 'var(--beige-muted)' }}>فضای باز تنفس (Q1)</div>
               <div style={{ fontSize: 15, fontWeight: 700 }}>{toFa('۹۹.۹۸٪')} آپ‌تایم</div>
             </div>
             <ShieldCheck size={22} color="#E8DECD" opacity={0.75} />
           </div>
 
-          {/* Q3 Open Telemetry Corridor */}
           <div
             style={{
               borderRadius: 16,
@@ -437,18 +436,17 @@ function PatternGoldenBento3D() {
             }}
           >
             <div>
-              <div style={{ fontSize: 11, color: 'var(--beige-muted)' }}>دالان داده زنده (Q3)</div>
+              <div style={{ fontSize: 12, color: 'var(--beige-muted)' }}>دالان داده زنده (Q3)</div>
               <div style={{ fontSize: 15, fontWeight: 700 }}>پایش سوخت و دما</div>
             </div>
             <Truck size={22} color="#FF742E" />
           </div>
 
-          {/* Q4 Solid Chiseled Blade Card (Bevel 60%) */}
           <div
             style={{
-              borderRadius: '8px 8px 8px 32px', // Echoing Q4 blade sweep!
+              borderRadius: '8px 8px 8px 32px',
               background: '#FF742E',
-              color: '#102333',
+              color: '#060E16',
               border: '2px solid rgba(255,255,255,0.45)',
               boxShadow: '0 16px 34px rgba(255,116,46,0.38), inset 0 -4px 8px rgba(16,35,51,0.25)',
               padding: '14px 16px',
@@ -458,7 +456,7 @@ function PatternGoldenBento3D() {
               justifyContent: 'space-between',
             }}
           >
-            <div style={{ fontSize: 11.5, fontWeight: 800 }}>پخ تراش‌خورده (Bevel ۶۰٪)</div>
+            <div style={{ fontSize: 12, fontWeight: 800 }}>پخ تراش‌خورده (Bevel ۶۰٪)</div>
             <div style={{ fontSize: 20, fontWeight: 900 }}>فرماندهی لحظه‌ای ناوگان</div>
           </div>
         </div>
@@ -491,7 +489,7 @@ function PatternVelocitySlash() {
         <h3 style={{ fontSize: 19, fontWeight: 800, marginTop: 8 }}>ریتم مورب فونت پیدا برای شاخص‌های سرعت و بار</h3>
       </div>
 
-      <p style={{ fontSize: 13.5, color: 'var(--beige-muted)', marginBottom: 14 }}>
+      <p style={{ fontSize: 14, color: 'var(--beige-muted)', marginBottom: 14 }}>
         استخراج‌شده از <strong>زاویه دقیق سرکش حرف «ک/گ» فونت پیدا (<span className="ltr-code">26.84°</span>)</strong> و برش‌های تخت صفر درجه؛ ایده‌آل برای نوارهای پیشرفت، دور موتور، سلامت باتری و جداکننده سکشن‌ها.
       </p>
 
@@ -500,7 +498,7 @@ function PatternVelocitySlash() {
           <div>
             <div style={{ fontSize: 12, color: 'var(--beige-muted)' }}>شاخص راندمان لحظه‌ای ناوگان فعال</div>
             <div style={{ fontSize: 30, fontWeight: 900, color: '#E8DECD' }}>
-              {toFa(rpm)}<span style={{ fontSize: 16, color: '#FF742E', marginRight: 4 }}>٪ بازدهی مسیر</span>
+              {toFa(rpm)}<span style={{ fontSize: 16, color: '#FF742E', marginInlineStart: 4 }}>٪ بازدهی مسیر</span>
             </div>
           </div>
           <span className="ltr-code" style={{ color: '#FFB085', fontSize: 12 }}>skewX(-26.84deg)</span>
@@ -566,7 +564,7 @@ function PatternScrollAssemblyGate() {
         </button>
       </div>
 
-      <p style={{ fontSize: 13.5, color: 'var(--beige-muted)', marginBottom: 14 }}>
+      <p style={{ fontSize: 14, color: 'var(--beige-muted)', marginBottom: 14 }}>
         در وب‌سایت نهایی، هر سکشن هنگام ورود به دید کاربر از ۴ لایه عمق‌دار با فنر برگشتی (<span className="ltr-code">spring overshoot</span>) چفت می‌شود و حس یک قطعه صنعتی دقیق را منتقل می‌کند.
       </p>
 

@@ -70,7 +70,7 @@ export default function JourneyTimelineSection() {
                 style={{
                   position: 'absolute',
                   top: 0,
-                  right: 0,
+                  insetInlineStart: 0,
                   bottom: 0,
                   width: `${((activeIdx + 1) / STAGES.length) * 100}%`,
                   background: 'linear-gradient(90deg, #FF742E 0%, #E8DECD 100%)',
@@ -125,9 +125,9 @@ export default function JourneyTimelineSection() {
                     </span>
                   </div>
 
-                  <div style={{ fontSize: 11.5, color: '#FFB085', fontWeight: 700, marginBottom: 4 }}>{st.time}</div>
-                  <h3 style={{ fontSize: 17.5, fontWeight: 900, marginBottom: 8 }}>{st.title}</h3>
-                  <p style={{ fontSize: 13.5, color: 'rgba(232,222,205,0.76)', lineHeight: 1.75, marginBottom: 14 }}>
+                  <div style={{ fontSize: 12.5, color: '#FFB085', fontWeight: 700, marginBlockEnd: 4 }}>{st.time}</div>
+                  <h3 style={{ fontSize: 17.5, fontWeight: 900, marginBlockEnd: 8 }}>{st.title}</h3>
+                  <p style={{ fontSize: 14.5, color: 'rgba(232,222,205,0.8)', lineHeight: 1.75, marginBlockEnd: 14 }}>
                     {st.desc}
                   </p>
 

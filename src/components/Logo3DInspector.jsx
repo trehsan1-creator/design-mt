@@ -137,14 +137,18 @@ export default function Logo3DInspector({ mode = 'inflate', showWireframe = fals
     const onResize = () => {
       if (!container) return;
       const w = container.clientWidth || 520;
-      camera.aspect = w / height;
+      const h = container.clientHeight || height;
+      camera.aspect = w / h;
       camera.updateProjectionMatrix();
-      renderer.setSize(w, height);
+      renderer.setSize(w, h);
     };
+    const ro = new ResizeObserver(onResize);
+    ro.observe(container);
     window.addEventListener('resize', onResize);
 
     return () => {
       cancelAnimationFrame(rafId);
+      ro.disconnect();
       window.removeEventListener('resize', onResize);
       controls.dispose();
       geoInflate.dispose();
@@ -205,12 +209,13 @@ export default function Logo3DInspector({ mode = 'inflate', showWireframe = fals
         style={{
           position: 'absolute',
           bottom: 12,
-          left: 16,
-          right: 16,
+          insetInline: 16,
           display: 'flex',
           justifyContent: 'space-between',
-          fontSize: 12,
-          color: 'rgba(232,222,205,0.82)',
+          flexWrap: 'wrap',
+          gap: 8,
+          fontSize: 12.5,
+          color: 'rgba(232,222,205,0.84)',
           pointerEvents: 'none',
         }}
       >

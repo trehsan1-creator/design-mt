@@ -147,8 +147,8 @@ export default function DaylightBentoSection() {
               </button>
             </div>
 
-            <h3 style={{ fontSize: 21, fontWeight: 900, marginBottom: 8 }}>مرزبندی هوشمند انبار، معدن و کریدور</h3>
-            <p style={{ fontSize: 13.5, color: 'rgba(16,35,51,0.78)', marginBottom: 14 }}>
+            <h3 style={{ fontSize: 21, fontWeight: 900, marginBlockEnd: 8 }}>مرزبندی هوشمند انبار، معدن و کریدور</h3>
+            <p style={{ fontSize: 14.5, color: 'rgba(16,35,51,0.78)', marginBlockEnd: 14 }}>
               محدوده‌های مجاز را روی نقشه رسم کنید؛ به محض خروج خودرو از مرز اسکوئیرکل، فرمان هشدار صادر می‌شود:
             </p>
 
@@ -158,16 +158,16 @@ export default function DaylightBentoSection() {
                 borderRadius: 20,
                 background: '#102333',
                 position: 'relative',
+                direction: 'ltr',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 overflow: 'hidden',
               }}
             >
-              {/* Allowed Squircle Zone */}
               <div
                 style={{
-                  width: 112,
+                  width: 118,
                   height: 100,
                   borderRadius: '31.25%',
                   border: `2px dashed ${outsideFence ? '#FF742E' : '#4ADE80'}`,
@@ -175,39 +175,40 @@ export default function DaylightBentoSection() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: 11,
+                  fontSize: 12,
                   color: '#E8DECD',
                   fontWeight: 700,
+                  direction: 'rtl',
                 }}
               >
                 محدوده مجاز
               </div>
 
-              {/* Moving Vehicle Node */}
               <div
                 style={{
                   position: 'absolute',
-                  left: outsideFence ? '18%' : '50%',
+                  insetInlineStart: outsideFence ? '18%' : '50%',
                   top: outsideFence ? '28%' : '50%',
                   transform: 'translate(-50%, -50%)',
                   transition: 'all 0.55s cubic-bezier(0.34, 1.45, 0.64, 1)',
                   padding: '5px 10px',
                   borderRadius: 9,
                   background: outsideFence ? '#FF742E' : '#4ADE80',
-                  color: '#102333',
+                  color: '#060E16',
                   fontWeight: 900,
-                  fontSize: 11.5,
+                  fontSize: 12,
+                  direction: 'rtl',
                   boxShadow: outsideFence ? '0 0 24px #FF742E' : 'none',
                 }}
               >
-                {outsideFence ? 'خروج غیرمجاز!' : 'داخل زون امن'}
+                {outsideFence ? 'خروج غیرمجاز' : 'داخل زون امن'}
               </div>
             </div>
           </TiltCard>
         </div>
 
-        {/* Row 2 of 2x2 Golden Saddle Bento (Inverted Diagonal!) */}
-        <div className="bento-golden-grid" style={{ gridTemplateColumns: '0.85fr 1.15fr' }}>
+        {/* Row 2 of 2x2 Golden Saddle Bento */}
+        <div className="bento-golden-grid-reverse">
           {/* Q3: Tactile Cushion Light Card — Driver Behavior Scoring */}
           <TiltCard className="cushion-card-light">
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
@@ -274,7 +275,7 @@ export default function DaylightBentoSection() {
               خوانش زنده کدهای خطای ECU، دمای آب، فشار روغن، ساعت کارکرد واقعی موتور و یادآور هوشمند تعویض لنت و تایر بر اساس کیلومترشمار دقیق ماهواره‌ای.
             </p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+            <div className="kpi-3-grid">
               {[
                 { label: 'سلامت باتری ناوگان', val: '۲۷.۸ ولت', badge: 'استاندارد' },
                 { label: 'دمای میانگین موتور', val: '۸۶ درجه', badge: 'ایمن' },
@@ -289,11 +290,11 @@ export default function DaylightBentoSection() {
                     border: '1px solid rgba(232,222,205,0.14)',
                   }}
                 >
-                  <div style={{ fontSize: 11.5, color: 'rgba(232,222,205,0.7)' }}>{item.label}</div>
-                  <div style={{ fontSize: 20, fontWeight: 900, color: idx === 2 ? '#FF742E' : '#E8DECD', margin: '4px 0' }}>
+                  <div style={{ fontSize: 12.5, color: 'rgba(232,222,205,0.75)' }}>{item.label}</div>
+                  <div style={{ fontSize: 20, fontWeight: 900, color: idx === 2 ? '#FF742E' : '#E8DECD', marginBlock: '4px' }}>
                     {item.val}
                   </div>
-                  <span style={{ fontSize: 11, color: '#4ADE80', fontWeight: 700 }}>● {item.badge}</span>
+                  <span style={{ fontSize: 12, color: '#4ADE80', fontWeight: 700 }}>● {item.badge}</span>
                 </div>
               ))}
             </div>

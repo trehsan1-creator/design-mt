@@ -259,10 +259,13 @@ export default function ScrollFilmStage() {
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
     };
+    const ro = new ResizeObserver(handleResize);
+    ro.observe(container);
     window.addEventListener('resize', handleResize);
 
     return () => {
       cancelAnimationFrame(animId);
+      ro.disconnect();
       window.removeEventListener('resize', handleResize);
       partMeshes.forEach((m) => {
         m.geo.dispose();
@@ -483,17 +486,16 @@ export default function ScrollFilmStage() {
           )}
         </svg>
 
-        {/* Dual Squircle Impact Shockwaves on 3D Assembly Lock! */}
         <div
           style={{
             position: 'absolute',
-            left: '50%',
+            insetInlineStart: '50%',
             top: '50%',
             width: 150,
             height: 150,
-            borderRadius: '31.25%', // Exact gradiant.pdf squircle ratio!
+            borderRadius: '31.25%',
             border: '2.5px solid #E8DECD',
-            transform: `translate(-50%, -50%) scale(${0.5 + 3.4 * shock1})`,
+            transform: `translate(50%, -50%) scale(${0.5 + 3.4 * shock1})`,
             opacity: shock1 > 0 && shock1 < 1 ? 0.85 * (1 - shock1) : 0,
             pointerEvents: 'none',
           }}
@@ -501,20 +503,19 @@ export default function ScrollFilmStage() {
         <div
           style={{
             position: 'absolute',
-            left: '50%',
+            insetInlineStart: '50%',
             top: '50%',
             width: 120,
             height: 120,
             borderRadius: '31.25%',
             border: '2px solid #FF742E',
             boxShadow: '0 0 32px rgba(255,116,46,0.6)',
-            transform: `translate(-50%, -50%) scale(${0.4 + 3.8 * shock2})`,
+            transform: `translate(50%, -50%) scale(${0.4 + 3.8 * shock2})`,
             opacity: shock2 > 0 && shock2 < 1 ? 0.9 * (1 - shock2) : 0,
             pointerEvents: 'none',
           }}
         />
 
-        {/* Real-Time Three.js WebGL 4-Piece Extruded Logo Canvas */}
         <div
           ref={canvasWrapRef}
           style={{
@@ -524,12 +525,11 @@ export default function ScrollFilmStage() {
           }}
         />
 
-        {/* Top-Right & Bottom-Left Live Persian Telemetry HUD Pills */}
         <div
           style={{
             position: 'absolute',
             top: 22,
-            right: 28,
+            insetInlineStart: 24,
             display: 'flex',
             alignItems: 'center',
             gap: 10,
@@ -546,12 +546,11 @@ export default function ScrollFilmStage() {
           <span>{phaseTitle}</span>
         </div>
 
-        {/* Live Fleet Telemetry Card (fades in as route launches!) */}
         <div
           style={{
             position: 'absolute',
             top: 22,
-            left: 28,
+            insetInlineEnd: 24,
             padding: '12px 18px',
             borderRadius: 20,
             background: 'rgba(10, 22, 33, 0.78)',
@@ -567,10 +566,10 @@ export default function ScrollFilmStage() {
             <Navigation size={13} />
             <span>تله‌متری زنده واحد ناوگان ۰۷</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: 14, marginTop: 4 }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 14, marginBlockStart: 4 }}>
             <div>
               <span style={{ fontSize: 24, fontWeight: 900, color: '#E8DECD' }}>{toFa(liveSpeed)}</span>
-              <span style={{ fontSize: 11.5, color: 'var(--beige-muted)', marginRight: 4 }}>کیلومتر/ساعت</span>
+              <span style={{ fontSize: 12, color: 'var(--beige-muted)', marginInlineStart: 4 }}>کیلومتر/ساعت</span>
             </div>
             <div style={{ fontSize: 12, color: '#4ADE80', fontWeight: 700 }}>
               سیگنال ماهواره: {toFa('۹۹.۸٪')}
@@ -582,12 +581,13 @@ export default function ScrollFilmStage() {
           style={{
             position: 'absolute',
             bottom: 18,
-            right: 30,
-            left: 30,
+            insetInline: 24,
             display: 'flex',
             justifyContent: 'space-between',
-            fontSize: 12,
-            color: 'rgba(232,222,205,0.68)',
+            flexWrap: 'wrap',
+            gap: 8,
+            fontSize: 12.5,
+            color: 'rgba(232,222,205,0.72)',
             pointerEvents: 'none',
           }}
         >
@@ -616,13 +616,14 @@ export default function ScrollFilmStage() {
             setIsPlaying(!isPlaying);
           }}
           style={{
-            padding: '8px 18px',
+            minHeight: 44,
+            padding: '10px 18px',
             borderRadius: 12,
             border: 'none',
             background: 'var(--brand-orange)',
-            color: 'var(--brand-navy)',
+            color: '#060E16',
             fontWeight: 800,
-            fontSize: 13.5,
+            fontSize: 14,
             display: 'inline-flex',
             alignItems: 'center',
             gap: 8,
@@ -641,12 +642,12 @@ export default function ScrollFilmStage() {
           }}
           title="پخش از ابتدا"
         >
-          <RotateCcw size={14} style={{ verticalAlign: 'middle', marginLeft: 5 }} />
+          <RotateCcw size={14} style={{ verticalAlign: 'middle', marginInlineEnd: 5 }} />
           از ابتدا
         </button>
 
         <button className={`chip-btn ${autoLoop ? 'on' : ''}`} onClick={() => setAutoLoop(!autoLoop)}>
-          <Radio size={13} style={{ verticalAlign: 'middle', marginLeft: 5 }} />
+          <Radio size={13} style={{ verticalAlign: 'middle', marginInlineEnd: 5 }} />
           پخش پیوسته (Loop)
         </button>
 
@@ -655,6 +656,7 @@ export default function ScrollFilmStage() {
           <input
             type="range"
             className="cinema-range"
+            aria-label="اسکراب زمان‌برگ فیلم"
             min="0"
             max="1000"
             value={Math.round(pClamped * 1000)}
@@ -663,7 +665,7 @@ export default function ScrollFilmStage() {
               setProgress(Number(e.target.value) / 1000);
             }}
           />
-          <span style={{ minWidth: 46, textAlign: 'left', fontWeight: 800, color: '#FF742E', fontSize: 15 }}>
+          <span style={{ minWidth: 46, textAlign: 'end', fontWeight: 800, color: '#FF742E', fontSize: 15 }}>
             {toFa(Math.round(pClamped * 100))}٪
           </span>
         </div>

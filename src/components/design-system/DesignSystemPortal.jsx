@@ -104,8 +104,8 @@ export default function DesignSystemPortal({ onBackToWebsite, onOpenLab }) {
             </button>
             <div>
               <div style={{ fontSize: 17, fontWeight: 900 }}>پورتال جامع دیزاین سیستم و توکن‌های ناوگان</div>
-              <div style={{ fontSize: 11.5, color: 'rgba(232,222,205,0.65)' }}>
-                مستندات زنده `DESIGN.md` · `tokens/design-tokens.json` · `tokens/tokens.css` · ۹ وزن فونت پیدا
+              <div style={{ fontSize: 12.5, color: 'rgba(232,222,205,0.72)' }}>
+                مستندات زنده DESIGN.md · tokens/design-tokens.json · tokens/tokens.css · ۹ وزن فونت پیدا
               </div>
             </div>
           </div>
@@ -133,7 +133,7 @@ export default function DesignSystemPortal({ onBackToWebsite, onOpenLab }) {
               );
             })}
             <button onClick={onOpenLab} className="chip-btn" title="مشاهده آزمایشگاه کالبدشکافی هندسه">
-              <Compass size={14} style={{ verticalAlign: 'middle', marginLeft: 5 }} />
+              <Compass size={14} style={{ verticalAlign: 'middle', marginInlineEnd: 5 }} />
               آزمایشگاه هندسه
             </button>
           </div>
@@ -202,26 +202,28 @@ export default function DesignSystemPortal({ onBackToWebsite, onOpenLab }) {
                     <button
                       onClick={() => copyValue(sw.token, sw.hex)}
                       style={{
-                        padding: '5px 10px',
-                        borderRadius: 9,
+                        minHeight: 44,
+                        minWidth: 44,
+                        padding: '8px 12px',
+                        borderRadius: 10,
                         border: 'none',
                         background: 'rgba(16,35,51,0.18)',
                         color: sw.textCol,
                         fontWeight: 800,
-                        fontSize: 12,
+                        fontSize: 12.5,
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: 5,
                       }}
                     >
-                      {copiedKey === sw.token ? <Check size={13} /> : <Copy size={13} />}
+                      {copiedKey === sw.token ? <Check size={14} /> : <Copy size={14} />}
                       <span className="ltr-code">{sw.hex}</span>
                     </button>
                   </div>
                   <div style={{ padding: 16 }}>
-                    <div className="ltr-code" style={{ fontSize: 12, color: '#FF9861', marginBottom: 4 }}>{sw.token}</div>
-                    <div className="ltr-code" style={{ fontSize: 11, color: 'rgba(232,222,205,0.58)', marginBottom: 8 }}>{sw.spec}</div>
-                    <div style={{ fontSize: 13, color: 'rgba(232,222,205,0.82)' }}>{sw.usage}</div>
+                    <div className="ltr-code" style={{ fontSize: 12.5, color: '#FF9861', marginBlockEnd: 4 }}>{sw.token}</div>
+                    <div className="ltr-code" style={{ fontSize: 12, color: 'rgba(232,222,205,0.68)', marginBlockEnd: 8 }}>{sw.spec}</div>
+                    <div style={{ fontSize: 13.5, color: 'rgba(232,222,205,0.84)' }}>{sw.usage}</div>
                   </div>
                 </div>
               ))}
@@ -239,7 +241,7 @@ export default function DesignSystemPortal({ onBackToWebsite, onOpenLab }) {
               >
                 <div style={{ fontSize: 13, fontWeight: 800, color: '#FFB085' }}>گرادیان بدنه خودرو (--ds-grad-clearcoat)</div>
                 <div style={{ fontSize: 18, fontWeight: 900, margin: '6px 0' }}>زاویه دقیق ۱۴۰.۲۴ درجه با منحنی S-Curve</div>
-                <div className="ltr-code" style={{ fontSize: 11.5, color: 'rgba(232,222,205,0.82)' }}>
+                <div className="ltr-code" style={{ fontSize: 12, color: 'rgba(232,222,205,0.84)' }}>
                   0% #3D5768 → 41.58% #112835 → 78.61% #213D4F → 100% #132D3F
                 </div>
               </div>
@@ -282,8 +284,8 @@ export default function DesignSystemPortal({ onBackToWebsite, onOpenLab }) {
                 >
                   <span style={{ width: 16, height: 16, borderRadius: 5, background: st.hex, boxShadow: `0 0 12px ${st.hex}` }} />
                   <div>
-                    <div style={{ fontSize: 12.5, fontWeight: 800 }}>{st.label}</div>
-                    <div className="ltr-code" style={{ fontSize: 10.5, color: 'rgba(232,222,205,0.6)' }}>{st.token}</div>
+                    <div style={{ fontSize: 13, fontWeight: 800 }}>{st.label}</div>
+                    <div className="ltr-code" style={{ fontSize: 12, color: 'rgba(232,222,205,0.68)' }}>{st.token}</div>
                   </div>
                 </div>
               ))}
@@ -291,28 +293,28 @@ export default function DesignSystemPortal({ onBackToWebsite, onOpenLab }) {
           </section>
         )}
 
-        {/* ۲. تایپوگرافی ۹ وزن فونت «پیدا» */}
         {(activeTab === 'all' || activeTab === 'typography') && (
           <section className="cad-card">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 14, marginBottom: 20 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 14, marginBlockEnd: 20 }}>
               <div>
                 <span className="kaf-slash-tag">۰۲ · سیستم تایپوگرافی فارسی «پیدا» (Peyda v2.000)</span>
-                <h2 style={{ fontSize: 25, fontWeight: 900, marginTop: 8 }}>آزمایش زنده هر ۹ وزن (۱۰۰ تا ۹۰۰) و مقیاس سلسله‌مراتب متن</h2>
+                <h2 style={{ fontSize: 25, fontWeight: 900, marginBlockStart: 8 }}>آزمایش زنده وزن‌ها و مقیاس سلسله‌مراتب متن</h2>
               </div>
 
               <input
                 type="text"
+                aria-label="متن آزمایشی فونت پیدا"
                 value={sampleText}
                 onChange={(e) => setSampleText(e.target.value)}
                 placeholder="متن دلخواه خود را برای تست فونت پیدا بنویسید..."
                 style={{
-                  minWidth: 340,
+                  width: 'min(100%, 360px)',
                   padding: '10px 14px',
                   borderRadius: 12,
                   border: '1px solid rgba(255,116,46,0.4)',
                   background: 'rgba(8,19,29,0.9)',
                   color: '#E8DECD',
-                  fontSize: 13.5,
+                  fontSize: 14,
                 }}
               />
             </div>
@@ -321,22 +323,19 @@ export default function DesignSystemPortal({ onBackToWebsite, onOpenLab }) {
               {PEYDA_WEIGHTS.map((pw) => (
                 <div
                   key={pw.weight}
+                  className="type-specimen-row"
                   style={{
                     padding: '14px 18px',
                     borderRadius: 18,
                     background: pw.weight >= 800 ? 'rgba(255,116,46,0.08)' : 'rgba(7,17,26,0.68)',
                     border: pw.weight === 900 ? '1px solid rgba(255,116,46,0.4)' : '1px solid rgba(232,222,205,0.1)',
-                    display: 'grid',
-                    gridTemplateColumns: '170px 1fr',
-                    gap: 16,
-                    alignItems: 'center',
                   }}
                 >
                   <div>
-                    <div style={{ fontWeight: 800, fontSize: 13.5, color: pw.weight >= 800 ? '#FF742E' : '#E8DECD' }}>
+                    <div style={{ fontWeight: 800, fontSize: 14, color: pw.weight >= 800 ? '#FF742E' : '#E8DECD' }}>
                       وزن {toFa(pw.weight)} · {pw.faName}
                     </div>
-                    <div className="ltr-code" style={{ fontSize: 11, color: 'rgba(232,222,205,0.55)' }}>
+                    <div className="ltr-code" style={{ fontSize: 12, color: 'rgba(232,222,205,0.65)' }}>
                       --ds-weight-{pw.name.toLowerCase()}
                     </div>
                   </div>
@@ -369,11 +368,11 @@ export default function DesignSystemPortal({ onBackToWebsite, onOpenLab }) {
                   }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                    <span className="ltr-code" style={{ fontSize: 11.5, color: '#38BDF8' }}>{gt.token}</span>
+                    <span className="ltr-code" style={{ fontSize: 12, color: '#38BDF8' }}>{gt.token}</span>
                     <span className="ltr-code" style={{ fontSize: 15, fontWeight: 900, color: '#FF742E' }}>{gt.value}</span>
                   </div>
-                  <div style={{ fontSize: 15, fontWeight: 800, marginBottom: 4 }}>{gt.title}</div>
-                  <div style={{ fontSize: 12.5, color: 'rgba(232,222,205,0.72)' }}>{gt.desc}</div>
+                  <div style={{ fontSize: 15, fontWeight: 800, marginBlockEnd: 4 }}>{gt.title}</div>
+                  <div style={{ fontSize: 13, color: 'rgba(232,222,205,0.76)' }}>{gt.desc}</div>
                 </div>
               ))}
             </div>
@@ -388,11 +387,10 @@ export default function DesignSystemPortal({ onBackToWebsite, onOpenLab }) {
               <h2 style={{ fontSize: 25, fontWeight: 900, marginTop: 8 }}>اجزای لمسی سه‌بعدی آماده استفاده در محصول</h2>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 20 }}>
-              {/* Buttons & Chips */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: 20 }}>
               <div style={{ padding: 22, borderRadius: 22, background: 'rgba(7,17,26,0.75)', border: '1px solid rgba(232,222,205,0.12)' }}>
-                <div style={{ fontSize: 15, fontWeight: 800, marginBottom: 14 }}>دکمه‌های سه‌بعدی لبه‌دار و چیپ‌های فیلتر</div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginBottom: 18 }}>
+                <div style={{ fontSize: 15, fontWeight: 800, marginBlockEnd: 14 }}>دکمه‌های سه‌بعدی لبه‌دار و چیپ‌های فیلتر</div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginBlockEnd: 18 }}>
                   <button className="btn-3d-orange">
                     <Send size={15} />
                     <span>فراخوان اصلی (.btn-3d-orange)</span>
@@ -409,27 +407,42 @@ export default function DesignSystemPortal({ onBackToWebsite, onOpenLab }) {
                 </div>
               </div>
 
-              {/* Iranian License Plates & Live Status */}
               <div style={{ padding: 22, borderRadius: 22, background: 'rgba(7,17,26,0.75)', border: '1px solid rgba(232,222,205,0.12)' }}>
-                <div style={{ fontSize: 15, fontWeight: 800, marginBottom: 14 }}>پلاک استاندارد ایران (.iran-plate)</div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14, alignItems: 'center', marginBottom: 16 }}>
+                <div style={{ fontSize: 15, fontWeight: 800, marginBlockEnd: 14 }}>پلاک استاندارد ایران (.iran-plate)</div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14, alignItems: 'center', marginBlockEnd: 16 }}>
                   <div className="iran-plate">
-                    <div className="iran-plate-blue"><span>I.R.</span><span>IRAN</span></div>
+                    <div className="iran-plate-blue" aria-hidden="true">
+                      <svg width="12" height="22" viewBox="0 0 12 22">
+                        <rect x="1" y="2" width="10" height="2.5" fill="#22C55E" />
+                        <rect x="1" y="4.5" width="10" height="2.5" fill="#FFFFFF" />
+                        <rect x="1" y="7" width="10" height="2.5" fill="#EF4444" />
+                        <rect x="2" y="13" width="8" height="1.5" rx="0.7" fill="#FFFFFF" opacity="0.85" />
+                        <rect x="2" y="16.5" width="8" height="1.5" rx="0.7" fill="#FFFFFF" opacity="0.85" />
+                      </svg>
+                    </div>
                     <div className="iran-plate-main" style={{ background: '#FACC15' }}>
                       <span>۴۸</span><span style={{ color: '#102333' }}>ع</span><span>۷۹۲</span>
                     </div>
-                    <div className="iran-plate-city" style={{ background: '#FACC15' }}><span>ایران</span><strong>۱۱</strong></div>
+                    <div className="iran-plate-city" style={{ background: '#FACC15' }}><strong>۱۱</strong></div>
                   </div>
 
                   <div className="iran-plate">
-                    <div className="iran-plate-blue"><span>I.R.</span><span>IRAN</span></div>
+                    <div className="iran-plate-blue" aria-hidden="true">
+                      <svg width="12" height="22" viewBox="0 0 12 22">
+                        <rect x="1" y="2" width="10" height="2.5" fill="#22C55E" />
+                        <rect x="1" y="4.5" width="10" height="2.5" fill="#FFFFFF" />
+                        <rect x="1" y="7" width="10" height="2.5" fill="#EF4444" />
+                        <rect x="2" y="13" width="8" height="1.5" rx="0.7" fill="#FFFFFF" opacity="0.85" />
+                        <rect x="2" y="16.5" width="8" height="1.5" rx="0.7" fill="#FFFFFF" opacity="0.85" />
+                      </svg>
+                    </div>
                     <div className="iran-plate-main">
                       <span>۷۳</span><span style={{ color: '#FF742E' }}>ط</span><span>۱۶۹</span>
                     </div>
-                    <div className="iran-plate-city"><span>ایران</span><strong>۲۲</strong></div>
+                    <div className="iran-plate-city"><strong>۲۲</strong></div>
                   </div>
                 </div>
-                <div style={{ fontSize: 12.5, color: 'rgba(232,222,205,0.72)' }}>
+                <div style={{ fontSize: 13, color: 'rgba(232,222,205,0.76)' }}>
                   پشتیبانی از پلاک زرد ناوگان عمومی/سنگین و پلاک سفید سازمانی با فونت پیدا وزن ۸۰۰.
                 </div>
               </div>
@@ -476,7 +489,7 @@ export default function DesignSystemPortal({ onBackToWebsite, onOpenLab }) {
                   کارت بالشتکی روز (.cushion-card-light)
                 </span>
                 <div style={{ fontSize: 17, fontWeight: 900, marginBottom: 4 }}>قطبیت روز شنی با کنتراست ۱۲.۰۳:۱</div>
-                <p style={{ fontSize: 13, color: 'rgba(16,35,51,0.78)' }}>
+                <p style={{ fontSize: 14, color: 'rgba(16,35,51,0.78)' }}>
                   مشتق از مد Inflate 76% فایل سه‌بعدی برند برای بخش‌های تحلیلی روشن.
                 </p>
               </div>
@@ -484,13 +497,12 @@ export default function DesignSystemPortal({ onBackToWebsite, onOpenLab }) {
           </section>
         )}
 
-        {/* ۵. خروجی مستقیم کدهای توکن */}
         {(activeTab === 'all' || activeTab === 'tokens') && (
           <section className="cad-card">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginBottom: 16 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginBlockEnd: 16 }}>
               <div>
                 <span className="kaf-slash-tag">۰۵ · فایل‌های رسمی توکن در مخزن گیت‌هاب</span>
-                <h2 style={{ fontSize: 23, fontWeight: 900, marginTop: 8 }}>
+                <h2 style={{ fontSize: 23, fontWeight: 900, marginBlockStart: 8 }}>
                   آماده ایمپورت در CSS، React، Three.js، Tailwind و Figma
                 </h2>
               </div>
@@ -498,26 +510,27 @@ export default function DesignSystemPortal({ onBackToWebsite, onOpenLab }) {
               <button
                 onClick={() => copyValue('json-all', JSON.stringify(DESIGN_TOKENS, null, 2))}
                 className="btn-3d-navy"
-                style={{ padding: '8px 16px', fontSize: 13 }}
               >
                 {copiedKey === 'json-all' ? <Check size={15} color="#4ADE80" /> : <Copy size={15} />}
                 <span>کپی کل شیء توکن‌ها (JSON)</span>
               </button>
             </div>
 
-            <pre
-              className="ltr-code"
-              style={{
-                background: '#050B12',
-                padding: 20,
-                borderRadius: 18,
-                border: '1px solid rgba(232,222,205,0.14)',
-                overflowX: 'auto',
-                fontSize: 12.5,
-                lineHeight: 1.65,
-                color: '#E8DECD',
-              }}
-            >
+            <div className="scroll-x-wrap">
+              <pre
+                className="ltr-code"
+                style={{
+                  width: '100%',
+                  background: '#050B12',
+                  padding: 20,
+                  borderRadius: 18,
+                  border: '1px solid rgba(232,222,205,0.14)',
+                  overflowX: 'auto',
+                  fontSize: 12.5,
+                  lineHeight: 1.65,
+                  color: '#E8DECD',
+                }}
+              >
 {`/* tokens/tokens.css */
 :root {
   --ds-color-signal-orange: #FF742E;
@@ -532,7 +545,8 @@ export default function DesignSystemPortal({ onBackToWebsite, onOpenLab }) {
   --ds-geo-radar-cone:      30.6deg;
   --ds-ease-spring-lock:    cubic-bezier(0.34, 1.45, 0.64, 1);
 }`}
-            </pre>
+              </pre>
+            </div>
           </section>
         )}
       </div>

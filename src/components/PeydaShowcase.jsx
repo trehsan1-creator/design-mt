@@ -45,11 +45,11 @@ export default function PeydaShowcase() {
 
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             <button className={`chip-btn ${!lightMode ? 'on' : ''}`} onClick={() => setLightMode(false)}>
-              <Moon size={13} style={{ verticalAlign: 'middle', marginLeft: 5 }} />
+              <Moon size={13} style={{ verticalAlign: 'middle', marginInlineEnd: 5 }} />
               حالت شب راداری (#102333)
             </button>
             <button className={`chip-btn ${lightMode ? 'on' : ''}`} onClick={() => setLightMode(true)}>
-              <Sun size={13} style={{ verticalAlign: 'middle', marginLeft: 5 }} />
+              <Sun size={13} style={{ verticalAlign: 'middle', marginInlineEnd: 5 }} />
               حالت روز شنی (#E8DECD)
             </button>
           </div>
@@ -139,7 +139,7 @@ export default function PeydaShowcase() {
               <span style={{ fontWeight: 900, fontSize: 18, color: '#FF742E', letterSpacing: '0.04em' }}>
                 {toFa(odoValue.toLocaleString('en-US'))}
               </span>
-              <span style={{ fontSize: 11.5 }}>کیلومتر</span>
+              <span style={{ fontSize: 12 }}>کیلومتر</span>
             </div>
           </div>
 
@@ -233,7 +233,7 @@ export default function PeydaShowcase() {
           <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 6 }}>
             آبشار کامل ۹ وزن فونت «پیدا» (از ۱۰۰ نازک تا ۹۰۰ سیاه)
           </h3>
-          <p style={{ fontSize: 13.5, color: 'var(--beige-muted)', marginBottom: 16 }}>
+          <p style={{ fontSize: 14, color: 'var(--beige-muted)', marginBlockEnd: 16 }}>
             ضخامت پایه حرف «ا» از <strong style={{ color: '#FF742E' }}>۳۱ واحد</strong> در وزن نازک تا <strong style={{ color: '#FF742E' }}>۱۴۴ واحد</strong> در وزن سیاه (بازه دینامیکی ۴.۶۵ برابر) رشد می‌کند.
           </p>
 
@@ -242,31 +242,28 @@ export default function PeydaShowcase() {
               <div
                 key={item.weight}
                 onClick={() => setWeight(item.weight)}
+                className="peyda-weight-row"
                 style={{
                   padding: '12px 16px',
                   borderRadius: 16,
                   background: weight === item.weight ? 'rgba(255, 116, 46, 0.14)' : 'rgba(8, 19, 29, 0.68)',
                   border: weight === item.weight ? '1px solid #FF742E' : '1px solid rgba(232, 222, 205, 0.08)',
-                  display: 'grid',
-                  gridTemplateColumns: '150px 1fr auto',
-                  alignItems: 'center',
-                  gap: 14,
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
                 }}
               >
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 800, color: '#FF742E' }}>
+                  <div style={{ fontSize: 13.5, fontWeight: 800, color: '#FF742E' }}>
                     {toFa(item.weight)} · {item.faName}
                   </div>
-                  <div style={{ fontSize: 11, color: 'var(--beige-dim)' }}>ضخامت الف: {toFa(item.alefW)} واحد</div>
+                  <div style={{ fontSize: 12, color: 'var(--beige-dim)' }}>ضخامت الف: {toFa(item.alefW)} واحد</div>
                 </div>
 
-                <div style={{ fontWeight: item.weight, fontSize: 21, color: '#E8DECD' }}>
+                <div style={{ fontWeight: item.weight, fontSize: 20, color: '#E8DECD' }}>
                   ردیابی زنده ناوگان و موقعیت ماهواره‌ای · ۰۱۲۳۴۵۶۷۸۹
                 </div>
 
-                <div style={{ fontSize: 11.5, color: 'var(--beige-muted)', maxWidth: 190, textAlign: 'left' }}>
+                <div style={{ fontSize: 12, color: 'var(--beige-muted)', maxWidth: 210, textAlign: 'end' }}>
                   {item.usage}
                 </div>
               </div>
@@ -311,7 +308,7 @@ export default function PeydaShowcase() {
                 پایانه‌های کپسولی نرم در لوگوتایپ حس جریان جاده را می‌دهند و برش‌های تیز صفر درجه در فونت پیدا، خوانایی فوق‌دقیق اعداد سرعت، سوخت و مختصات GPS را تضمین می‌کنند.
               </p>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+              <div className="kpi-3-grid">
                 {[
                   { label: 'ناوگان در حرکت', val: '۲۴۸', unit: 'خودرو' },
                   { label: 'کاهش مصرف سوخت', val: '۱۸.۴٪', unit: 'ماهانه' },
@@ -326,16 +323,15 @@ export default function PeydaShowcase() {
                       border: '1px solid rgba(232,222,205,0.12)',
                     }}
                   >
-                    <div style={{ fontSize: 11.5, fontWeight: 500, color: 'var(--beige-muted)' }}>{stat.label}</div>
-                    <div style={{ fontSize: 22, fontWeight: 900, color: idx === 0 ? '#FF742E' : '#E8DECD', marginTop: 2 }}>
-                      {stat.val} <span style={{ fontSize: 11.5, fontWeight: 400 }}>{stat.unit}</span>
+                    <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--beige-muted)' }}>{stat.label}</div>
+                    <div style={{ fontSize: 22, fontWeight: 900, color: idx === 0 ? '#FF742E' : '#E8DECD', marginBlockStart: 2 }}>
+                      {stat.val} <span style={{ fontSize: 12, fontWeight: 400 }}>{stat.unit}</span>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Warm Beige Daylight Card Specimen */}
             <div
               style={{
                 borderRadius: 22,
@@ -345,13 +341,13 @@ export default function PeydaShowcase() {
                 boxShadow: '0 14px 32px rgba(0,0,0,0.28)',
               }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBlockEnd: 6, flexWrap: 'wrap', gap: 6 }}>
                 <span style={{ fontWeight: 800, fontSize: 15 }}>نمونه کارت روزانه (Warm Beige #E8DECD)</span>
-                <span style={{ background: '#102333', color: '#FF742E', padding: '3px 10px', borderRadius: 999, fontSize: 11.5, fontWeight: 800 }}>
+                <span style={{ background: '#102333', color: '#FF742E', padding: '3px 10px', borderRadius: 999, fontSize: 12, fontWeight: 800 }}>
                   کنتراست ۱۲.۰۳:۱
                 </span>
               </div>
-              <p style={{ fontWeight: 400, fontSize: 13.5, lineHeight: 1.75, color: 'rgba(16,35,51,0.85)' }}>
+              <p style={{ fontWeight: 400, fontSize: 14, lineHeight: 1.75, color: 'rgba(16,35,51,0.85)' }}>
                 در بخش‌های روشن وب‌سایت، متن سرمه‌ای عمیق با وزن‌های ۴۰۰ و ۵۰۰ فونت پیدا خوانایی آرام و خستگی‌ناپذیری ایجاد می‌کند، در حالی که نارنجی تپنده نقش حجم سه‌بعدی یا نشانگر فعال درون قاب سرمه‌ای را دارد.
               </p>
             </div>

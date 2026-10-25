@@ -1,0 +1,2371 @@
+[
+  {
+    "view": "website",
+    "width": 360,
+    "screenshot": "reports/responsive/before/website-360.jpg",
+    "stickyOverlap": false,
+    "navBottom": 118,
+    "firstContentTop": 158,
+    "negativeMarginBottom": -76,
+    "scrollWidth": 360,
+    "innerWidth": 360,
+    "hasHorizontalOverflow": false,
+    "overflowCulprits": [],
+    "overflowCount": 0,
+    "navLinksHidden": true,
+    "hasMobileMenuTrigger": false,
+    "smallTouchTargetCount": 21,
+    "smallTouchTargetsSample": [
+      {
+        "el": "a",
+        "w": 125.5,
+        "h": 42
+      },
+      {
+        "el": "button.chip-btn.on (\"واحد ۱: کشنده\")",
+        "w": 89.8,
+        "h": 28
+      },
+      {
+        "el": "button.chip-btn (\"واحد ۲: کامیون\")",
+        "w": 94.6,
+        "h": 28
+      },
+      {
+        "el": "button.chip-btn (\"واحد ۳: ناوگان\")",
+        "w": 94.4,
+        "h": 28
+      },
+      {
+        "el": "button",
+        "w": 21,
+        "h": 30
+      },
+      {
+        "el": "input.cinema-range",
+        "w": 165,
+        "h": 8
+      },
+      {
+        "el": "button.chip-btn.on (\"همه واحدها (۴)\")",
+        "w": 108.8,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"ترانزیت جاده‌ای\")",
+        "w": 105.2,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"زنجیره سرد یخچالی\")",
+        "w": 121.7,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"توزیع مویرگی\")",
+        "w": 101,
+        "h": 33
+      }
+    ],
+    "under12TextCount": 52,
+    "under12TextsSample": [
+      {
+        "el": "span (\"● ۱۴ ماهواره\")",
+        "fontSize": 11
+      },
+      {
+        "el": "span (\"I.R.\")",
+        "fontSize": 7
+      },
+      {
+        "el": "span (\"IRAN\")",
+        "fontSize": 7
+      },
+      {
+        "el": "span (\"ایران\")",
+        "fontSize": 6.5
+      },
+      {
+        "el": "strong (\"۱۱\")",
+        "fontSize": 9
+      },
+      {
+        "el": "span (\"km/h\")",
+        "fontSize": 10.5
+      },
+      {
+        "el": "div (\"ترانزیت کانتینری · محور تهرا\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "button.chip-btn.on (\"واحد ۱: کشنده\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "button.chip-btn (\"واحد ۲: کامیون\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "button.chip-btn (\"واحد ۳: ناوگان\")",
+        "fontSize": 11.5
+      }
+    ],
+    "smallBodyTextCount": 8,
+    "smallBodyTextsSample": [
+      {
+        "el": "p (\"محدوده‌های مجاز را روی نقشه \")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"به محض بسته شدن درب کانتینر،\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"الگوریتم هوشمند ترافیک، شیب \")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"حتی در نقاط کور آنتن موبایل،\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"با ورود خودرو به اسکوئیرکل م\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"مناسب شرکت‌های پخش و خدمات ش\")",
+        "fontSize": 13
+      },
+      {
+        "el": "p (\"پرفروش‌ترین بسته حمل‌ونقل و \")",
+        "fontSize": 13
+      },
+      {
+        "el": "p (\"ویژه هلدینگ‌ها، معادن و ناوگ\")",
+        "fontSize": 13
+      }
+    ],
+    "crampedGridCount": 2,
+    "crampedGridsSample": [
+      {
+        "el": "div (\"۹۹.۹۸٪پایداری سیگنال ماهواره\")",
+        "cols": "83.3281px 83.3281px 83.3438px"
+      },
+      {
+        "el": "div (\"سلامت باتری ناوگان۲۷.۸ ولت● \")",
+        "cols": "73.2812px 70.5625px 79.5px"
+      }
+    ],
+    "canvases": [
+      {
+        "el": "div",
+        "cssWidth": 310,
+        "cssHeight": 498,
+        "attrWidth": 310,
+        "attrHeight": 498,
+        "zeroHeight": false,
+        "overflowsViewport": false,
+        "role": null,
+        "ariaLabel": null
+      },
+      {
+        "el": "div",
+        "cssWidth": 266,
+        "cssHeight": 470,
+        "attrWidth": 266,
+        "attrHeight": 470,
+        "zeroHeight": false,
+        "overflowsViewport": false,
+        "role": null,
+        "ariaLabel": null
+      }
+    ],
+    "ltrBrokenCount": 0
+  },
+  {
+    "view": "website",
+    "width": 390,
+    "screenshot": "reports/responsive/before/website-390.jpg",
+    "stickyOverlap": false,
+    "navBottom": 118,
+    "firstContentTop": 158,
+    "negativeMarginBottom": -76,
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "hasHorizontalOverflow": false,
+    "overflowCulprits": [],
+    "overflowCount": 0,
+    "navLinksHidden": true,
+    "hasMobileMenuTrigger": false,
+    "smallTouchTargetCount": 21,
+    "smallTouchTargetsSample": [
+      {
+        "el": "a",
+        "w": 125.5,
+        "h": 42
+      },
+      {
+        "el": "button.chip-btn.on (\"واحد ۱: کشنده\")",
+        "w": 89.8,
+        "h": 28
+      },
+      {
+        "el": "button.chip-btn (\"واحد ۲: کامیون\")",
+        "w": 94.6,
+        "h": 28
+      },
+      {
+        "el": "button.chip-btn (\"واحد ۳: ناوگان\")",
+        "w": 94.4,
+        "h": 28
+      },
+      {
+        "el": "button",
+        "w": 21.7,
+        "h": 30
+      },
+      {
+        "el": "input.cinema-range",
+        "w": 188.3,
+        "h": 8
+      },
+      {
+        "el": "button.chip-btn.on (\"همه واحدها (۴)\")",
+        "w": 108.8,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"ترانزیت جاده‌ای\")",
+        "w": 105.2,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"زنجیره سرد یخچالی\")",
+        "w": 121.7,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"توزیع مویرگی\")",
+        "w": 101,
+        "h": 33
+      }
+    ],
+    "under12TextCount": 52,
+    "under12TextsSample": [
+      {
+        "el": "span (\"● ۱۴ ماهواره\")",
+        "fontSize": 11
+      },
+      {
+        "el": "span (\"I.R.\")",
+        "fontSize": 7
+      },
+      {
+        "el": "span (\"IRAN\")",
+        "fontSize": 7
+      },
+      {
+        "el": "span (\"ایران\")",
+        "fontSize": 6.5
+      },
+      {
+        "el": "strong (\"۱۱\")",
+        "fontSize": 9
+      },
+      {
+        "el": "span (\"km/h\")",
+        "fontSize": 10.5
+      },
+      {
+        "el": "div (\"ترانزیت کانتینری · محور تهرا\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "button.chip-btn.on (\"واحد ۱: کشنده\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "button.chip-btn (\"واحد ۲: کامیون\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "button.chip-btn (\"واحد ۳: ناوگان\")",
+        "fontSize": 11.5
+      }
+    ],
+    "smallBodyTextCount": 8,
+    "smallBodyTextsSample": [
+      {
+        "el": "p (\"محدوده‌های مجاز را روی نقشه \")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"به محض بسته شدن درب کانتینر،\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"الگوریتم هوشمند ترافیک، شیب \")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"حتی در نقاط کور آنتن موبایل،\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"با ورود خودرو به اسکوئیرکل م\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"مناسب شرکت‌های پخش و خدمات ش\")",
+        "fontSize": 13
+      },
+      {
+        "el": "p (\"پرفروش‌ترین بسته حمل‌ونقل و \")",
+        "fontSize": 13
+      },
+      {
+        "el": "p (\"ویژه هلدینگ‌ها، معادن و ناوگ\")",
+        "fontSize": 13
+      }
+    ],
+    "crampedGridCount": 1,
+    "crampedGridsSample": [
+      {
+        "el": "div (\"۹۹.۹۸٪پایداری سیگنال ماهواره\")",
+        "cols": "93.3281px 93.3281px 93.3438px"
+      }
+    ],
+    "canvases": [
+      {
+        "el": "div",
+        "cssWidth": 340,
+        "cssHeight": 498,
+        "attrWidth": 340,
+        "attrHeight": 498,
+        "zeroHeight": false,
+        "overflowsViewport": false,
+        "role": null,
+        "ariaLabel": null
+      },
+      {
+        "el": "div",
+        "cssWidth": 296,
+        "cssHeight": 470,
+        "attrWidth": 296,
+        "attrHeight": 470,
+        "zeroHeight": false,
+        "overflowsViewport": false,
+        "role": null,
+        "ariaLabel": null
+      }
+    ],
+    "ltrBrokenCount": 0
+  },
+  {
+    "view": "website",
+    "width": 768,
+    "screenshot": "reports/responsive/before/website-768.jpg",
+    "stickyOverlap": false,
+    "navBottom": 108,
+    "firstContentTop": 148,
+    "negativeMarginBottom": -76,
+    "scrollWidth": 768,
+    "innerWidth": 768,
+    "hasHorizontalOverflow": false,
+    "overflowCulprits": [],
+    "overflowCount": 0,
+    "navLinksHidden": true,
+    "hasMobileMenuTrigger": false,
+    "smallTouchTargetCount": 24,
+    "smallTouchTargetsSample": [
+      {
+        "el": "a",
+        "w": 125.5,
+        "h": 42
+      },
+      {
+        "el": "button.chip-btn.on (\"واحد ۱: کشنده\")",
+        "w": 89.8,
+        "h": 28
+      },
+      {
+        "el": "button.chip-btn (\"واحد ۲: کامیون\")",
+        "w": 94.6,
+        "h": 28
+      },
+      {
+        "el": "button.chip-btn (\"واحد ۳: ناوگان\")",
+        "w": 94.4,
+        "h": 28
+      },
+      {
+        "el": "button",
+        "w": 21.7,
+        "h": 30
+      },
+      {
+        "el": "input.cinema-range",
+        "w": 188.3,
+        "h": 8
+      },
+      {
+        "el": "button.chip-btn.on (\"همه واحدها (۴)\")",
+        "w": 108.8,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"ترانزیت جاده‌ای\")",
+        "w": 105.2,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"زنجیره سرد یخچالی\")",
+        "w": 121.7,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"توزیع مویرگی\")",
+        "w": 101,
+        "h": 33
+      }
+    ],
+    "under12TextCount": 52,
+    "under12TextsSample": [
+      {
+        "el": "span (\"● ۱۴ ماهواره\")",
+        "fontSize": 11
+      },
+      {
+        "el": "span (\"I.R.\")",
+        "fontSize": 7
+      },
+      {
+        "el": "span (\"IRAN\")",
+        "fontSize": 7
+      },
+      {
+        "el": "span (\"ایران\")",
+        "fontSize": 6.5
+      },
+      {
+        "el": "strong (\"۱۱\")",
+        "fontSize": 9
+      },
+      {
+        "el": "span (\"km/h\")",
+        "fontSize": 10.5
+      },
+      {
+        "el": "div (\"ترانزیت کانتینری · محور تهرا\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "button.chip-btn.on (\"واحد ۱: کشنده\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "button.chip-btn (\"واحد ۲: کامیون\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "button.chip-btn (\"واحد ۳: ناوگان\")",
+        "fontSize": 11.5
+      }
+    ],
+    "smallBodyTextCount": 8,
+    "smallBodyTextsSample": [
+      {
+        "el": "p (\"محدوده‌های مجاز را روی نقشه \")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"به محض بسته شدن درب کانتینر،\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"الگوریتم هوشمند ترافیک، شیب \")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"حتی در نقاط کور آنتن موبایل،\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"با ورود خودرو به اسکوئیرکل م\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"مناسب شرکت‌های پخش و خدمات ش\")",
+        "fontSize": 13
+      },
+      {
+        "el": "p (\"پرفروش‌ترین بسته حمل‌ونقل و \")",
+        "fontSize": 13
+      },
+      {
+        "el": "p (\"ویژه هلدینگ‌ها، معادن و ناوگ\")",
+        "fontSize": 13
+      }
+    ],
+    "crampedGridCount": 0,
+    "crampedGridsSample": [],
+    "canvases": [
+      {
+        "el": "div",
+        "cssWidth": 718,
+        "cssHeight": 498,
+        "attrWidth": 718,
+        "attrHeight": 498,
+        "zeroHeight": false,
+        "overflowsViewport": false,
+        "role": null,
+        "ariaLabel": null
+      },
+      {
+        "el": "div",
+        "cssWidth": 674,
+        "cssHeight": 470,
+        "attrWidth": 674,
+        "attrHeight": 470,
+        "zeroHeight": false,
+        "overflowsViewport": false,
+        "role": null,
+        "ariaLabel": null
+      }
+    ],
+    "ltrBrokenCount": 0
+  },
+  {
+    "view": "website",
+    "width": 1024,
+    "screenshot": "reports/responsive/before/website-1024.jpg",
+    "stickyOverlap": false,
+    "navBottom": 85,
+    "firstContentTop": 125,
+    "negativeMarginBottom": -76,
+    "scrollWidth": 1024,
+    "innerWidth": 1024,
+    "hasHorizontalOverflow": false,
+    "overflowCulprits": [],
+    "overflowCount": 0,
+    "navLinksHidden": true,
+    "hasMobileMenuTrigger": false,
+    "smallTouchTargetCount": 0,
+    "smallTouchTargetsSample": [],
+    "under12TextCount": 52,
+    "under12TextsSample": [
+      {
+        "el": "span (\"● ۱۴ ماهواره\")",
+        "fontSize": 11
+      },
+      {
+        "el": "span (\"I.R.\")",
+        "fontSize": 7
+      },
+      {
+        "el": "span (\"IRAN\")",
+        "fontSize": 7
+      },
+      {
+        "el": "span (\"ایران\")",
+        "fontSize": 6.5
+      },
+      {
+        "el": "strong (\"۱۱\")",
+        "fontSize": 9
+      },
+      {
+        "el": "span (\"km/h\")",
+        "fontSize": 10.5
+      },
+      {
+        "el": "div (\"ترانزیت کانتینری · محور تهرا\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "button.chip-btn.on (\"واحد ۱: کشنده\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "button.chip-btn (\"واحد ۲: کامیون\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "button.chip-btn (\"واحد ۳: ناوگان\")",
+        "fontSize": 11.5
+      }
+    ],
+    "smallBodyTextCount": 8,
+    "smallBodyTextsSample": [
+      {
+        "el": "p (\"محدوده‌های مجاز را روی نقشه \")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"به محض بسته شدن درب کانتینر،\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"الگوریتم هوشمند ترافیک، شیب \")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"حتی در نقاط کور آنتن موبایل،\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"با ورود خودرو به اسکوئیرکل م\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"مناسب شرکت‌های پخش و خدمات ش\")",
+        "fontSize": 13
+      },
+      {
+        "el": "p (\"پرفروش‌ترین بسته حمل‌ونقل و \")",
+        "fontSize": 13
+      },
+      {
+        "el": "p (\"ویژه هلدینگ‌ها، معادن و ناوگ\")",
+        "fontSize": 13
+      }
+    ],
+    "crampedGridCount": 0,
+    "crampedGridsSample": [],
+    "canvases": [
+      {
+        "el": "div",
+        "cssWidth": 974,
+        "cssHeight": 498,
+        "attrWidth": 974,
+        "attrHeight": 498,
+        "zeroHeight": false,
+        "overflowsViewport": false,
+        "role": null,
+        "ariaLabel": null
+      },
+      {
+        "el": "div",
+        "cssWidth": 930,
+        "cssHeight": 470,
+        "attrWidth": 930,
+        "attrHeight": 470,
+        "zeroHeight": false,
+        "overflowsViewport": false,
+        "role": null,
+        "ariaLabel": null
+      }
+    ],
+    "ltrBrokenCount": 0
+  },
+  {
+    "view": "website",
+    "width": 1280,
+    "screenshot": "reports/responsive/before/website-1280.jpg",
+    "stickyOverlap": false,
+    "navBottom": 108,
+    "firstContentTop": 148,
+    "negativeMarginBottom": -76,
+    "scrollWidth": 1280,
+    "innerWidth": 1280,
+    "hasHorizontalOverflow": false,
+    "overflowCulprits": [],
+    "overflowCount": 0,
+    "navLinksHidden": false,
+    "hasMobileMenuTrigger": false,
+    "smallTouchTargetCount": 0,
+    "smallTouchTargetsSample": [],
+    "under12TextCount": 52,
+    "under12TextsSample": [
+      {
+        "el": "span (\"● ۱۴ ماهواره\")",
+        "fontSize": 11
+      },
+      {
+        "el": "span (\"I.R.\")",
+        "fontSize": 7
+      },
+      {
+        "el": "span (\"IRAN\")",
+        "fontSize": 7
+      },
+      {
+        "el": "span (\"ایران\")",
+        "fontSize": 6.5
+      },
+      {
+        "el": "strong (\"۱۱\")",
+        "fontSize": 9
+      },
+      {
+        "el": "span (\"km/h\")",
+        "fontSize": 10.5
+      },
+      {
+        "el": "div (\"ترانزیت کانتینری · محور تهرا\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "button.chip-btn.on (\"واحد ۱: کشنده\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "button.chip-btn (\"واحد ۲: کامیون\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "button.chip-btn (\"واحد ۳: ناوگان\")",
+        "fontSize": 11.5
+      }
+    ],
+    "smallBodyTextCount": 8,
+    "smallBodyTextsSample": [
+      {
+        "el": "p (\"محدوده‌های مجاز را روی نقشه \")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"به محض بسته شدن درب کانتینر،\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"الگوریتم هوشمند ترافیک، شیب \")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"حتی در نقاط کور آنتن موبایل،\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"با ورود خودرو به اسکوئیرکل م\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"مناسب شرکت‌های پخش و خدمات ش\")",
+        "fontSize": 13
+      },
+      {
+        "el": "p (\"پرفروش‌ترین بسته حمل‌ونقل و \")",
+        "fontSize": 13
+      },
+      {
+        "el": "p (\"ویژه هلدینگ‌ها، معادن و ناوگ\")",
+        "fontSize": 13
+      }
+    ],
+    "crampedGridCount": 0,
+    "crampedGridsSample": [],
+    "canvases": [
+      {
+        "el": "div",
+        "cssWidth": 695,
+        "cssHeight": 498,
+        "attrWidth": 695,
+        "attrHeight": 498,
+        "zeroHeight": false,
+        "overflowsViewport": false,
+        "role": null,
+        "ariaLabel": null
+      },
+      {
+        "el": "div",
+        "cssWidth": 646,
+        "cssHeight": 470,
+        "attrWidth": 646,
+        "attrHeight": 470,
+        "zeroHeight": false,
+        "overflowsViewport": false,
+        "role": null,
+        "ariaLabel": null
+      }
+    ],
+    "ltrBrokenCount": 0
+  },
+  {
+    "view": "website",
+    "width": 1536,
+    "screenshot": "reports/responsive/before/website-1536.jpg",
+    "stickyOverlap": false,
+    "navBottom": 108,
+    "firstContentTop": 148,
+    "negativeMarginBottom": -76,
+    "scrollWidth": 1536,
+    "innerWidth": 1536,
+    "hasHorizontalOverflow": false,
+    "overflowCulprits": [],
+    "overflowCount": 0,
+    "navLinksHidden": false,
+    "hasMobileMenuTrigger": false,
+    "smallTouchTargetCount": 0,
+    "smallTouchTargetsSample": [],
+    "under12TextCount": 52,
+    "under12TextsSample": [
+      {
+        "el": "span (\"● ۱۴ ماهواره\")",
+        "fontSize": 11
+      },
+      {
+        "el": "span (\"I.R.\")",
+        "fontSize": 7
+      },
+      {
+        "el": "span (\"IRAN\")",
+        "fontSize": 7
+      },
+      {
+        "el": "span (\"ایران\")",
+        "fontSize": 6.5
+      },
+      {
+        "el": "strong (\"۱۱\")",
+        "fontSize": 9
+      },
+      {
+        "el": "span (\"km/h\")",
+        "fontSize": 10.5
+      },
+      {
+        "el": "div (\"ترانزیت کانتینری · محور تهرا\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "button.chip-btn.on (\"واحد ۱: کشنده\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "button.chip-btn (\"واحد ۲: کامیون\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "button.chip-btn (\"واحد ۳: ناوگان\")",
+        "fontSize": 11.5
+      }
+    ],
+    "smallBodyTextCount": 8,
+    "smallBodyTextsSample": [
+      {
+        "el": "p (\"محدوده‌های مجاز را روی نقشه \")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"به محض بسته شدن درب کانتینر،\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"الگوریتم هوشمند ترافیک، شیب \")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"حتی در نقاط کور آنتن موبایل،\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"با ورود خودرو به اسکوئیرکل م\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"مناسب شرکت‌های پخش و خدمات ش\")",
+        "fontSize": 13
+      },
+      {
+        "el": "p (\"پرفروش‌ترین بسته حمل‌ونقل و \")",
+        "fontSize": 13
+      },
+      {
+        "el": "p (\"ویژه هلدینگ‌ها، معادن و ناوگ\")",
+        "fontSize": 13
+      }
+    ],
+    "crampedGridCount": 0,
+    "crampedGridsSample": [],
+    "canvases": [
+      {
+        "el": "div",
+        "cssWidth": 730,
+        "cssHeight": 498,
+        "attrWidth": 730,
+        "attrHeight": 498,
+        "zeroHeight": false,
+        "overflowsViewport": false,
+        "role": null,
+        "ariaLabel": null
+      },
+      {
+        "el": "div",
+        "cssWidth": 681,
+        "cssHeight": 470,
+        "attrWidth": 681,
+        "attrHeight": 470,
+        "zeroHeight": false,
+        "overflowsViewport": false,
+        "role": null,
+        "ariaLabel": null
+      }
+    ],
+    "ltrBrokenCount": 0
+  },
+  {
+    "view": "design-system",
+    "width": 360,
+    "screenshot": "reports/responsive/before/design-system-360.jpg",
+    "stickyOverlap": false,
+    "navBottom": 0,
+    "firstContentTop": 0,
+    "scrollWidth": 360,
+    "innerWidth": 360,
+    "hasHorizontalOverflow": false,
+    "overflowCulprits": [],
+    "overflowCount": 0,
+    "navLinksHidden": false,
+    "hasMobileMenuTrigger": false,
+    "smallTouchTargetCount": 13,
+    "smallTouchTargetsSample": [
+      {
+        "el": "button.chip-btn.on (\"همه بخش‌ها\")",
+        "w": 114.8,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"رنگ و قطبیت\")",
+        "w": 116.4,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"تایپوگرافی پیدا\")",
+        "w": 127.8,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"هندسه و مواد 3D\")",
+        "w": 134.4,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"کامپوننت‌های ناوگان\")",
+        "w": 160.9,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"کد توکن‌ها\")",
+        "w": 111.2,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"آزمایشگاه هندسه\")",
+        "w": 138.7,
+        "h": 33
+      },
+      {
+        "el": "button (\"#FF742E\")",
+        "w": 78,
+        "h": 24
+      },
+      {
+        "el": "button (\"#102333\")",
+        "w": 80,
+        "h": 24
+      },
+      {
+        "el": "button (\"#E8DECD\")",
+        "w": 82,
+        "h": 24
+      }
+    ],
+    "under12TextCount": 37,
+    "under12TextsSample": [
+      {
+        "el": "div (\"مستندات زنده `DESIGN.md` · `\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "span.ltr-code (\"#FF742E\")",
+        "fontSize": 10.3
+      },
+      {
+        "el": "div.ltr-code (\"HSL(20.1°, 100%, 59%) · OKLC\")",
+        "fontSize": 11
+      },
+      {
+        "el": "span.ltr-code (\"#102333\")",
+        "fontSize": 10.3
+      },
+      {
+        "el": "div.ltr-code (\"HSL(207.4°, 52.2%, 13.1%) · \")",
+        "fontSize": 11
+      },
+      {
+        "el": "span.ltr-code (\"#E8DECD\")",
+        "fontSize": 10.3
+      },
+      {
+        "el": "div.ltr-code (\"HSL(37.8°, 37%, 85.7%) · OKL\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div.ltr-code (\"0% #3D5768 → 41.58% #112835 \")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div.ltr-code (\"--ds-status-moving\")",
+        "fontSize": 10.5
+      },
+      {
+        "el": "div.ltr-code (\"--ds-status-signal\")",
+        "fontSize": 10.5
+      }
+    ],
+    "smallBodyTextCount": 1,
+    "smallBodyTextsSample": [
+      {
+        "el": "p (\"مشتق از مد Inflate 76% فایل \")",
+        "fontSize": 13
+      }
+    ],
+    "crampedGridCount": 0,
+    "crampedGridsSample": [],
+    "canvases": [],
+    "ltrBrokenCount": 0
+  },
+  {
+    "view": "design-system",
+    "width": 390,
+    "screenshot": "reports/responsive/before/design-system-390.jpg",
+    "stickyOverlap": false,
+    "navBottom": 0,
+    "firstContentTop": 0,
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "hasHorizontalOverflow": false,
+    "overflowCulprits": [],
+    "overflowCount": 0,
+    "navLinksHidden": false,
+    "hasMobileMenuTrigger": false,
+    "smallTouchTargetCount": 13,
+    "smallTouchTargetsSample": [
+      {
+        "el": "button.chip-btn.on (\"همه بخش‌ها\")",
+        "w": 114.8,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"رنگ و قطبیت\")",
+        "w": 116.4,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"تایپوگرافی پیدا\")",
+        "w": 127.8,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"هندسه و مواد 3D\")",
+        "w": 134.4,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"کامپوننت‌های ناوگان\")",
+        "w": 160.9,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"کد توکن‌ها\")",
+        "w": 111.2,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"آزمایشگاه هندسه\")",
+        "w": 138.7,
+        "h": 33
+      },
+      {
+        "el": "button (\"#FF742E\")",
+        "w": 78,
+        "h": 24
+      },
+      {
+        "el": "button (\"#102333\")",
+        "w": 80,
+        "h": 24
+      },
+      {
+        "el": "button (\"#E8DECD\")",
+        "w": 82,
+        "h": 24
+      }
+    ],
+    "under12TextCount": 37,
+    "under12TextsSample": [
+      {
+        "el": "div (\"مستندات زنده `DESIGN.md` · `\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "span.ltr-code (\"#FF742E\")",
+        "fontSize": 10.3
+      },
+      {
+        "el": "div.ltr-code (\"HSL(20.1°, 100%, 59%) · OKLC\")",
+        "fontSize": 11
+      },
+      {
+        "el": "span.ltr-code (\"#102333\")",
+        "fontSize": 10.3
+      },
+      {
+        "el": "div.ltr-code (\"HSL(207.4°, 52.2%, 13.1%) · \")",
+        "fontSize": 11
+      },
+      {
+        "el": "span.ltr-code (\"#E8DECD\")",
+        "fontSize": 10.3
+      },
+      {
+        "el": "div.ltr-code (\"HSL(37.8°, 37%, 85.7%) · OKL\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div.ltr-code (\"0% #3D5768 → 41.58% #112835 \")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div.ltr-code (\"--ds-status-moving\")",
+        "fontSize": 10.5
+      },
+      {
+        "el": "div.ltr-code (\"--ds-status-signal\")",
+        "fontSize": 10.5
+      }
+    ],
+    "smallBodyTextCount": 1,
+    "smallBodyTextsSample": [
+      {
+        "el": "p (\"مشتق از مد Inflate 76% فایل \")",
+        "fontSize": 13
+      }
+    ],
+    "crampedGridCount": 0,
+    "crampedGridsSample": [],
+    "canvases": [],
+    "ltrBrokenCount": 0
+  },
+  {
+    "view": "design-system",
+    "width": 768,
+    "screenshot": "reports/responsive/before/design-system-768.jpg",
+    "stickyOverlap": false,
+    "navBottom": 0,
+    "firstContentTop": 0,
+    "scrollWidth": 768,
+    "innerWidth": 768,
+    "hasHorizontalOverflow": false,
+    "overflowCulprits": [],
+    "overflowCount": 0,
+    "navLinksHidden": false,
+    "hasMobileMenuTrigger": false,
+    "smallTouchTargetCount": 14,
+    "smallTouchTargetsSample": [
+      {
+        "el": "button.btn-3d-orange (\"بازگشت به وب‌سایت اصلی\")",
+        "w": 201.8,
+        "h": 39
+      },
+      {
+        "el": "button.chip-btn.on (\"همه بخش‌ها\")",
+        "w": 114.8,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"رنگ و قطبیت\")",
+        "w": 116.4,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"تایپوگرافی پیدا\")",
+        "w": 127.8,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"هندسه و مواد 3D\")",
+        "w": 134.4,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"کامپوننت‌های ناوگان\")",
+        "w": 160.9,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"کد توکن‌ها\")",
+        "w": 111.2,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"آزمایشگاه هندسه\")",
+        "w": 138.7,
+        "h": 33
+      },
+      {
+        "el": "button (\"#FF742E\")",
+        "w": 78,
+        "h": 24
+      },
+      {
+        "el": "button (\"#102333\")",
+        "w": 80,
+        "h": 24
+      }
+    ],
+    "under12TextCount": 37,
+    "under12TextsSample": [
+      {
+        "el": "div (\"مستندات زنده `DESIGN.md` · `\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "span.ltr-code (\"#FF742E\")",
+        "fontSize": 10.3
+      },
+      {
+        "el": "div.ltr-code (\"HSL(20.1°, 100%, 59%) · OKLC\")",
+        "fontSize": 11
+      },
+      {
+        "el": "span.ltr-code (\"#102333\")",
+        "fontSize": 10.3
+      },
+      {
+        "el": "div.ltr-code (\"HSL(207.4°, 52.2%, 13.1%) · \")",
+        "fontSize": 11
+      },
+      {
+        "el": "span.ltr-code (\"#E8DECD\")",
+        "fontSize": 10.3
+      },
+      {
+        "el": "div.ltr-code (\"HSL(37.8°, 37%, 85.7%) · OKL\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div.ltr-code (\"0% #3D5768 → 41.58% #112835 \")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div.ltr-code (\"--ds-status-moving\")",
+        "fontSize": 10.5
+      },
+      {
+        "el": "div.ltr-code (\"--ds-status-signal\")",
+        "fontSize": 10.5
+      }
+    ],
+    "smallBodyTextCount": 1,
+    "smallBodyTextsSample": [
+      {
+        "el": "p (\"مشتق از مد Inflate 76% فایل \")",
+        "fontSize": 13
+      }
+    ],
+    "crampedGridCount": 0,
+    "crampedGridsSample": [],
+    "canvases": [],
+    "ltrBrokenCount": 0
+  },
+  {
+    "view": "design-system",
+    "width": 1024,
+    "screenshot": "reports/responsive/before/design-system-1024.jpg",
+    "stickyOverlap": false,
+    "navBottom": 0,
+    "firstContentTop": 0,
+    "scrollWidth": 1024,
+    "innerWidth": 1024,
+    "hasHorizontalOverflow": false,
+    "overflowCulprits": [],
+    "overflowCount": 0,
+    "navLinksHidden": false,
+    "hasMobileMenuTrigger": false,
+    "smallTouchTargetCount": 0,
+    "smallTouchTargetsSample": [],
+    "under12TextCount": 37,
+    "under12TextsSample": [
+      {
+        "el": "div (\"مستندات زنده `DESIGN.md` · `\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "span.ltr-code (\"#FF742E\")",
+        "fontSize": 10.3
+      },
+      {
+        "el": "div.ltr-code (\"HSL(20.1°, 100%, 59%) · OKLC\")",
+        "fontSize": 11
+      },
+      {
+        "el": "span.ltr-code (\"#102333\")",
+        "fontSize": 10.3
+      },
+      {
+        "el": "div.ltr-code (\"HSL(207.4°, 52.2%, 13.1%) · \")",
+        "fontSize": 11
+      },
+      {
+        "el": "span.ltr-code (\"#E8DECD\")",
+        "fontSize": 10.3
+      },
+      {
+        "el": "div.ltr-code (\"HSL(37.8°, 37%, 85.7%) · OKL\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div.ltr-code (\"0% #3D5768 → 41.58% #112835 \")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div.ltr-code (\"--ds-status-moving\")",
+        "fontSize": 10.5
+      },
+      {
+        "el": "div.ltr-code (\"--ds-status-signal\")",
+        "fontSize": 10.5
+      }
+    ],
+    "smallBodyTextCount": 1,
+    "smallBodyTextsSample": [
+      {
+        "el": "p (\"مشتق از مد Inflate 76% فایل \")",
+        "fontSize": 13
+      }
+    ],
+    "crampedGridCount": 0,
+    "crampedGridsSample": [],
+    "canvases": [],
+    "ltrBrokenCount": 0
+  },
+  {
+    "view": "design-system",
+    "width": 1280,
+    "screenshot": "reports/responsive/before/design-system-1280.jpg",
+    "stickyOverlap": false,
+    "navBottom": 0,
+    "firstContentTop": 0,
+    "scrollWidth": 1280,
+    "innerWidth": 1280,
+    "hasHorizontalOverflow": false,
+    "overflowCulprits": [],
+    "overflowCount": 0,
+    "navLinksHidden": false,
+    "hasMobileMenuTrigger": false,
+    "smallTouchTargetCount": 0,
+    "smallTouchTargetsSample": [],
+    "under12TextCount": 37,
+    "under12TextsSample": [
+      {
+        "el": "div (\"مستندات زنده `DESIGN.md` · `\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "span.ltr-code (\"#FF742E\")",
+        "fontSize": 10.3
+      },
+      {
+        "el": "div.ltr-code (\"HSL(20.1°, 100%, 59%) · OKLC\")",
+        "fontSize": 11
+      },
+      {
+        "el": "span.ltr-code (\"#102333\")",
+        "fontSize": 10.3
+      },
+      {
+        "el": "div.ltr-code (\"HSL(207.4°, 52.2%, 13.1%) · \")",
+        "fontSize": 11
+      },
+      {
+        "el": "span.ltr-code (\"#E8DECD\")",
+        "fontSize": 10.3
+      },
+      {
+        "el": "div.ltr-code (\"HSL(37.8°, 37%, 85.7%) · OKL\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div.ltr-code (\"0% #3D5768 → 41.58% #112835 \")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div.ltr-code (\"--ds-status-moving\")",
+        "fontSize": 10.5
+      },
+      {
+        "el": "div.ltr-code (\"--ds-status-signal\")",
+        "fontSize": 10.5
+      }
+    ],
+    "smallBodyTextCount": 1,
+    "smallBodyTextsSample": [
+      {
+        "el": "p (\"مشتق از مد Inflate 76% فایل \")",
+        "fontSize": 13
+      }
+    ],
+    "crampedGridCount": 0,
+    "crampedGridsSample": [],
+    "canvases": [],
+    "ltrBrokenCount": 0
+  },
+  {
+    "view": "design-system",
+    "width": 1536,
+    "screenshot": "reports/responsive/before/design-system-1536.jpg",
+    "stickyOverlap": false,
+    "navBottom": 0,
+    "firstContentTop": 0,
+    "scrollWidth": 1536,
+    "innerWidth": 1536,
+    "hasHorizontalOverflow": false,
+    "overflowCulprits": [],
+    "overflowCount": 0,
+    "navLinksHidden": false,
+    "hasMobileMenuTrigger": false,
+    "smallTouchTargetCount": 0,
+    "smallTouchTargetsSample": [],
+    "under12TextCount": 37,
+    "under12TextsSample": [
+      {
+        "el": "div (\"مستندات زنده `DESIGN.md` · `\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "span.ltr-code (\"#FF742E\")",
+        "fontSize": 10.3
+      },
+      {
+        "el": "div.ltr-code (\"HSL(20.1°, 100%, 59%) · OKLC\")",
+        "fontSize": 11
+      },
+      {
+        "el": "span.ltr-code (\"#102333\")",
+        "fontSize": 10.3
+      },
+      {
+        "el": "div.ltr-code (\"HSL(207.4°, 52.2%, 13.1%) · \")",
+        "fontSize": 11
+      },
+      {
+        "el": "span.ltr-code (\"#E8DECD\")",
+        "fontSize": 10.3
+      },
+      {
+        "el": "div.ltr-code (\"HSL(37.8°, 37%, 85.7%) · OKL\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div.ltr-code (\"0% #3D5768 → 41.58% #112835 \")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div.ltr-code (\"--ds-status-moving\")",
+        "fontSize": 10.5
+      },
+      {
+        "el": "div.ltr-code (\"--ds-status-signal\")",
+        "fontSize": 10.5
+      }
+    ],
+    "smallBodyTextCount": 1,
+    "smallBodyTextsSample": [
+      {
+        "el": "p (\"مشتق از مد Inflate 76% فایل \")",
+        "fontSize": 13
+      }
+    ],
+    "crampedGridCount": 0,
+    "crampedGridsSample": [],
+    "canvases": [],
+    "ltrBrokenCount": 0
+  },
+  {
+    "view": "lab",
+    "width": 360,
+    "screenshot": "reports/responsive/before/lab-360.jpg",
+    "stickyOverlap": false,
+    "navBottom": 0,
+    "firstContentTop": 0,
+    "scrollWidth": 360,
+    "innerWidth": 360,
+    "hasHorizontalOverflow": false,
+    "overflowCulprits": [],
+    "overflowCount": 0,
+    "navLinksHidden": false,
+    "hasMobileMenuTrigger": false,
+    "smallTouchTargetCount": 20,
+    "smallTouchTargetsSample": [
+      {
+        "el": "button.chip-btn (\"۱. انفجار فضایی\")",
+        "w": 102.7,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"۲. موج ضربه قفل\")",
+        "w": 112,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"۳. سیگنال مسیر GPS\")",
+        "w": 135.7,
+        "h": 33
+      },
+      {
+        "el": "button (\"توقف فیلم\")",
+        "w": 118.5,
+        "h": 35
+      },
+      {
+        "el": "button.chip-btn (\"از ابتدا\")",
+        "w": 79.3,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn.on (\"پخش پیوسته (Loop)\")",
+        "w": 149.8,
+        "h": 33
+      },
+      {
+        "el": "input.cinema-range",
+        "w": 63.7,
+        "h": 8
+      },
+      {
+        "el": "button.chip-btn.on (\"حالت شب راداری (#102333)\")",
+        "w": 185,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"حالت روز شنی (#E8DECD)\")",
+        "w": 174,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn.on (\"نمونه ۱\")",
+        "w": 63.5,
+        "h": 33
+      }
+    ],
+    "under12TextCount": 46,
+    "under12TextsSample": [
+      {
+        "el": "span (\"کیلومتر/ساعت\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "span (\"کیلومتر\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div (\"ضخامت الف: ۳۱ واحد\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div (\"اعداد پس‌زمینه تزئینی و جزئی\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div (\"ضخامت الف: ۴۱ واحد\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div (\"زیرنویس‌های سینمایی در ابعاد\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div (\"ضخامت الف: ۵۵ واحد\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div (\"متن‌های توصیفی بلند روی زمین\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div (\"ضخامت الف: ۶۹ واحد\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div (\"متن اصلی رابط کاربری و پاراگ\")",
+        "fontSize": 11.5
+      }
+    ],
+    "smallBodyTextCount": 8,
+    "smallBodyTextsSample": [
+      {
+        "el": "p (\"ضخامت پایه حرف «ا» از ۳۱ واح\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"در بخش‌های روشن وب‌سایت، متن\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"مشتق‌شده از کمان بالا-چپ لوگ\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"ترکیب مخروط متقارن رقم «۷» ف\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"ماوس را روی ماتریس حرکت دهید\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"چیدمان دقیقاً از تقارن قطری \")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"استخراج‌شده از زاویه دقیق سر\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"در وب‌سایت نهایی، هر سکشن هن\")",
+        "fontSize": 13.5
+      }
+    ],
+    "crampedGridCount": 10,
+    "crampedGridsSample": [
+      {
+        "el": "div (\"۱۰۰ · نازک (Thin)ضخامت الف: \")",
+        "cols": "150px 110.406px 45.3906px"
+      },
+      {
+        "el": "div (\"۲۰۰ · فوق‌سبک (ExtraLight)ضخ\")",
+        "cols": "150px 111.562px 57.2188px"
+      },
+      {
+        "el": "div (\"۳۰۰ · سبک (Light)ضخامت الف: \")",
+        "cols": "150px 113.047px 37.75px"
+      },
+      {
+        "el": "div (\"۴۰۰ · معمولی (Regular)ضخامت \")",
+        "cols": "150px 114.547px 48.0156px"
+      },
+      {
+        "el": "div (\"۵۰۰ · متوسط (Medium)ضخامت ال\")",
+        "cols": "150px 116.219px 53.1406px"
+      },
+      {
+        "el": "div (\"۶۰۰ · نیمه‌ضخیم (SemiBold)ضخ\")",
+        "cols": "150px 117.719px 43.1562px"
+      },
+      {
+        "el": "div (\"۷۰۰ · ضخیم (Bold)ضخامت الف: \")",
+        "cols": "150px 119.203px 52.6719px"
+      },
+      {
+        "el": "div (\"۸۰۰ · فوق‌ضخیم (ExtraBold)ضخ\")",
+        "cols": "150px 122.125px 34.5781px"
+      }
+    ],
+    "canvases": [
+      {
+        "el": "div",
+        "cssWidth": 256,
+        "cssHeight": 438,
+        "attrWidth": 256,
+        "attrHeight": 438,
+        "zeroHeight": false,
+        "overflowsViewport": false,
+        "role": null,
+        "ariaLabel": null
+      }
+    ],
+    "ltrBrokenCount": 0
+  },
+  {
+    "view": "lab",
+    "width": 390,
+    "screenshot": "reports/responsive/before/lab-390.jpg",
+    "stickyOverlap": false,
+    "navBottom": 0,
+    "firstContentTop": 0,
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "hasHorizontalOverflow": false,
+    "overflowCulprits": [],
+    "overflowCount": 0,
+    "navLinksHidden": false,
+    "hasMobileMenuTrigger": false,
+    "smallTouchTargetCount": 20,
+    "smallTouchTargetsSample": [
+      {
+        "el": "button.chip-btn (\"۱. انفجار فضایی\")",
+        "w": 102.7,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"۲. موج ضربه قفل\")",
+        "w": 112,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"۳. سیگنال مسیر GPS\")",
+        "w": 135.7,
+        "h": 33
+      },
+      {
+        "el": "button (\"توقف فیلم\")",
+        "w": 118.5,
+        "h": 35
+      },
+      {
+        "el": "button.chip-btn (\"از ابتدا\")",
+        "w": 79.3,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn.on (\"پخش پیوسته (Loop)\")",
+        "w": 149.8,
+        "h": 33
+      },
+      {
+        "el": "input.cinema-range",
+        "w": 93.7,
+        "h": 8
+      },
+      {
+        "el": "button.chip-btn.on (\"حالت شب راداری (#102333)\")",
+        "w": 185,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"حالت روز شنی (#E8DECD)\")",
+        "w": 174,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn.on (\"نمونه ۱\")",
+        "w": 63.5,
+        "h": 33
+      }
+    ],
+    "under12TextCount": 46,
+    "under12TextsSample": [
+      {
+        "el": "span (\"کیلومتر/ساعت\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "span (\"کیلومتر\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div (\"ضخامت الف: ۳۱ واحد\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div (\"اعداد پس‌زمینه تزئینی و جزئی\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div (\"ضخامت الف: ۴۱ واحد\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div (\"زیرنویس‌های سینمایی در ابعاد\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div (\"ضخامت الف: ۵۵ واحد\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div (\"متن‌های توصیفی بلند روی زمین\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div (\"ضخامت الف: ۶۹ واحد\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div (\"متن اصلی رابط کاربری و پاراگ\")",
+        "fontSize": 11.5
+      }
+    ],
+    "smallBodyTextCount": 8,
+    "smallBodyTextsSample": [
+      {
+        "el": "p (\"ضخامت پایه حرف «ا» از ۳۱ واح\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"در بخش‌های روشن وب‌سایت، متن\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"مشتق‌شده از کمان بالا-چپ لوگ\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"ترکیب مخروط متقارن رقم «۷» ف\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"ماوس را روی ماتریس حرکت دهید\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"چیدمان دقیقاً از تقارن قطری \")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"استخراج‌شده از زاویه دقیق سر\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"در وب‌سایت نهایی، هر سکشن هن\")",
+        "fontSize": 13.5
+      }
+    ],
+    "crampedGridCount": 9,
+    "crampedGridsSample": [
+      {
+        "el": "div (\"۱۰۰ · نازک (Thin)ضخامت الف: \")",
+        "cols": "150px 110.406px 45.3906px"
+      },
+      {
+        "el": "div (\"۲۰۰ · فوق‌سبک (ExtraLight)ضخ\")",
+        "cols": "150px 111.562px 57.2188px"
+      },
+      {
+        "el": "div (\"۳۰۰ · سبک (Light)ضخامت الف: \")",
+        "cols": "150px 113.047px 37.75px"
+      },
+      {
+        "el": "div (\"۴۰۰ · معمولی (Regular)ضخامت \")",
+        "cols": "150px 114.547px 48.0156px"
+      },
+      {
+        "el": "div (\"۵۰۰ · متوسط (Medium)ضخامت ال\")",
+        "cols": "150px 116.219px 53.1406px"
+      },
+      {
+        "el": "div (\"۶۰۰ · نیمه‌ضخیم (SemiBold)ضخ\")",
+        "cols": "150px 117.719px 43.1562px"
+      },
+      {
+        "el": "div (\"۷۰۰ · ضخیم (Bold)ضخامت الف: \")",
+        "cols": "150px 119.203px 52.6719px"
+      },
+      {
+        "el": "div (\"۸۰۰ · فوق‌ضخیم (ExtraBold)ضخ\")",
+        "cols": "150px 122.125px 34.5781px"
+      }
+    ],
+    "canvases": [
+      {
+        "el": "div",
+        "cssWidth": 286,
+        "cssHeight": 438,
+        "attrWidth": 286,
+        "attrHeight": 438,
+        "zeroHeight": false,
+        "overflowsViewport": false,
+        "role": null,
+        "ariaLabel": null
+      }
+    ],
+    "ltrBrokenCount": 0
+  },
+  {
+    "view": "lab",
+    "width": 768,
+    "screenshot": "reports/responsive/before/lab-768.jpg",
+    "stickyOverlap": false,
+    "navBottom": 0,
+    "firstContentTop": 0,
+    "scrollWidth": 768,
+    "innerWidth": 768,
+    "hasHorizontalOverflow": false,
+    "overflowCulprits": [],
+    "overflowCount": 0,
+    "navLinksHidden": false,
+    "hasMobileMenuTrigger": false,
+    "smallTouchTargetCount": 22,
+    "smallTouchTargetsSample": [
+      {
+        "el": "button.chip-btn (\"۱. انفجار فضایی\")",
+        "w": 102.7,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"۲. موج ضربه قفل\")",
+        "w": 112,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"۳. سیگنال مسیر GPS\")",
+        "w": 135.7,
+        "h": 33
+      },
+      {
+        "el": "button (\"توقف فیلم\")",
+        "w": 118.5,
+        "h": 35
+      },
+      {
+        "el": "button.chip-btn (\"از ابتدا\")",
+        "w": 79.3,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn.on (\"پخش پیوسته (Loop)\")",
+        "w": 149.8,
+        "h": 33
+      },
+      {
+        "el": "input.cinema-range",
+        "w": 82.1,
+        "h": 8
+      },
+      {
+        "el": "button.chip-btn.on (\"حالت شب راداری (#102333)\")",
+        "w": 185,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn (\"حالت روز شنی (#E8DECD)\")",
+        "w": 174,
+        "h": 33
+      },
+      {
+        "el": "button.chip-btn.on (\"نمونه ۱\")",
+        "w": 63.5,
+        "h": 33
+      }
+    ],
+    "under12TextCount": 46,
+    "under12TextsSample": [
+      {
+        "el": "span (\"کیلومتر/ساعت\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "span (\"کیلومتر\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div (\"ضخامت الف: ۳۱ واحد\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div (\"اعداد پس‌زمینه تزئینی و جزئی\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div (\"ضخامت الف: ۴۱ واحد\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div (\"زیرنویس‌های سینمایی در ابعاد\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div (\"ضخامت الف: ۵۵ واحد\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div (\"متن‌های توصیفی بلند روی زمین\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div (\"ضخامت الف: ۶۹ واحد\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div (\"متن اصلی رابط کاربری و پاراگ\")",
+        "fontSize": 11.5
+      }
+    ],
+    "smallBodyTextCount": 8,
+    "smallBodyTextsSample": [
+      {
+        "el": "p (\"ضخامت پایه حرف «ا» از ۳۱ واح\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"در بخش‌های روشن وب‌سایت، متن\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"مشتق‌شده از کمان بالا-چپ لوگ\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"ترکیب مخروط متقارن رقم «۷» ف\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"ماوس را روی ماتریس حرکت دهید\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"چیدمان دقیقاً از تقارن قطری \")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"استخراج‌شده از زاویه دقیق سر\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"در وب‌سایت نهایی، هر سکشن هن\")",
+        "fontSize": 13.5
+      }
+    ],
+    "crampedGridCount": 0,
+    "crampedGridsSample": [],
+    "canvases": [
+      {
+        "el": "div",
+        "cssWidth": 664,
+        "cssHeight": 438,
+        "attrWidth": 664,
+        "attrHeight": 438,
+        "zeroHeight": false,
+        "overflowsViewport": false,
+        "role": null,
+        "ariaLabel": null
+      }
+    ],
+    "ltrBrokenCount": 0
+  },
+  {
+    "view": "lab",
+    "width": 1024,
+    "screenshot": "reports/responsive/before/lab-1024.jpg",
+    "stickyOverlap": false,
+    "navBottom": 0,
+    "firstContentTop": 0,
+    "scrollWidth": 1024,
+    "innerWidth": 1024,
+    "hasHorizontalOverflow": false,
+    "overflowCulprits": [],
+    "overflowCount": 0,
+    "navLinksHidden": false,
+    "hasMobileMenuTrigger": false,
+    "smallTouchTargetCount": 0,
+    "smallTouchTargetsSample": [],
+    "under12TextCount": 46,
+    "under12TextsSample": [
+      {
+        "el": "span (\"کیلومتر/ساعت\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "span (\"کیلومتر\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div (\"ضخامت الف: ۳۱ واحد\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div (\"اعداد پس‌زمینه تزئینی و جزئی\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div (\"ضخامت الف: ۴۱ واحد\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div (\"زیرنویس‌های سینمایی در ابعاد\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div (\"ضخامت الف: ۵۵ واحد\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div (\"متن‌های توصیفی بلند روی زمین\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div (\"ضخامت الف: ۶۹ واحد\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div (\"متن اصلی رابط کاربری و پاراگ\")",
+        "fontSize": 11.5
+      }
+    ],
+    "smallBodyTextCount": 8,
+    "smallBodyTextsSample": [
+      {
+        "el": "p (\"ضخامت پایه حرف «ا» از ۳۱ واح\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"در بخش‌های روشن وب‌سایت، متن\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"مشتق‌شده از کمان بالا-چپ لوگ\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"ترکیب مخروط متقارن رقم «۷» ف\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"ماوس را روی ماتریس حرکت دهید\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"چیدمان دقیقاً از تقارن قطری \")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"استخراج‌شده از زاویه دقیق سر\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"در وب‌سایت نهایی، هر سکشن هن\")",
+        "fontSize": 13.5
+      }
+    ],
+    "crampedGridCount": 0,
+    "crampedGridsSample": [],
+    "canvases": [
+      {
+        "el": "div",
+        "cssWidth": 920,
+        "cssHeight": 438,
+        "attrWidth": 920,
+        "attrHeight": 438,
+        "zeroHeight": false,
+        "overflowsViewport": false,
+        "role": null,
+        "ariaLabel": null
+      }
+    ],
+    "ltrBrokenCount": 0
+  },
+  {
+    "view": "lab",
+    "width": 1280,
+    "screenshot": "reports/responsive/before/lab-1280.jpg",
+    "stickyOverlap": false,
+    "navBottom": 0,
+    "firstContentTop": 0,
+    "scrollWidth": 1280,
+    "innerWidth": 1280,
+    "hasHorizontalOverflow": false,
+    "overflowCulprits": [],
+    "overflowCount": 0,
+    "navLinksHidden": false,
+    "hasMobileMenuTrigger": false,
+    "smallTouchTargetCount": 0,
+    "smallTouchTargetsSample": [],
+    "under12TextCount": 46,
+    "under12TextsSample": [
+      {
+        "el": "span (\"کیلومتر/ساعت\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "span (\"کیلومتر\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div (\"ضخامت الف: ۳۱ واحد\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div (\"اعداد پس‌زمینه تزئینی و جزئی\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div (\"ضخامت الف: ۴۱ واحد\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div (\"زیرنویس‌های سینمایی در ابعاد\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div (\"ضخامت الف: ۵۵ واحد\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div (\"متن‌های توصیفی بلند روی زمین\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div (\"ضخامت الف: ۶۹ واحد\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div (\"متن اصلی رابط کاربری و پاراگ\")",
+        "fontSize": 11.5
+      }
+    ],
+    "smallBodyTextCount": 8,
+    "smallBodyTextsSample": [
+      {
+        "el": "p (\"ضخامت پایه حرف «ا» از ۳۱ واح\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"در بخش‌های روشن وب‌سایت، متن\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"مشتق‌شده از کمان بالا-چپ لوگ\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"ترکیب مخروط متقارن رقم «۷» ف\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"ماوس را روی ماتریس حرکت دهید\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"چیدمان دقیقاً از تقارن قطری \")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"استخراج‌شده از زاویه دقیق سر\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"در وب‌سایت نهایی، هر سکشن هن\")",
+        "fontSize": 13.5
+      }
+    ],
+    "crampedGridCount": 0,
+    "crampedGridsSample": [],
+    "canvases": [
+      {
+        "el": "div",
+        "cssWidth": 1176,
+        "cssHeight": 438,
+        "attrWidth": 1176,
+        "attrHeight": 438,
+        "zeroHeight": false,
+        "overflowsViewport": false,
+        "role": null,
+        "ariaLabel": null
+      }
+    ],
+    "ltrBrokenCount": 0
+  },
+  {
+    "view": "lab",
+    "width": 1536,
+    "screenshot": "reports/responsive/before/lab-1536.jpg",
+    "stickyOverlap": false,
+    "navBottom": 0,
+    "firstContentTop": 0,
+    "scrollWidth": 1536,
+    "innerWidth": 1536,
+    "hasHorizontalOverflow": false,
+    "overflowCulprits": [],
+    "overflowCount": 0,
+    "navLinksHidden": false,
+    "hasMobileMenuTrigger": false,
+    "smallTouchTargetCount": 0,
+    "smallTouchTargetsSample": [],
+    "under12TextCount": 46,
+    "under12TextsSample": [
+      {
+        "el": "span (\"کیلومتر/ساعت\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "span (\"کیلومتر\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div (\"ضخامت الف: ۳۱ واحد\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div (\"اعداد پس‌زمینه تزئینی و جزئی\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div (\"ضخامت الف: ۴۱ واحد\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div (\"زیرنویس‌های سینمایی در ابعاد\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div (\"ضخامت الف: ۵۵ واحد\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div (\"متن‌های توصیفی بلند روی زمین\")",
+        "fontSize": 11.5
+      },
+      {
+        "el": "div (\"ضخامت الف: ۶۹ واحد\")",
+        "fontSize": 11
+      },
+      {
+        "el": "div (\"متن اصلی رابط کاربری و پاراگ\")",
+        "fontSize": 11.5
+      }
+    ],
+    "smallBodyTextCount": 8,
+    "smallBodyTextsSample": [
+      {
+        "el": "p (\"ضخامت پایه حرف «ا» از ۳۱ واح\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"در بخش‌های روشن وب‌سایت، متن\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"مشتق‌شده از کمان بالا-چپ لوگ\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"ترکیب مخروط متقارن رقم «۷» ف\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"ماوس را روی ماتریس حرکت دهید\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"چیدمان دقیقاً از تقارن قطری \")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"استخراج‌شده از زاویه دقیق سر\")",
+        "fontSize": 13.5
+      },
+      {
+        "el": "p (\"در وب‌سایت نهایی، هر سکشن هن\")",
+        "fontSize": 13.5
+      }
+    ],
+    "crampedGridCount": 0,
+    "crampedGridsSample": [],
+    "canvases": [
+      {
+        "el": "div",
+        "cssWidth": 1296,
+        "cssHeight": 438,
+        "attrWidth": 1296,
+        "attrHeight": 438,
+        "zeroHeight": false,
+        "overflowsViewport": false,
+        "role": null,
+        "ariaLabel": null
+      }
+    ],
+    "ltrBrokenCount": 0
+  }
+]

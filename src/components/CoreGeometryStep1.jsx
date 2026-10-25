@@ -142,7 +142,7 @@ export default function CoreGeometryStep1() {
                 <strong>۱. نصف‌النهار میانی و افق طلایی (φ)</strong>
                 <span className="metric-val ltr-code">X = 50.03% · Y = 38.06%</span>
               </div>
-              <p style={{ fontSize: 13.5, color: 'var(--beige-muted)' }}>
+              <p style={{ fontSize: 14, color: 'var(--beige-muted)' }}>
                 ستون مرکزی در <span className="ltr-code">X = 117.17</span> عرض را دقیقاً دو نیم می‌کند و خط افقی در <span className="ltr-code">Y = 123.60</span> ارتفاع کل را با نسبت طلایی <span className="ltr-code">324.76 / 201.16 = 1.614 ≈ φ</span> (دقت ۹۹.۷۸٪) می‌شکند.
               </p>
             </div>
@@ -152,7 +152,7 @@ export default function CoreGeometryStep1() {
                 <strong>۲. کوانتوم ضخامت (S) و ماتریس ۱۰×۱۴</strong>
                 <span className="metric-val ltr-code">S = 23.145 pt</span>
               </div>
-              <p style={{ fontSize: 13.5, color: 'var(--beige-muted)' }}>
+              <p style={{ fontSize: 14, color: 'var(--beige-muted)' }}>
                 پایه چپ و بازوی بالا ضخامت یکسان <span className="ltr-code">23.15 pt</span> دارند؛ کل لوگو روی شبکه <span className="ltr-code">10S × 14S</span> با تعادل ۴۶٪ جرم پر و ۵۴٪ فضای تنفس نشسته است.
               </p>
             </div>
@@ -162,7 +162,7 @@ export default function CoreGeometryStep1() {
                 <strong>۳. منحنی رمپ بزرگراهی (کمان کلوتوئید)</strong>
                 <span className="metric-val ltr-code">κ = 0.500 · n = 1.85</span>
               </div>
-              <p style={{ fontSize: 13.5, color: 'var(--beige-muted)' }}>
+              <p style={{ fontSize: 14, color: 'var(--beige-muted)' }}>
                 اهرم‌های کمان بالا-چپ دقیقاً روی نیمه دهانه (<span className="ltr-code">0.50</span> به‌جای دایره <span className="ltr-code">0.5523</span>) قرار دارند؛ این همان منحنی انتقالی مهندسی راه برای ورود بدون تکان خودرو به پیچ است!
               </p>
             </div>
@@ -172,7 +172,7 @@ export default function CoreGeometryStep1() {
                 <strong>۴. سلسله‌مراتب کپسول بیرونی و فیلت داخلی</strong>
                 <span className="metric-val ltr-code">0.50S Cap / 0.628S Fillet</span>
               </div>
-              <p style={{ fontSize: 13.5, color: 'var(--beige-muted)' }}>
+              <p style={{ fontSize: 14, color: 'var(--beige-muted)' }}>
                 انتهای بازوها نیم‌دایره کامل (<span className="ltr-code">R = 11.57</span>) است، اما هر ۴ کنج داخلی با شعاع بزرگ‌تر <span className="ltr-code">R = 14.54 ≈ S/φ</span> نرم شده‌اند تا جریان بصری نشکند.
               </p>
             </div>
@@ -265,7 +265,7 @@ export default function CoreGeometryStep1() {
                 <strong>۱. هم‌خوانی ضخامت با لوگو (اختلاف کمتر از ۳٪)</strong>
                 <span className="metric-val ltr-code">1u = 23.86 pt ≈ S</span>
               </div>
-              <p style={{ fontSize: 13.5, color: 'var(--beige-muted)' }}>
+              <p style={{ fontSize: 14, color: 'var(--beige-muted)' }}>
                 واحد پایه لوگوتایپ (<span className="ltr-code">23.86 pt</span>) تقریباً برابر با ضخامت لوگو (<span className="ltr-code">23.15 pt</span>) است؛ هر دو از یک قلم هندسی واحد متولد شده‌اند.
               </p>
             </div>
@@ -275,7 +275,7 @@ export default function CoreGeometryStep1() {
                 <strong>۲. ریتم عمودی ۷ ردیفه (۱ + ۱ + ۳ + ۲)</strong>
                 <span className="metric-val ltr-code">H = 7u = 166.91 pt</span>
               </div>
-              <p style={{ fontSize: 13.5, color: 'var(--beige-muted)' }}>
+              <p style={{ fontSize: 14, color: 'var(--beige-muted)' }}>
                 ۱ واحد نقطه‌ها، ۱ واحد هوای تنفس، ۳ واحد بدنه اصلی حروف، و ۲ واحد دنباله‌های پایین‌رو (<span className="ltr-code">م، ر، ز</span>). تمام پایه‌های عمودی دقیقاً <span className="ltr-code">5u</span> قد دارند.
               </p>
             </div>
@@ -285,7 +285,7 @@ export default function CoreGeometryStep1() {
                 <strong>۳. ضرباهنگ منظم فاصله‌های ۱ واحدی</strong>
                 <span className="metric-val ltr-code">Gap = 1.00u</span>
               </div>
-              <p style={{ fontSize: 13.5, color: 'var(--beige-muted)' }}>
+              <p style={{ fontSize: 14, color: 'var(--beige-muted)' }}>
                 تمام شکاف‌های بین حروف غیرمتصل و نیز پل اتصال «ف» به «ر» دقیقاً برابر <span className="ltr-code">1u</span> هستند؛ ریتمی شبیه پالس‌های دیجیتال تله‌متری!
               </p>
             </div>
@@ -381,8 +381,8 @@ export default function CoreGeometryStep1() {
             }}
           >
             <div>
-              <div style={{ fontSize: 13, fontWeight: 800 }}>گرادیان چهارمرحله‌ای استخراج‌شده از gradiant.pdf</div>
-              <div style={{ fontSize: 11.5, color: 'var(--beige-muted)' }}>افت روشنایی در ۴۱.۶٪ و جهش بازتاب افق در ۷۸.۶٪</div>
+              <div style={{ fontSize: 13.5, fontWeight: 800 }}>گرادیان چهارمرحله‌ای استخراج‌شده از gradiant.pdf</div>
+              <div style={{ fontSize: 12, color: 'var(--beige-muted)' }}>افت روشنایی در ۴۱.۶٪ و جهش بازتاب افق در ۷۸.۶٪</div>
             </div>
             <span className="ltr-code" style={{ color: '#FFB085', fontWeight: 700 }}>140.24°</span>
           </div>
@@ -447,16 +447,16 @@ export default function CoreGeometryStep1() {
         <div className="cad-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 14 }}>
           <div>
             <h3 style={{ fontSize: 19, fontWeight: 800, marginBottom: 12 }}>مقایسه دو زبان حجم‌دهی در فایل‌های مرجع شما</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
+            <div className="kpi-2-grid" style={{ marginBlockEnd: 14 }}>
               <div className="cad-stage" style={{ padding: 14, textAlign: 'center' }}>
-                <img src="/refs/3d_front.webp" alt="حجم بالشتکی" style={{ height: 118, objectFit: 'contain', marginBottom: 6 }} />
+                <img src="/refs/3d_front.webp" alt="حجم بالشتکی" style={{ height: 118, maxWidth: '100%', objectFit: 'contain', marginBlockEnd: 6 }} />
                 <div style={{ fontWeight: 800, fontSize: 13.5 }}>حجم بالشتکی (Inflate ۷۶٪)</div>
-                <div style={{ fontSize: 11.5, color: 'var(--beige-muted)' }}>نور از بالا (۷۱ درجه) · لطیف و لمس‌شدنی</div>
+                <div style={{ fontSize: 12, color: 'var(--beige-muted)' }}>نور از بالا (۷۱ درجه) · لطیف و لمس‌شدنی</div>
               </div>
               <div className="cad-stage" style={{ padding: 14, textAlign: 'center' }}>
-                <img src="/refs/gradiant.webp" alt="حجم پخ‌خورده" style={{ height: 118, objectFit: 'contain', marginBottom: 6 }} />
+                <img src="/refs/gradiant.webp" alt="حجم پخ‌خورده" style={{ height: 118, maxWidth: '100%', objectFit: 'contain', marginBlockEnd: 6 }} />
                 <div style={{ fontWeight: 800, fontSize: 13.5 }}>پخ تراش‌خورده (Bevel ۶۰٪)</div>
-                <div style={{ fontSize: 11.5, color: 'var(--beige-muted)' }}>نور مایل ۴۳.۱° · قاب اسکوئیرکل ۳۱.۲۵٪</div>
+                <div style={{ fontSize: 12, color: 'var(--beige-muted)' }}>نور مایل ۴۳.۱° · قاب اسکوئیرکل ۳۱.۲۵٪</div>
               </div>
             </div>
           </div>
@@ -467,7 +467,7 @@ export default function CoreGeometryStep1() {
                 <strong>جنس سطح مات-ابریشمی کابین خودرو</strong>
                 <span className="metric-val ltr-code">Roughness 40% · Metallic 0%</span>
               </div>
-              <p style={{ fontSize: 13, color: 'var(--beige-muted)' }}>
+              <p style={{ fontSize: 14, color: 'var(--beige-muted)' }}>
                 در هر دو فایل، فلزی بودن صفر و زبری ۴۰٪ تنظیم شده است؛ یعنی حجم‌های سه‌بعدی سایت نباید کروم سرد و آینه‌ای باشند، بلکه باید حس پلیمر باکیفیت داشبورد و سرامیک گرم بدهند!
               </p>
             </div>

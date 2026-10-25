@@ -118,21 +118,21 @@ export default function RoiCalculatorSection() {
                 <span style={{ fontSize: 18, color: '#E8DECD', fontWeight: 700 }}>میلیون تومان / سال</span>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 22 }}>
+              <div className="kpi-2-grid" style={{ marginBlockStart: 22 }}>
                 <div style={{ padding: 14, borderRadius: 18, background: 'rgba(232,222,205,0.06)', border: '1px solid rgba(232,222,205,0.1)' }}>
                   <Fuel size={18} color="#FF742E" />
-                  <div style={{ fontSize: 22, fontWeight: 900, marginTop: 6 }}>
+                  <div style={{ fontSize: 22, fontWeight: 900, marginBlockStart: 6 }}>
                     {toFa(litersSavedMonth.toLocaleString('en-US'))} لیتر
                   </div>
-                  <div style={{ fontSize: 12, color: 'rgba(232,222,205,0.7)' }}>صرفه‌جویی سوخت در ماه</div>
+                  <div style={{ fontSize: 12.5, color: 'rgba(232,222,205,0.76)' }}>صرفه‌جویی سوخت در ماه</div>
                 </div>
 
                 <div style={{ padding: 14, borderRadius: 18, background: 'rgba(232,222,205,0.06)', border: '1px solid rgba(232,222,205,0.1)' }}>
                   <Clock size={18} color="#4ADE80" />
-                  <div style={{ fontSize: 22, fontWeight: 900, marginTop: 6 }}>
+                  <div style={{ fontSize: 22, fontWeight: 900, marginBlockStart: 6 }}>
                     {toFa(hoursSavedMonth.toLocaleString('en-US'))} ساعت
                   </div>
-                  <div style={{ fontSize: 12, color: 'rgba(232,222,205,0.7)' }}>کاهش درجا کار کردن ماهانه</div>
+                  <div style={{ fontSize: 12.5, color: 'rgba(232,222,205,0.76)' }}>کاهش درجا کار کردن ماهانه</div>
                 </div>
               </div>
             </div>

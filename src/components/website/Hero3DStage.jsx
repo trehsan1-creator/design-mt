@@ -283,11 +283,14 @@ export default function Hero3DStage() {
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
     };
+    const ro = new ResizeObserver(onResize);
+    ro.observe(container);
     window.addEventListener('resize', onResize);
 
     return () => {
       cancelAnimationFrame(animId);
       obs.disconnect();
+      ro.disconnect();
       window.removeEventListener('resize', onResize);
       partMeshes.forEach((m) => {
         m.geo.dispose();
@@ -373,10 +376,8 @@ export default function Hero3DStage() {
 
             {/* 3 Sculpted KPI Strip with 26.84 deg Kaf Sarkesh Dividers */}
             <div
+              className="kpi-3-grid"
               style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                gap: 12,
                 padding: '16px 18px',
                 borderRadius: 22,
                 background: 'rgba(16, 35, 51, 0.65)',
@@ -392,14 +393,14 @@ export default function Hero3DStage() {
                 <div
                   key={idx}
                   style={{
-                    borderLeft: idx < 2 ? '1px solid rgba(232,222,205,0.12)' : 'none',
-                    paddingLeft: idx < 2 ? 10 : 0,
+                    borderInlineEnd: idx < 2 ? '1px solid rgba(232,222,205,0.12)' : 'none',
+                    paddingInlineEnd: idx < 2 ? 10 : 0,
                   }}
                 >
                   <div style={{ fontSize: 23, fontWeight: 900, color: idx === 0 ? '#FF742E' : '#E8DECD' }}>
                     {st.val}
                   </div>
-                  <div style={{ fontSize: 12, color: 'rgba(232,222,205,0.68)', fontWeight: 500 }}>{st.label}</div>
+                  <div style={{ fontSize: 12.5, color: 'rgba(232,222,205,0.72)', fontWeight: 500 }}>{st.label}</div>
                 </div>
               ))}
             </div>
@@ -572,13 +573,13 @@ export default function Hero3DStage() {
               <div
                 style={{
                   position: 'absolute',
-                  left: '50%',
+                  insetInlineStart: '50%',
                   top: '50%',
                   width: 150,
                   height: 150,
                   borderRadius: '31.25%',
                   border: '2.5px solid #E8DECD',
-                  transform: `translate(-50%, -50%) scale(${0.5 + 3.4 * shock1})`,
+                  transform: `translate(50%, -50%) scale(${0.5 + 3.4 * shock1})`,
                   opacity: shock1 > 0 && shock1 < 1 ? 0.85 * (1 - shock1) : 0,
                   pointerEvents: 'none',
                 }}
@@ -586,14 +587,14 @@ export default function Hero3DStage() {
               <div
                 style={{
                   position: 'absolute',
-                  left: '50%',
+                  insetInlineStart: '50%',
                   top: '50%',
                   width: 120,
                   height: 120,
                   borderRadius: '31.25%',
                   border: '2px solid #FF742E',
                   boxShadow: '0 0 32px rgba(255,116,46,0.65)',
-                  transform: `translate(-50%, -50%) scale(${0.4 + 3.8 * shock2})`,
+                  transform: `translate(50%, -50%) scale(${0.4 + 3.8 * shock2})`,
                   opacity: shock2 > 0 && shock2 < 1 ? 0.9 * (1 - shock2) : 0,
                   pointerEvents: 'none',
                 }}
@@ -602,34 +603,38 @@ export default function Hero3DStage() {
               {/* Three.js WebGL 4-Piece Extruded Canvas */}
               <div ref={canvasWrapRef} style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }} />
 
-              {/* Floating Live Selected Vehicle Telemetry HUD (Top Left) */}
+              {/* Floating Live Selected Vehicle Telemetry HUD */}
               <div
                 style={{
                   position: 'absolute',
-                  top: 22,
-                  left: 24,
-                  padding: '14px 16px',
-                  borderRadius: 22,
-                  background: 'rgba(8, 19, 29, 0.82)',
+                  top: 18,
+                  insetInlineEnd: 18,
+                  padding: '13px 15px',
+                  borderRadius: 20,
+                  background: 'rgba(8, 19, 29, 0.86)',
                   border: '1px solid rgba(255, 116, 46, 0.42)',
                   backdropFilter: 'blur(14px)',
-                  minWidth: 255,
+                  maxWidth: 'calc(100% - 36px)',
                   boxShadow: '0 16px 36px rgba(0,0,0,0.45)',
                 }}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                  <span style={{ fontSize: 13, fontWeight: 800, color: '#E8DECD' }}>{selectedVeh.name}</span>
-                  <span style={{ fontSize: 11, color: '#4ADE80', fontWeight: 700 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, marginBlockEnd: 8 }}>
+                  <span style={{ fontSize: 13.5, fontWeight: 800, color: '#E8DECD' }}>{selectedVeh.name}</span>
+                  <span style={{ fontSize: 12, color: '#4ADE80', fontWeight: 700 }}>
                     ● {toFa(selectedVeh.satellites)} ماهواره
                   </span>
                 </div>
 
-                {/* Authentic Iranian License Plate */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
                   <div className="iran-plate">
-                    <div className="iran-plate-blue">
-                      <span>I.R.</span>
-                      <span>IRAN</span>
+                    <div className="iran-plate-blue" aria-hidden="true">
+                      <svg width="12" height="22" viewBox="0 0 12 22">
+                        <rect x="1" y="2" width="10" height="2.5" fill="#22C55E" />
+                        <rect x="1" y="4.5" width="10" height="2.5" fill="#FFFFFF" />
+                        <rect x="1" y="7" width="10" height="2.5" fill="#EF4444" />
+                        <rect x="2" y="13" width="8" height="1.5" rx="0.7" fill="#FFFFFF" opacity="0.85" />
+                        <rect x="2" y="16.5" width="8" height="1.5" rx="0.7" fill="#FFFFFF" opacity="0.85" />
+                      </svg>
                     </div>
                     <div className="iran-plate-main">
                       <span>{selectedVeh.plateLeft}</span>
@@ -637,18 +642,17 @@ export default function Hero3DStage() {
                       <span>{selectedVeh.plateRight}</span>
                     </div>
                     <div className="iran-plate-city">
-                      <span style={{ fontSize: 6.5 }}>ایران</span>
                       <strong>{selectedVeh.plateCity}</strong>
                     </div>
                   </div>
 
-                  <div style={{ textAlign: 'left' }}>
+                  <div style={{ textAlign: 'end' }}>
                     <span style={{ fontSize: 22, fontWeight: 900, color: '#FF742E' }}>{toFa(selectedVeh.speed)}</span>
-                    <span style={{ fontSize: 10.5, color: 'rgba(232,222,205,0.7)', marginRight: 3 }}>km/h</span>
+                    <span style={{ fontSize: 12, color: 'rgba(232,222,205,0.75)', marginInlineStart: 3 }}>km/h</span>
                   </div>
                 </div>
 
-                <div style={{ fontSize: 11.5, color: 'rgba(232,222,205,0.72)', marginTop: 8 }}>
+                <div style={{ fontSize: 12.5, color: 'rgba(232,222,205,0.76)', marginBlockStart: 8 }}>
                   {selectedVeh.cargo} {selectedVeh.temp ? `· دما: ${selectedVeh.temp}` : ''}
                 </div>
               </div>
@@ -657,9 +661,8 @@ export default function Hero3DStage() {
               <div
                 style={{
                   position: 'absolute',
-                  bottom: 18,
-                  right: 22,
-                  left: 22,
+                  bottom: 14,
+                  insetInline: 14,
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
@@ -667,7 +670,7 @@ export default function Hero3DStage() {
                   flexWrap: 'wrap',
                   padding: '9px 14px',
                   borderRadius: 18,
-                  background: 'rgba(8, 19, 29, 0.75)',
+                  background: 'rgba(8, 19, 29, 0.82)',
                   border: '1px solid rgba(232, 222, 205, 0.15)',
                   backdropFilter: 'blur(12px)',
                 }}
@@ -678,34 +681,37 @@ export default function Hero3DStage() {
                       key={v.id}
                       onClick={() => setSelectedVeh(v)}
                       className={`chip-btn ${selectedVeh.id === v.id ? 'on' : ''}`}
-                      style={{ padding: '5px 11px', fontSize: 11.5 }}
+                      style={{ fontSize: 12.5 }}
                     >
                       واحد {toFa(i + 1)}: {v.name.split(' ')[0]}
                     </button>
                   ))}
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 185, flex: 1, maxWidth: 260 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 185, flex: 1, maxWidth: 280 }}>
                   <button
                     onClick={() => setIsPlaying(!isPlaying)}
                     style={{
-                      width: 30,
-                      height: 30,
-                      borderRadius: 9,
+                      width: 44,
+                      height: 44,
+                      borderRadius: 12,
                       border: 'none',
                       background: '#FF742E',
-                      color: '#102333',
+                      color: '#060E16',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
+                      flexShrink: 0,
                     }}
+                    aria-label={isPlaying ? 'توقف انیمیشن مسیر' : 'پخش انیمیشن مسیر'}
                     title={isPlaying ? 'توقف' : 'پخش'}
                   >
-                    {isPlaying ? <Pause size={14} /> : <Play size={14} />}
+                    {isPlaying ? <Pause size={16} /> : <Play size={16} />}
                   </button>
                   <input
                     type="range"
                     className="cinema-range"
+                    aria-label="پیشرفت انیمیشن مسیر قهرمان"
                     min="0"
                     max="1000"
                     value={Math.round(pClamped * 1000)}
@@ -714,7 +720,7 @@ export default function Hero3DStage() {
                       setProgress(Number(e.target.value) / 1000);
                     }}
                   />
-                  <span style={{ fontSize: 12, fontWeight: 800, color: '#FF9861', minWidth: 34 }}>
+                  <span style={{ fontSize: 12.5, fontWeight: 800, color: '#FF9861', minWidth: 36 }}>
                     {toFa(Math.round(pClamped * 100))}٪
                   </span>
                 </div>

@@ -165,9 +165,9 @@ export default function LiveFleetRadarSection() {
                     <span style={{ fontWeight: 800, fontSize: 14.5 }}>{unit.title}</span>
                     <span
                       style={{
-                        fontSize: 11,
+                        fontSize: 12,
                         fontWeight: 700,
-                        padding: '2px 9px',
+                        padding: '3px 10px',
                         borderRadius: 999,
                         background:
                           unit.status === 'alert'
@@ -187,11 +187,16 @@ export default function LiveFleetRadarSection() {
                     </span>
                   </div>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                    <div className="iran-plate" style={{ transform: 'scale(0.92)', transformOrigin: 'right center' }}>
-                      <div className="iran-plate-blue">
-                        <span>I.R.</span>
-                        <span>IRAN</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBlockEnd: 10, gap: 8, flexWrap: 'wrap' }}>
+                    <div className="iran-plate">
+                      <div className="iran-plate-blue" aria-hidden="true">
+                        <svg width="12" height="22" viewBox="0 0 12 22">
+                          <rect x="1" y="2" width="10" height="2.5" fill="#22C55E" />
+                          <rect x="1" y="4.5" width="10" height="2.5" fill="#FFFFFF" />
+                          <rect x="1" y="7" width="10" height="2.5" fill="#EF4444" />
+                          <rect x="2" y="13" width="8" height="1.5" rx="0.7" fill="#FFFFFF" opacity="0.85" />
+                          <rect x="2" y="16.5" width="8" height="1.5" rx="0.7" fill="#FFFFFF" opacity="0.85" />
+                        </svg>
                       </div>
                       <div className="iran-plate-main">
                         <span>{unit.plate[0]}</span>
@@ -199,18 +204,16 @@ export default function LiveFleetRadarSection() {
                         <span>{unit.plate[2]}</span>
                       </div>
                       <div className="iran-plate-city">
-                        <span style={{ fontSize: 6 }}>ایران</span>
                         <strong>{unit.plate[3]}</strong>
                       </div>
                     </div>
 
-                    <div style={{ fontSize: 12, color: 'rgba(232,222,205,0.72)' }}>{unit.corridor}</div>
+                    <div style={{ fontSize: 12.5, color: 'rgba(232,222,205,0.76)' }}>{unit.corridor}</div>
                   </div>
 
-                  {/* 26.84 deg Kaf-Slash Fuel Gauge */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <Fuel size={13} color="#FF9861" />
-                    <span style={{ fontSize: 11.5, color: 'rgba(232,222,205,0.7)' }}>سوخت: {toFa(unit.fuel)}٪</span>
+                    <Fuel size={14} color="#FF9861" />
+                    <span style={{ fontSize: 12.5, color: 'rgba(232,222,205,0.76)' }}>سوخت: {toFa(unit.fuel)}٪</span>
                     <div style={{ flex: 1, display: 'flex', gap: 3 }}>
                       {Array.from({ length: 12 }).map((_, bi) => {
                         const lit = bi < Math.round((unit.fuel / 100) * 12);
@@ -248,38 +251,37 @@ export default function LiveFleetRadarSection() {
                 'radial-gradient(circle at 46% 36%, rgba(61, 87, 104, 0.52) 0%, rgba(11, 25, 38, 0.96) 62%, #060E16 100%)',
             }}
           >
-            {/* Squircle Radar Rings Centered on Tehran Command Hub (46%, 34%) */}
-            {[150, 280, 420].map((sz) => (
+            {/* Squircle Radar Rings Centered on Tehran Command Hub */}
+            <div style={{ position: 'absolute', inset: 0, direction: 'ltr', pointerEvents: 'none' }}>
+              {[150, 280, 420].map((sz) => (
+                <div
+                  key={sz}
+                  style={{
+                    position: 'absolute',
+                    insetInlineStart: '46%',
+                    top: '44%',
+                    width: sz,
+                    height: sz,
+                    transform: 'translate(-50%, -50%)',
+                    borderRadius: '31.25%',
+                    border: '1px solid rgba(232,222,205,0.11)',
+                  }}
+                />
+              ))}
+
               <div
-                key={sz}
                 style={{
                   position: 'absolute',
-                  left: '46%',
+                  insetInlineStart: '46%',
                   top: '44%',
-                  width: sz,
-                  height: sz,
+                  width: 460,
+                  height: 460,
                   transform: 'translate(-50%, -50%)',
                   borderRadius: '31.25%',
-                  border: '1px solid rgba(232,222,205,0.11)',
-                  pointerEvents: 'none',
+                  background: `conic-gradient(from ${radarAngle}deg, rgba(255,116,46,0.34) 0deg, rgba(255,116,46,0.06) 22deg, transparent 31deg, transparent 360deg)`,
                 }}
               />
-            ))}
-
-            {/* Rotating 30.6 deg Radar Cone */}
-            <div
-              style={{
-                position: 'absolute',
-                left: '46%',
-                top: '44%',
-                width: 460,
-                height: 460,
-                transform: 'translate(-50%, -50%)',
-                borderRadius: '31.25%',
-                background: `conic-gradient(from ${radarAngle}deg, rgba(255,116,46,0.34) 0deg, rgba(255,116,46,0.06) 22deg, transparent 31deg, transparent 360deg)`,
-                pointerEvents: 'none',
-              }}
-            />
+            </div>
 
             {/* SVG Clothoid Freight Corridors */}
             <svg
@@ -312,101 +314,104 @@ export default function LiveFleetRadarSection() {
               />
             </svg>
 
-            {/* City Waypoint Labels */}
-            {CITIES.map((ct) => (
-              <div
-                key={ct.name}
-                style={{
-                  position: 'absolute',
-                  left: `${ct.x}%`,
-                  top: `${ct.y}%`,
-                  transform: 'translate(-50%, -50%)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: 4,
-                  pointerEvents: 'none',
-                }}
-              >
+            <div style={{ position: 'absolute', inset: 0, direction: 'ltr', pointerEvents: 'none' }}>
+              {CITIES.map((ct) => (
                 <div
-                  style={{
-                    width: ct.hub ? 16 : 10,
-                    height: ct.hub ? 16 : 10,
-                    borderRadius: ct.hub ? 5 : 3,
-                    background: ct.hub ? '#FF742E' : '#E8DECD',
-                    border: '2px solid #102333',
-                    boxShadow: ct.hub ? '0 0 20px #FF742E' : 'none',
-                  }}
-                />
-                <span
-                  style={{
-                    fontSize: ct.hub ? 12 : 11,
-                    fontWeight: ct.hub ? 800 : 600,
-                    color: ct.hub ? '#FFB085' : 'rgba(232,222,205,0.76)',
-                    background: 'rgba(6,14,22,0.72)',
-                    padding: '2px 8px',
-                    borderRadius: 6,
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {ct.name}
-                </span>
-              </div>
-            ))}
-
-            {/* Clickable Live Fleet Markers on Map */}
-            {FLEET_UNITS.map((u) => {
-              const isSel = selected.id === u.id;
-              return (
-                <button
-                  key={u.id}
-                  onClick={() => {
-                    setSelected(u);
-                    triggerPing();
-                  }}
+                  key={ct.name}
                   style={{
                     position: 'absolute',
-                    left: `${u.x}%`,
-                    top: `${u.y}%`,
-                    transform: `translate(-50%, -50%) scale(${isSel ? 1.18 : 1})`,
-                    background: isSel ? '#FF742E' : '#102333',
-                    color: isSel ? '#102333' : '#E8DECD',
-                    border: isSel ? '2px solid #FFF5EE' : '1.5px solid #FF742E',
-                    borderRadius: 12,
-                    padding: '6px 11px',
-                    display: 'inline-flex',
+                    insetInlineStart: `${ct.x}%`,
+                    top: `${ct.y}%`,
+                    transform: 'translate(-50%, -50%)',
+                    display: 'flex',
+                    flexDirection: 'column',
                     alignItems: 'center',
-                    gap: 6,
-                    fontWeight: 800,
-                    fontSize: 12,
-                    boxShadow: isSel ? '0 0 28px rgba(255,116,46,0.85)' : '0 8px 20px rgba(0,0,0,0.45)',
-                    zIndex: isSel ? 10 : 4,
-                    transition: 'all 0.25s cubic-bezier(0.34, 1.45, 0.64, 1)',
+                    gap: 4,
                   }}
                 >
-                  <Truck size={14} />
-                  <span>{toFa(u.speed)} km/h</span>
-                </button>
-              );
-            })}
+                  <div
+                    style={{
+                      width: ct.hub ? 16 : 10,
+                      height: ct.hub ? 16 : 10,
+                      borderRadius: ct.hub ? 5 : 3,
+                      background: ct.hub ? '#FF742E' : '#E8DECD',
+                      border: '2px solid #102333',
+                      boxShadow: ct.hub ? '0 0 20px #FF742E' : 'none',
+                    }}
+                  />
+                  <span
+                    style={{
+                      direction: 'rtl',
+                      fontSize: 12,
+                      fontWeight: ct.hub ? 800 : 600,
+                      color: ct.hub ? '#FFB085' : 'rgba(232,222,205,0.82)',
+                      background: 'rgba(6,14,22,0.78)',
+                      padding: '2px 8px',
+                      borderRadius: 6,
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {ct.name}
+                  </span>
+                </div>
+              ))}
 
-            {/* Squircle Ping Burst on Selected Vehicle */}
-            {pingBurst && (
-              <div
-                style={{
-                  position: 'absolute',
-                  left: `${selected.x}%`,
-                  top: `${selected.y}%`,
-                  width: 90,
-                  height: 90,
-                  borderRadius: '31.25%',
-                  border: '2.5px solid #FF742E',
-                  animation: 'squirclePing 1.1s ease-out forwards',
-                  pointerEvents: 'none',
-                  zIndex: 8,
-                }}
-              />
-            )}
+              {FLEET_UNITS.map((u) => {
+                const isSel = selected.id === u.id;
+                return (
+                  <button
+                    key={u.id}
+                    type="button"
+                    onClick={() => {
+                      setSelected(u);
+                      triggerPing();
+                    }}
+                    style={{
+                      pointerEvents: 'auto',
+                      direction: 'rtl',
+                      position: 'absolute',
+                      insetInlineStart: `${u.x}%`,
+                      top: `${u.y}%`,
+                      transform: `translate(-50%, -50%) scale(${isSel ? 1.12 : 1})`,
+                      minHeight: 44,
+                      minWidth: 44,
+                      background: isSel ? '#FF742E' : '#102333',
+                      color: isSel ? '#060E16' : '#E8DECD',
+                      border: isSel ? '2px solid #FFF5EE' : '1.5px solid #FF742E',
+                      borderRadius: 12,
+                      padding: '8px 12px',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 6,
+                      fontWeight: 800,
+                      fontSize: 12.5,
+                      boxShadow: isSel ? '0 0 28px rgba(255,116,46,0.85)' : '0 8px 20px rgba(0,0,0,0.45)',
+                      zIndex: isSel ? 10 : 4,
+                      transition: 'all 0.25s cubic-bezier(0.34, 1.45, 0.64, 1)',
+                    }}
+                  >
+                    <Truck size={14} />
+                    <span>{toFa(u.speed)} km/h</span>
+                  </button>
+                );
+              })}
+
+              {pingBurst && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    insetInlineStart: `${selected.x}%`,
+                    top: `${selected.y}%`,
+                    width: 90,
+                    height: 90,
+                    borderRadius: '31.25%',
+                    border: '2.5px solid #FF742E',
+                    animation: 'squirclePing 1.1s ease-out forwards',
+                    zIndex: 8,
+                  }}
+                />
+              )}
+            </div>
 
             {/* Bottom Command Dock Inside Map */}
             <div

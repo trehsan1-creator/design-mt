@@ -285,15 +285,19 @@ export default function Hardware3DTracker() {
     const onResize = () => {
       if (!container) return;
       const w = container.clientWidth || 640;
-      camera.aspect = w / height;
+      const h = container.clientHeight || height;
+      camera.aspect = w / h;
       camera.updateProjectionMatrix();
-      renderer.setSize(w, height);
+      renderer.setSize(w, h);
     };
+    const ro = new ResizeObserver(onResize);
+    ro.observe(container);
     window.addEventListener('resize', onResize);
 
     return () => {
       cancelAnimationFrame(rafId);
       obs.disconnect();
+      ro.disconnect();
       window.removeEventListener('resize', onResize);
       controls.dispose();
       disposables.forEach((d) => d.dispose());
@@ -314,7 +318,7 @@ export default function Hardware3DTracker() {
                   className={`chip-btn ${explode > 0.5 ? 'on' : ''}`}
                   onClick={() => setExplode(explode > 0.5 ? 0 : 1)}
                 >
-                  <Layers size={14} style={{ verticalAlign: 'middle', marginLeft: 5 }} />
+                  <Layers size={14} style={{ verticalAlign: 'middle', marginInlineEnd: 5 }} />
                   {explode > 0.5 ? 'بستن و قفل بدنه' : 'نمای انفجاری ۴ لایه'}
                 </button>
               </div>
@@ -405,7 +409,7 @@ export default function Hardware3DTracker() {
                     </div>
                     <div>
                       <div style={{ fontWeight: 800, fontSize: 15, marginBottom: 3 }}>{ly.title}</div>
-                      <div style={{ fontSize: 13, color: 'rgba(232,222,205,0.74)', lineHeight: 1.65 }}>{ly.spec}</div>
+                      <div style={{ fontSize: 13.5, color: 'rgba(232,222,205,0.78)', lineHeight: 1.65 }}>{ly.spec}</div>
                     </div>
                   </div>
                 );
