@@ -1038,3 +1038,922 @@
     border-radius: var(--ds-radius-card-md);
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Living Painter-Ribbon & Full-Bleed 3D Storytelling Experience
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fleet-story-site {
+  background: var(--ds-sand-200);
+  color: var(--ds-navy-600);
+}
+
+/* 1. Full-Bleed Sticky 3D Hero Stage */
+.hero-cinema-track {
+  position: relative;
+  min-block-size: 138vh;
+  margin-block-start: -88px;
+}
+
+.hero-cinema-sticky {
+  position: sticky;
+  inset-block-start: 0;
+  inline-size: 100%;
+  block-size: 100vh;
+  min-block-size: 640px;
+  overflow: hidden;
+  background: var(--ds-grad-hero-horizon);
+  display: flex;
+  align-items: center;
+}
+
+.hero-fullbleed-webgl {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  z-index: 2;
+}
+
+.hero-painter-handoff {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-painter-handoff__rail {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ds-sand-100) 16%, transparent);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.hero-painter-handoff__stroke {
+  fill: none;
+  stroke: var(--ds-color-signal-orange);
+  stroke-width: 5.5;
+  stroke-linecap: round;
+}
+
+.painter-spark-halo {
+  fill: color-mix(in srgb, var(--ds-color-signal-orange) 32%, transparent);
+}
+
+.painter-spark-core {
+  fill: var(--ds-sand-50);
+  stroke: var(--ds-color-signal-orange);
+  stroke-width: 3;
+}
+
+.hero-cinema-overlay {
+  position: relative;
+  z-index: 3;
+  inline-size: 100%;
+  pointer-events: none;
+  display: flex;
+  justify-content: flex-start;
+  padding-block-start: var(--ds-space-2s);
+}
+
+.hero-cinema-copy {
+  max-inline-size: 540px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-1s);
+  pointer-events: auto;
+  transform: translateY(var(--hero-copy-y, 0px));
+  opacity: var(--hero-copy-op, 1);
+  transition: opacity var(--ds-dur-fast) var(--ds-ease-clothoid-cruise);
+}
+
+.hero-cinema-title {
+  font-size: var(--ds-text-display);
+  font-weight: var(--ds-weight-black);
+  line-height: 1.16;
+  letter-spacing: -0.02em;
+  color: var(--ds-sand-50);
+}
+
+.hero-cinema-title span {
+  color: var(--ds-color-signal-orange);
+}
+
+.hero-cinema-lead {
+  font-size: var(--ds-text-lg);
+  line-height: 1.85;
+  color: color-mix(in srgb, var(--ds-sand-100) 86%, transparent);
+  max-inline-size: 44ch;
+}
+
+.hero-cinema-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ds-space-0_75s);
+  padding-block-start: var(--ds-space-0_25s);
+}
+
+.hero-scroll-whisper {
+  min-block-size: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding-inline: var(--ds-space-0_5s);
+  font-size: var(--ds-text-sm);
+  font-weight: var(--ds-weight-semibold);
+  color: color-mix(in srgb, var(--ds-sand-100) 78%, transparent);
+  text-decoration: none;
+}
+
+.hero-sand-bridge {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  block-size: 110px;
+  background: linear-gradient(180deg, transparent 0%, var(--ds-sand-200) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* 2. Continuous Painter Ribbon Spine & Floating Narrator */
+.story-painter-world {
+  position: relative;
+  isolation: isolate;
+}
+
+.story-painter-svg {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.story-painter-svg__rail {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ds-navy-600) 12%, transparent);
+  stroke-width: 2.5;
+  stroke-dasharray: 6 10;
+}
+
+.story-painter-svg__glow {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ds-color-signal-orange) 26%, transparent);
+  stroke-width: 14;
+  stroke-linecap: round;
+}
+
+.story-painter-svg__stroke {
+  fill: none;
+  stroke: var(--ds-color-signal-orange);
+  stroke-width: 4.5;
+  stroke-linecap: round;
+}
+
+.story-painter-svg__nib {
+  fill: var(--ds-color-signal-orange);
+  stroke: var(--ds-sand-50);
+  stroke-width: 2;
+}
+
+.story-narrator-pill {
+  position: fixed;
+  inset-block-end: var(--ds-space-1s);
+  inset-inline-start: 50%;
+  transform: translateX(50%) translateY(24px);
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-space-0_5s);
+  padding-block: 8px;
+  padding-inline: var(--ds-space-0_75s);
+  border-radius: var(--ds-radius-capsule);
+  background: color-mix(in srgb, var(--ds-navy-500) 88%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ds-sand-100) 22%, transparent);
+  backdrop-filter: blur(16px);
+  color: var(--ds-sand-50);
+  box-shadow: var(--ds-shadow-card);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity var(--ds-dur-morph) var(--ds-ease-clothoid-cruise),
+    transform var(--ds-dur-morph) var(--ds-ease-spring-lock);
+}
+
+.story-narrator-pill[data-visible='true'] {
+  opacity: 1;
+  transform: translateX(50%) translateY(0);
+}
+
+.story-narrator-pill__step {
+  inline-size: 28px;
+  block-size: 28px;
+  border-radius: var(--ds-radius-capsule);
+  background: var(--ds-grad-signal-flare);
+  color: var(--ds-navy-900);
+  font-size: var(--ds-text-xs);
+  font-weight: var(--ds-weight-black);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.story-narrator-pill__label {
+  font-size: var(--ds-text-sm);
+  font-weight: var(--ds-weight-bold);
+  white-space: nowrap;
+}
+
+/* 3. Border-Painted 3D Extruded Cards (<PaintedCard />) */
+.painted-card {
+  position: relative;
+  z-index: 6;
+  border-radius: var(--ds-radius-card-lg);
+}
+
+.painted-card__sketch-svg {
+  position: absolute;
+  inset: -3px;
+  inline-size: calc(100% + 6px);
+  block-size: calc(100% + 6px);
+  pointer-events: none;
+  z-index: 3;
+  overflow: visible;
+}
+
+.painted-card__sketch-rail {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ds-navy-600) 10%, transparent);
+  stroke-width: 1.5;
+}
+
+.painted-card__sketch-stroke {
+  fill: none;
+  stroke: var(--ds-color-signal-orange);
+  stroke-width: 3.4;
+  stroke-linecap: round;
+}
+
+.painted-card__surface {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--ds-radius-card-lg);
+  padding: var(--ds-space-1_5s);
+  opacity: var(--card-build, 1);
+  transform:
+    perspective(1100px)
+    translateY(var(--card-shift-y, 0px))
+    rotateX(calc(var(--card-tilt-in, 0deg) + var(--hover-rx, 0deg)))
+    rotateY(var(--hover-ry, 0deg));
+  transform-style: preserve-3d;
+  transition: box-shadow var(--ds-dur-morph) var(--ds-ease-clothoid-cruise);
+}
+
+.painted-card--alabaster .painted-card__surface {
+  background: var(--ds-grad-cushion-light);
+  color: var(--ds-navy-600);
+  border: 1px solid color-mix(in srgb, var(--ds-neutral-white) 86%, transparent);
+  box-shadow: var(--ds-shadow-cushion-light);
+}
+
+.painted-card--horizon .painted-card__surface {
+  background: var(--ds-grad-hero-horizon);
+  color: var(--ds-sand-50);
+  border: 1px solid color-mix(in srgb, var(--ds-sand-100) 24%, transparent);
+  box-shadow: var(--ds-shadow-chisel-navy);
+}
+
+.painted-card__glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--glare-x, 50%) var(--glare-y, 30%),
+    color-mix(in srgb, var(--ds-neutral-white) 38%, transparent) 0%,
+    transparent 58%
+  );
+  opacity: 0.7;
+}
+
+.painted-card--horizon .painted-card__glare {
+  background: radial-gradient(
+    circle at var(--glare-x, 50%) var(--glare-y, 30%),
+    color-mix(in srgb, var(--ds-color-signal-orange) 22%, transparent) 0%,
+    transparent 58%
+  );
+}
+
+.painted-card__content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-0_75s);
+}
+
+/* 4. Chapter Shared Typography & Bright Sand Layout */
+.story-sand-chapter {
+  position: relative;
+  padding-block: var(--ds-space-6s);
+  background: var(--ds-grad-daylight-sand);
+}
+
+.story-chapter-head {
+  position: relative;
+  z-index: 6;
+  max-inline-size: 620px;
+  margin-inline: auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ds-space-0_5s);
+  margin-block-end: var(--ds-space-3s);
+}
+
+.story-step-kicker {
+  display: inline-flex;
+  align-items: center;
+  padding-block: 6px;
+  padding-inline: var(--ds-space-0_75s);
+  border-radius: var(--ds-radius-capsule);
+  background: color-mix(in srgb, var(--ds-color-signal-orange) 14%, var(--ds-sand-50));
+  color: var(--ds-orange-800);
+  font-size: var(--ds-text-xs);
+  font-weight: var(--ds-weight-extrabold);
+}
+
+.story-step-kicker--light {
+  background: color-mix(in srgb, var(--ds-color-signal-orange) 22%, var(--ds-navy-500));
+  color: var(--ds-sand-50);
+}
+
+.story-chapter-title {
+  font-size: var(--ds-text-h1);
+  font-weight: var(--ds-weight-black);
+  line-height: 1.28;
+  color: var(--ds-navy-600);
+}
+
+.story-chapter-title--light {
+  color: var(--ds-sand-50);
+}
+
+.story-stagger-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-3s);
+  max-inline-size: 980px;
+  margin-inline: auto;
+}
+
+.story-stagger-item {
+  inline-size: min(100%, 510px);
+}
+
+.story-stagger-item--start {
+  align-self: flex-start;
+}
+
+.story-stagger-item--end {
+  align-self: flex-end;
+}
+
+.smart-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-space-0_5s);
+}
+
+.smart-card-index {
+  inline-size: 36px;
+  block-size: 36px;
+  border-radius: var(--ds-radius-capsule);
+  background: var(--ds-navy-600);
+  color: var(--ds-sand-50);
+  font-size: var(--ds-text-sm);
+  font-weight: var(--ds-weight-black);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.smart-card-big-num {
+  font-size: var(--ds-text-h2);
+  font-weight: var(--ds-weight-black);
+  color: var(--ds-orange-700);
+}
+
+.smart-card-title {
+  font-size: var(--ds-text-h3);
+  font-weight: var(--ds-weight-extrabold);
+  color: var(--ds-navy-600);
+}
+
+.smart-card-sub {
+  font-size: var(--ds-text-sm);
+  color: var(--ds-on-surface-muted);
+  line-height: 1.75;
+}
+
+.smart-plate-stage {
+  min-block-size: 64px;
+  padding: var(--ds-space-0_75s);
+  border-radius: var(--ds-radius-card-sm);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-sand-50);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-space-0_5s);
+  cursor: pointer;
+  font-family: var(--ds-font-sans);
+  color: var(--ds-navy-600);
+  transition: transform var(--ds-dur-fast) var(--ds-ease-spring-lock);
+}
+
+.smart-plate-stage:hover {
+  transform: scale(1.015);
+}
+
+.smart-plate-route {
+  font-size: var(--ds-text-sm);
+  font-weight: var(--ds-weight-bold);
+}
+
+.smart-gauge-scrub {
+  padding: var(--ds-space-0_75s);
+  border-radius: var(--ds-radius-card-sm);
+  background: var(--ds-navy-500);
+  color: var(--ds-sand-100);
+  cursor: ew-resize;
+}
+
+.smart-geofence-pad {
+  position: relative;
+  block-size: 168px;
+  border-radius: var(--ds-radius-card-sm);
+  background: var(--ds-navy-500);
+  overflow: hidden;
+  cursor: crosshair;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.smart-geofence-zone {
+  inline-size: 112px;
+  block-size: 112px;
+  border: 2px dashed var(--ds-status-moving);
+  background: color-mix(in srgb, var(--ds-status-moving) 14%, transparent);
+  transition:
+    border-color var(--ds-dur-fast) var(--ds-ease-clothoid-cruise),
+    background var(--ds-dur-fast) var(--ds-ease-clothoid-cruise);
+}
+
+.smart-geofence-pad.is-alert .smart-geofence-zone {
+  border-color: var(--ds-color-signal-orange);
+  background: color-mix(in srgb, var(--ds-color-signal-orange) 18%, transparent);
+}
+
+.smart-geofence-follower {
+  position: absolute;
+  inset-inline-start: var(--pin-x, 50%);
+  inset-block-start: var(--pin-y, 50%);
+  transform: translate(50%, -50%);
+  pointer-events: none;
+}
+
+/* 5. Chapter 2 — Floating 3D Horizon Corridor Slab */
+.corridor-horizon-chapter {
+  position: relative;
+  margin-inline: var(--ds-space-1s);
+  padding-block: var(--ds-space-6s);
+  border-radius: var(--ds-radius-card-lg);
+  background: var(--ds-grad-hero-horizon);
+  box-shadow: var(--ds-shadow-chisel-navy);
+}
+
+.corridor-3d-slab {
+  position: relative;
+  z-index: 6;
+  max-inline-size: 980px;
+  min-block-size: 480px;
+  margin-inline: auto;
+  border-radius: var(--ds-radius-card-lg);
+  background: color-mix(in srgb, var(--ds-navy-600) 68%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ds-sand-100) 20%, transparent);
+  backdrop-filter: blur(14px);
+  transform: perspective(1300px) rotateX(var(--slab-rx, 16deg)) rotateY(var(--slab-ry, 0deg));
+  transform-style: preserve-3d;
+  transition: transform var(--ds-dur-morph) var(--ds-ease-tilt);
+  box-shadow: var(--ds-shadow-chisel-navy);
+}
+
+.corridor-3d-slab__svg {
+  inline-size: 100%;
+  block-size: 100%;
+  min-block-size: 460px;
+  display: block;
+}
+
+.corridor-contour {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ds-sand-100) 10%, transparent);
+  stroke-width: 1.4;
+  stroke-dasharray: 6 8;
+}
+
+.corridor-highway-rail {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ds-sand-100) 18%, transparent);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.corridor-highway-glow {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ds-color-signal-orange) 34%, transparent);
+  stroke-width: 18;
+  stroke-linecap: round;
+}
+
+.corridor-highway-stroke {
+  fill: none;
+  stroke: var(--ds-color-signal-orange);
+  stroke-width: 5.5;
+  stroke-linecap: round;
+}
+
+.corridor-pin-anchor {
+  position: absolute;
+  inset-inline-start: var(--pin-x, 50%);
+  inset-block-start: var(--pin-y, 50%);
+  transform: translate(50%, -65%) translateZ(28px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  z-index: 4;
+}
+
+.corridor-pin-anchor .ds-map-pin {
+  min-block-size: 50px !important;
+}
+
+.corridor-city-tag {
+  padding-block: 3px;
+  padding-inline: 10px;
+  border-radius: var(--ds-radius-capsule);
+  background: color-mix(in srgb, var(--ds-navy-700) 86%, transparent);
+  color: var(--ds-sand-50);
+  font-size: var(--ds-text-xs);
+  font-weight: var(--ds-weight-bold);
+  white-space: nowrap;
+}
+
+.corridor-floating-hud {
+  position: absolute;
+  inset-block-end: var(--ds-space-1s);
+  inset-inline-start: 50%;
+  transform: translateX(50%) translateZ(36px);
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-space-0_5s);
+  padding-block: 10px;
+  padding-inline: var(--ds-space-1s);
+  border-radius: var(--ds-radius-capsule);
+  background: color-mix(in srgb, var(--ds-navy-700) 88%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ds-sand-100) 22%, transparent);
+  color: var(--ds-sand-50);
+  font-size: var(--ds-text-sm);
+  font-weight: var(--ds-weight-bold);
+}
+
+.corridor-floating-hud__sep {
+  inline-size: 4px;
+  block-size: 4px;
+  border-radius: var(--ds-radius-capsule);
+  background: var(--ds-color-signal-orange);
+}
+
+/* 6. Chapter 3 — Bright Alabaster Scroll-Exploded Hardware */
+.hardware-alabaster-chapter {
+  position: relative;
+  padding-block: var(--ds-space-6s);
+  background: var(--ds-grad-alabaster-stage);
+}
+
+.hardware-sculpture-layout {
+  position: relative;
+  z-index: 6;
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: var(--ds-space-2s);
+  align-items: center;
+  max-inline-size: 1060px;
+  margin-inline: auto;
+}
+
+.hardware-callouts-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-1_5s);
+}
+
+.hardware-callout-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hardware-callout-item__head {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-0_5s);
+  font-size: var(--ds-text-lg);
+  color: var(--ds-navy-600);
+}
+
+.hardware-leader-svg {
+  inline-size: 100%;
+  max-inline-size: 240px;
+  block-size: 14px;
+}
+
+.hardware-leader-svg__rail {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ds-navy-600) 16%, transparent);
+  stroke-width: 2;
+}
+
+.hardware-leader-svg__stroke {
+  fill: none;
+  stroke: var(--ds-color-signal-orange);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.hardware-stage-orb {
+  position: relative;
+  block-size: 480px;
+  border-radius: var(--ds-radius-card-lg);
+  background: var(--ds-grad-hero-horizon);
+  box-shadow: var(--ds-shadow-chisel-navy);
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.hardware-stage-orb > div {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.hardware-stage-hint {
+  position: relative;
+  z-index: 2;
+  margin-block-end: var(--ds-space-0_75s);
+  padding-block: 6px;
+  padding-inline: var(--ds-space-0_75s);
+  border-radius: var(--ds-radius-capsule);
+  background: color-mix(in srgb, var(--ds-navy-700) 82%, transparent);
+  color: var(--ds-sand-100);
+  font-size: var(--ds-text-xs);
+  font-weight: var(--ds-weight-semibold);
+  pointer-events: none;
+}
+
+/* 7. Chapter 4 — Smart Savings Dial & Finale Portal */
+.finale-ribbon-slider {
+  min-block-size: 48px !important;
+}
+
+.finale-sand-chapter {
+  position: relative;
+  padding-block-start: var(--ds-space-4s);
+  padding-block-end: var(--ds-space-3s);
+  background: var(--ds-grad-daylight-sand);
+}
+
+.finale-sand-chapter__inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-2s);
+  max-inline-size: 980px;
+}
+
+.finale-dial-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--ds-space-1_5s);
+  align-items: center;
+}
+
+.finale-giant-number {
+  font-size: var(--ds-text-display);
+  font-weight: var(--ds-weight-black);
+  color: var(--ds-navy-600);
+  line-height: 1.1;
+  display: flex;
+  align-items: baseline;
+  gap: var(--ds-space-0_5s);
+  flex-wrap: wrap;
+}
+
+.finale-giant-number span {
+  font-size: var(--ds-text-lg);
+  font-weight: var(--ds-weight-bold);
+  color: var(--ds-orange-700);
+}
+
+.finale-dial-control {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-0_5s);
+}
+
+.finale-dial-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--ds-text-sm);
+  color: var(--ds-navy-600);
+}
+
+.finale-ribbon-slider {
+  position: relative;
+  block-size: 48px;
+  border-radius: var(--ds-radius-capsule);
+  background: var(--ds-navy-500);
+  padding-inline: var(--ds-space-0_75s);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  cursor: ew-resize;
+}
+
+.finale-ribbon-slider__fill {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: var(--fill-pct, 30%);
+  background: var(--ds-grad-signal-flare);
+  opacity: 0.36;
+  pointer-events: none;
+}
+
+.finale-ribbon-slider__input {
+  position: relative;
+  z-index: 2;
+  inline-size: 100%;
+  min-block-size: 44px;
+  accent-color: var(--ds-color-signal-orange);
+  cursor: pointer;
+}
+
+.finale-launch-portal__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: var(--ds-space-1_5s);
+  align-items: center;
+}
+
+.finale-portal-heading {
+  font-size: var(--ds-text-h2);
+  font-weight: var(--ds-weight-black);
+  color: var(--ds-sand-50);
+}
+
+.finale-portal-sub {
+  font-size: var(--ds-text-md);
+  color: color-mix(in srgb, var(--ds-sand-100) 82%, transparent);
+}
+
+.finale-minimal-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ds-space-0_5s);
+}
+
+.finale-minimal-input {
+  flex: 1 1 200px;
+  min-block-size: 48px;
+  padding-inline: var(--ds-space-0_75s);
+  border-radius: var(--ds-radius-capsule);
+  border: 1px solid color-mix(in srgb, var(--ds-sand-100) 28%, transparent);
+  background: color-mix(in srgb, var(--ds-navy-700) 75%, transparent);
+  color: var(--ds-sand-50);
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-md);
+}
+
+.finale-sent-pill {
+  min-block-size: 48px;
+  padding-inline: var(--ds-space-1s);
+  border-radius: var(--ds-radius-capsule);
+  background: color-mix(in srgb, var(--ds-status-moving) 20%, var(--ds-navy-700));
+  color: var(--ds-sand-50);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-space-0_5s);
+  font-size: var(--ds-text-sm);
+  font-weight: var(--ds-weight-bold);
+}
+
+.minimal-story-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-space-0_75s);
+  padding-block-start: var(--ds-space-1_5s);
+  border-block-start: 1px solid color-mix(in srgb, var(--ds-navy-600) 14%, transparent);
+  color: var(--ds-navy-600);
+}
+
+.minimal-footer-logo {
+  inline-size: 22px;
+  block-size: 28px;
+  object-fit: contain;
+}
+
+.minimal-footer-type {
+  block-size: 20px;
+  inline-size: auto;
+}
+
+.minimal-footer-copy {
+  font-size: var(--ds-text-sm);
+  color: var(--ds-on-surface-muted);
+}
+
+.sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 1024px) {
+  .hardware-sculpture-layout,
+  .finale-dial-layout,
+  .finale-launch-portal__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .story-stagger-item--start,
+  .story-stagger-item--end {
+    align-self: center;
+  }
+  .corridor-3d-slab {
+    transform: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-cinema-track {
+    min-block-size: 120vh;
+  }
+  .hero-cinema-sticky {
+    align-items: flex-end;
+    padding-block-end: var(--ds-space-3s);
+  }
+  .hero-cinema-copy {
+    max-inline-size: 100%;
+    padding: var(--ds-space-1s);
+    border-radius: var(--ds-radius-card-md);
+    background: color-mix(in srgb, var(--ds-navy-900) 68%, transparent);
+    backdrop-filter: blur(12px);
+  }
+  .corridor-horizon-chapter {
+    margin-inline: var(--ds-space-0_25s);
+    padding-block: var(--ds-space-3s);
+  }
+  .hardware-stage-orb {
+    block-size: 360px;
+  }
+  .painted-card__surface {
+    padding: var(--ds-space-1s);
+  }
+  .story-narrator-pill {
+    max-inline-size: calc(100vw - 24px);
+  }
+  .story-narrator-pill__label {
+    font-size: var(--ds-text-sm);
+  }
+}

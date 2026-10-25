@@ -71,6 +71,7 @@ export default function HardwareTrackerCanvas({ explodeRef, reducedMotion }) {
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.07;
+    controls.enableZoom = false;
     controls.autoRotate = !reducedRef.current;
     controls.autoRotateSpeed = 1.25;
     controls.minDistance = 260;

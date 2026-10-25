@@ -589,7 +589,7 @@
   color: var(--ds-accent-soft);
   padding-block: 4px;
   padding-inline: 10px;
-  border-radius: var(--ds-radius-pill);
+  border-radius: var(--ds-radius-capsule);
   background: color-mix(in srgb, var(--ds-accent) 14%, var(--ds-surface));
 }
 
@@ -718,7 +718,7 @@
 .ds-filter-chip {
   min-block-size: 44px;
   padding-inline: 14px;
-  border-radius: var(--ds-radius-pill);
+  border-radius: var(--ds-radius-capsule);
   border: 1px solid var(--ds-border);
   background: var(--ds-surface-raised);
   color: var(--ds-on-surface);
@@ -815,7 +815,7 @@
   gap: 12px;
   padding-block: 6px;
   padding-inline: 12px;
-  border-radius: var(--ds-radius-pill);
+  border-radius: var(--ds-radius-capsule);
   border: 1px solid var(--ds-border);
   background: var(--ds-surface);
   font-size: var(--ds-text-xs);

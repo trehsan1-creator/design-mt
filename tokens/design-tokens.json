@@ -146,6 +146,14 @@
     "card-nocturnal": {
       "$value": "linear-gradient(155deg, color-mix(in srgb, var(--ds-navy-400) 86%, transparent) 0%, color-mix(in srgb, var(--ds-navy-800) 94%, transparent) 100%)",
       "$type": "gradient"
+    },
+    "hero-horizon": {
+      "$value": "radial-gradient(circle at 28% 36%, color-mix(in srgb, var(--ds-navy-100) 72%, transparent) 0%, transparent 56%), radial-gradient(circle at 74% 68%, color-mix(in srgb, var(--ds-color-signal-orange) 16%, transparent) 0%, transparent 48%), linear-gradient(140.24deg, var(--ds-navy-100) 0%, var(--ds-navy-400) 46%, var(--ds-navy-300) 78%, var(--ds-navy-500) 100%)",
+      "$type": "gradient"
+    },
+    "alabaster-stage": {
+      "$value": "linear-gradient(180deg, var(--ds-sand-50) 0%, var(--ds-sand-200) 52%, var(--ds-sand-300) 100%)",
+      "$type": "gradient"
     }
   },
   "typography": {
@@ -163,6 +171,7 @@
       "black":     900
     },
     "sizes": {
+      "display": "clamp(2.5rem, 5.2vw, 4.5rem)",
       "hero": "clamp(2.125rem, 3.8vw, 3.375rem)",
       "h1":   "clamp(1.75rem, 3.2vw, 2.625rem)",
       "h2":   "clamp(1.5rem, 2.6vw, 2.125rem)",

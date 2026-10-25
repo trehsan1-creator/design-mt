@@ -1,24 +1,18 @@
 import React, { useState } from 'react';
-import { Sparkles, Menu, X, ChevronLeft } from 'lucide-react';
-import { Button, StatusChip } from '../../ds/index.js';
+import { Menu, X, ChevronLeft } from 'lucide-react';
+import { Button } from '../../ds/index.js';
 import { useModalFocusTrap } from '../../utils/useModalFocusTrap.js';
-import { toFa } from '../../utils/faDigits.js';
 
 const NAV_ITEMS = [
-  { href: '#radar-command', label: 'رادار زنده ناوگان' },
-  { href: '#hardware-3d', label: 'سخت‌افزار سه‌بعدی' },
-  { href: '#smart-features', label: 'هوش مسیر و سوخت' },
-  { href: '#journey', label: 'سفر هوشمند بار' },
-  { href: '#roi-calc', label: 'بازگشت سرمایه' },
-  { href: '#pricing', label: 'تعرفه‌ها' },
-  { href: '#telemetry-ops', label: 'گزارش عملیات' },
+  { href: '#story-cards', label: 'بیداری حسگرها' },
+  { href: '#radar-command', label: 'کریدور زنده' },
+  { href: '#hardware-3d', label: 'کالبد سه‌بعدی' },
+  { href: '#finale-portal', label: 'بازده ناوگان' },
 ];
 
-export default function Navbar3D({ activeFleetCount = 12486 }) {
+export default function Navbar3D() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const drawerRef = useModalFocusTrap(drawerOpen, () => setDrawerOpen(false));
-
-  const fleetLabel = `${toFa(activeFleetCount.toLocaleString('en-US'))} خودرو متصل`;
 
   return (
     <>
@@ -31,7 +25,7 @@ export default function Navbar3D({ activeFleetCount = 12486 }) {
             <img src="/brand-clean/typography-clean.svg" alt="نام برند ناوگان" className="nav-typography-img brand-svg-light" />
           </a>
 
-          <nav className="nav-links" aria-label="ناوبری اصلی">
+          <nav className="nav-links" aria-label="ناوبری فصل‌های داستان">
             {NAV_ITEMS.map((item) => (
               <a key={item.href} href={item.href} className="nav-link">
                 {item.label}
@@ -40,11 +34,8 @@ export default function Navbar3D({ activeFleetCount = 12486 }) {
           </nav>
 
           <div className="nav-actions">
-            <StatusChip status="moving" label={fleetLabel} className="nav-desktop-only" />
-
-            <Button as="a" href="#demo-request" variant="primary" size="sm">
-              <Sparkles size={15} aria-hidden="true" />
-              <span>دمو رایگان</span>
+            <Button as="a" href="#finale-portal" variant="primary" size="sm">
+              <span>شروع زنده</span>
             </Button>
 
             <button
@@ -75,13 +66,11 @@ export default function Navbar3D({ activeFleetCount = 12486 }) {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="ds-between">
-              <strong>ناوبری سامانه ناوگان</strong>
+              <strong>فصل‌های داستان ناوگان</strong>
               <Button variant="ghost" size="sm" aria-label="بستن منو" onClick={() => setDrawerOpen(false)}>
                 <X size={18} aria-hidden="true" />
               </Button>
             </div>
-
-            <StatusChip status="moving" label={`${fleetLabel} به ماهواره`} />
 
             <nav className="ds-stack-sm" aria-label="لینک‌های موبایل">
               {NAV_ITEMS.map((item) => (
@@ -99,14 +88,13 @@ export default function Navbar3D({ activeFleetCount = 12486 }) {
 
             <Button
               as="a"
-              href="#demo-request"
+              href="#finale-portal"
               variant="primary"
               size="md"
               className="ds-full-w"
               onClick={() => setDrawerOpen(false)}
             >
-              <Sparkles size={15} aria-hidden="true" />
-              <span>درخواست دمو رایگان</span>
+              <span>شروع تجربه زنده</span>
             </Button>
           </aside>
         </div>

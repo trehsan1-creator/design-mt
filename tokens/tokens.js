@@ -73,7 +73,9 @@ export const DESIGN_TOKENS = {
     "signal-flare": "linear-gradient(155deg, var(--ds-orange-400) 0%, var(--ds-color-signal-orange) 52%, var(--ds-orange-600) 100%)",
     "daylight-sand": "linear-gradient(180deg, var(--ds-sand-200) 0%, var(--ds-sand-300) 55%, var(--ds-sand-400) 100%)",
     "cushion-light": "linear-gradient(145deg, var(--ds-sand-100) 0%, var(--ds-sand-200) 100%)",
-    "card-nocturnal": "linear-gradient(155deg, color-mix(in srgb, var(--ds-navy-400) 86%, transparent) 0%, color-mix(in srgb, var(--ds-navy-800) 94%, transparent) 100%)"
+    "card-nocturnal": "linear-gradient(155deg, color-mix(in srgb, var(--ds-navy-400) 86%, transparent) 0%, color-mix(in srgb, var(--ds-navy-800) 94%, transparent) 100%)",
+    "hero-horizon": "radial-gradient(circle at 28% 36%, color-mix(in srgb, var(--ds-navy-100) 72%, transparent) 0%, transparent 56%), radial-gradient(circle at 74% 68%, color-mix(in srgb, var(--ds-color-signal-orange) 16%, transparent) 0%, transparent 48%), linear-gradient(140.24deg, var(--ds-navy-100) 0%, var(--ds-navy-400) 46%, var(--ds-navy-300) 78%, var(--ds-navy-500) 100%)",
+    "alabaster-stage": "linear-gradient(180deg, var(--ds-sand-50) 0%, var(--ds-sand-200) 52%, var(--ds-sand-300) 100%)"
   },
   "typography": {
     "fontFamily": {
@@ -90,6 +92,7 @@ export const DESIGN_TOKENS = {
       "black": 900
     },
     "sizes": {
+      "display": "clamp(2.5rem, 5.2vw, 4.5rem)",
       "hero": "clamp(2.125rem, 3.8vw, 3.375rem)",
       "h1": "clamp(1.75rem, 3.2vw, 2.625rem)",
       "h2": "clamp(1.5rem, 2.6vw, 2.125rem)",
