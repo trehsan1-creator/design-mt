@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Layers, Sparkles, Palette, Menu, X, ChevronLeft } from 'lucide-react';
+import { Button, StatusChip } from '../../ds/index.js';
 import { toFa } from '../../utils/faDigits.js';
 
 const NAV_ITEMS = [
   { href: '#radar-command', label: 'رادار زنده ناوگان' },
-  { href: '#hardware-3d', label: 'کالبد سه‌بعدی سخت‌افزار' },
+  { href: '#hardware-3d', label: 'سخت‌افزار سه‌بعدی' },
   { href: '#smart-features', label: 'هوش مسیر و سوخت' },
   { href: '#journey', label: 'سفر هوشمند بار' },
-  { href: '#roi-calc', label: 'محاسبه سود ناوگان' },
+  { href: '#roi-calc', label: 'بازگشت سرمایه' },
   { href: '#pricing', label: 'تعرفه‌ها' },
 ];
 
@@ -23,27 +24,17 @@ export default function Navbar3D({ onOpenArch, onOpenDesignSystem, activeFleetCo
     return () => window.removeEventListener('keydown', onKey);
   }, [drawerOpen]);
 
+  const fleetLabel = `${toFa(activeFleetCount.toLocaleString('en-US'))} خودرو متصل`;
+
   return (
     <>
-      <div className="nav-floating-wrap">
-        <header className="nav-capsule">
+      <div className="fleet-navbar-wrap">
+        <header className="fleet-navbar">
           <a href="#hero" className="nav-brand-link" aria-label="صفحه نخست سامانه ناوگان">
-            <div
-              style={{
-                width: 42,
-                height: 42,
-                borderRadius: '31.25%',
-                background: 'linear-gradient(140.24deg, #3D5768 0%, #112835 45%, #132D3F 100%)',
-                border: '1px solid rgba(255, 116, 46, 0.45)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 6px 18px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.25)',
-              }}
-            >
-              <img src="/brand-clean/logo-clean.svg" alt="" style={{ height: 24, filter: 'brightness(0) invert(0.95)' }} />
+            <div className="nav-logo-badge">
+              <img src="/brand-clean/logo-clean.svg" alt="" className="nav-logo-badge__img brand-svg-light" />
             </div>
-            <img src="/brand-clean/typography-clean.svg" alt="نام برند ناوگان" style={{ height: 22, filter: 'brightness(0) invert(0.94)' }} />
+            <img src="/brand-clean/typography-clean.svg" alt="نام برند ناوگان" className="nav-typography-img brand-svg-light" />
           </a>
 
           <nav className="nav-links" aria-label="ناوبری اصلی">
@@ -54,71 +45,51 @@ export default function Navbar3D({ onOpenArch, onOpenDesignSystem, activeFleetCo
             ))}
           </nav>
 
-          <div className="nav-desktop-actions">
-            <div
-              className="nav-desktop-only"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 7,
-                padding: '7px 14px',
-                borderRadius: 999,
-                background: 'rgba(16, 35, 51, 0.9)',
-                border: '1px solid rgba(74, 222, 128, 0.3)',
-                fontSize: 12.5,
-                fontWeight: 700,
-                color: '#E8DECD',
-              }}
-            >
-              <span
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: 2.5,
-                  background: '#4ADE80',
-                  boxShadow: '0 0 10px #4ADE80',
-                }}
-              />
-              <span>{toFa(activeFleetCount.toLocaleString('en-US'))} خودرو متصل</span>
-            </div>
+          <div className="nav-actions">
+            <StatusChip status="moving" label={fleetLabel} className="nav-desktop-only" />
 
             {onOpenDesignSystem && (
-              <button
+              <Button
+                variant="pill"
+                size="sm"
+                active
+                className="nav-desktop-only"
                 onClick={onOpenDesignSystem}
-                className="chip-btn on nav-desktop-only"
-                title="مشاهده پورتال دیزاین سیستم، توکن‌ها و فونت پیدا"
+                title="پورتال دیزاین سیستم و توکن‌ها"
               >
-                <Palette size={14} color="#FF742E" />
+                <Palette size={14} aria-hidden="true" />
                 <span>دیزاین سیستم</span>
-              </button>
+              </Button>
             )}
 
             {onOpenArch && (
-              <button
+              <Button
+                variant="ghost"
+                size="sm"
+                className="nav-desktop-only"
                 onClick={onOpenArch}
-                className="chip-btn nav-desktop-only"
-                title="مشاهده معماری سه‌بعدی بخش‌های سایت"
+                title="معماری سه‌بعدی بخش‌ها"
               >
-                <Layers size={14} color="#FF742E" />
+                <Layers size={14} aria-hidden="true" />
                 <span>معماری سه‌بعدی</span>
-              </button>
+              </Button>
             )}
 
-            <a href="#demo-request" className="btn-3d-orange" style={{ padding: '10px 18px', fontSize: 14, textDecoration: 'none' }}>
-              <Sparkles size={15} />
+            <Button as="a" href="#demo-request" variant="primary" size="sm">
+              <Sparkles size={15} aria-hidden="true" />
               <span>دمو رایگان</span>
-            </a>
+            </Button>
 
             <button
               type="button"
-              className="mobile-menu-btn"
+              className="nav-hamburger-btn"
               data-mobile-menu-trigger="true"
               aria-label={drawerOpen ? 'بستن منوی ناوبری' : 'باز کردن منوی ناوبری'}
               aria-expanded={drawerOpen}
               aria-controls="mobile-nav-drawer"
               onClick={() => setDrawerOpen((v) => !v)}
             >
-              {drawerOpen ? <X size={20} /> : <Menu size={20} />}
+              {drawerOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
             </button>
           </div>
         </header>
@@ -131,40 +102,19 @@ export default function Navbar3D({ onOpenArch, onOpenDesignSystem, activeFleetCo
             role="dialog"
             aria-modal="true"
             aria-label="منوی ناوبری موبایل"
-            className="mobile-drawer"
+            className="mobile-drawer-panel"
             onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontWeight: 900, fontSize: 17 }}>ناوبری سامانه ناوگان</span>
-              <button
-                type="button"
-                className="mobile-menu-btn"
-                style={{ display: 'inline-flex' }}
-                aria-label="بستن منو"
-                onClick={() => setDrawerOpen(false)}
-              >
-                <X size={19} />
-              </button>
+            <div className="ds-between">
+              <strong>ناوبری سامانه ناوگان</strong>
+              <Button variant="ghost" size="sm" aria-label="بستن منو" onClick={() => setDrawerOpen(false)}>
+                <X size={18} aria-hidden="true" />
+              </Button>
             </div>
 
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 8,
-                padding: '9px 14px',
-                borderRadius: 12,
-                background: 'rgba(16, 35, 51, 0.9)',
-                border: '1px solid rgba(74, 222, 128, 0.35)',
-                fontSize: 13,
-                fontWeight: 700,
-              }}
-            >
-              <span style={{ width: 8, height: 8, borderRadius: 2.5, background: '#4ADE80' }} />
-              <span>{toFa(activeFleetCount.toLocaleString('en-US'))} خودرو متصل به ماهواره</span>
-            </div>
+            <StatusChip status="moving" label={`${fleetLabel} به ماهواره`} />
 
-            <nav style={{ display: 'flex', flexDirection: 'column', gap: 8 }} aria-label="لینک‌های موبایل">
+            <nav className="ds-stack-sm" aria-label="لینک‌های موبایل">
               {NAV_ITEMS.map((item) => (
                 <a
                   key={item.href}
@@ -173,38 +123,39 @@ export default function Navbar3D({ onOpenArch, onOpenDesignSystem, activeFleetCo
                   onClick={() => setDrawerOpen(false)}
                 >
                   <span>{item.label}</span>
-                  <ChevronLeft size={16} color="#FF742E" />
+                  <ChevronLeft size={16} className="ds-accent-text" aria-hidden="true" />
                 </a>
               ))}
             </nav>
 
             {(onOpenDesignSystem || onOpenArch) && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingBlockStart: 8, borderBlockStart: '1px solid rgba(232,222,205,0.12)' }}>
+              <div className="ds-stack-sm">
                 {onOpenDesignSystem && (
-                  <button
-                    type="button"
-                    className="chip-btn on"
+                  <Button
+                    variant="pill"
+                    active
+                    fullWidth
                     onClick={() => {
                       setDrawerOpen(false);
                       onOpenDesignSystem();
                     }}
                   >
-                    <Palette size={15} />
+                    <Palette size={15} aria-hidden="true" />
                     <span>پورتال دیزاین سیستم</span>
-                  </button>
+                  </Button>
                 )}
                 {onOpenArch && (
-                  <button
-                    type="button"
-                    className="chip-btn"
+                  <Button
+                    variant="ghost"
+                    fullWidth
                     onClick={() => {
                       setDrawerOpen(false);
                       onOpenArch();
                     }}
                   >
-                    <Layers size={15} />
+                    <Layers size={15} aria-hidden="true" />
                     <span>معماری سه‌بعدی سایت</span>
-                  </button>
+                  </Button>
                 )}
               </div>
             )}

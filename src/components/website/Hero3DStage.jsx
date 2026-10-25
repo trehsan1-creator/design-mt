@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js';
-import { Play, Pause, RotateCcw, Navigation, Shield, Sparkles, ArrowLeft, Radio } from 'lucide-react';
+import { Play, Pause, Navigation, ArrowLeft, Radio } from 'lucide-react';
 import { LOGO_PARTS } from '../../data/geometryData.js';
+import { DESIGN_TOKENS } from '../../../tokens/tokens.js';
+import { Button, Card, Capsule, IranPlate, StatusChip } from '../../ds/index.js';
 import { toFa } from '../../utils/faDigits.js';
 
 function clamp(v, min = 0, max = 1) {
@@ -66,8 +68,8 @@ export default function Hero3DStage() {
   const [isPlaying, setIsPlaying] = useState(true);
   const [selectedVeh, setSelectedVeh] = useState(HERO_VEHICLES[0]);
   const [pointer, setPointer] = useState({ x: 0, y: 0 });
-  const [mainPt, setMainPt] = useState({ x: 640, y: 270, angle: 180 });
-  const [secPt, setSecPt] = useState({ x: 640, y: 270 });
+  const [mainPt, setMainPt] = useState({ x: 595, y: 296, angle: 180 });
+  const [secPt, setSecPt] = useState({ x: 595, y: 296 });
 
   const progressRef = useRef(0);
   const pointerRef = useRef({ x: 0, y: 0 });
@@ -101,7 +103,6 @@ export default function Hero3DStage() {
     pointerRef.current = pointer;
   }, [pointer]);
 
-  // Auto-play cinematic loop
   useEffect(() => {
     if (!isPlaying) return;
     let raf;
@@ -121,7 +122,6 @@ export default function Hero3DStage() {
     return () => cancelAnimationFrame(raf);
   }, [isPlaying]);
 
-  // Three.js WebGL 4-Part Extruded Bevel Emblem + 3D Topographic Grid
   useEffect(() => {
     const container = canvasWrapRef.current;
     if (!container) return;
@@ -149,8 +149,9 @@ export default function Hero3DStage() {
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
 
-    // 3D Perspective Topographic Floor Grid
-    const gridHelper = new THREE.GridHelper(1100, 26, 0xff742e, 0x244259);
+    const orangeColor = new THREE.Color(DESIGN_TOKENS.color.signalOrange);
+    const gridNavyColor = new THREE.Color(DESIGN_TOKENS.color.navy['200']);
+    const gridHelper = new THREE.GridHelper(1100, 26, orangeColor, gridNavyColor);
     gridHelper.position.set(0, -175, -140);
     gridHelper.material.transparent = true;
     gridHelper.material.opacity = 0.2;
@@ -184,9 +185,9 @@ export default function Hero3DStage() {
 
       const mat = new THREE.MeshStandardMaterial({
         color: new THREE.Color(part.color),
-        roughness: 0.36,
-        metalness: 0.08,
-        emissive: new THREE.Color('#FF742E'),
+        roughness: DESIGN_TOKENS.material3d.pbr.roughness,
+        metalness: DESIGN_TOKENS.material3d.pbr.metalness,
+        emissive: orangeColor,
         emissiveIntensity: 0,
       });
 
@@ -198,7 +199,6 @@ export default function Hero3DStage() {
       partMeshes.push({ pivot, geo, mat, cfg: part.offset, idx });
     });
 
-    // Ambient floating telemetry dust
     const pCount = 60;
     const pGeo = new THREE.BufferGeometry();
     const pPos = new Float32Array(pCount * 3);
@@ -208,22 +208,32 @@ export default function Hero3DStage() {
       pPos[i * 3 + 2] = (Math.random() - 0.5) * 320 - 50;
     }
     pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-    const pMat = new THREE.PointsMaterial({ color: 0xe8decd, size: 4, transparent: true, opacity: 0.36 });
+    const pMat = new THREE.PointsMaterial({
+      color: new THREE.Color(DESIGN_TOKENS.color.warmSand),
+      size: 4,
+      transparent: true,
+      opacity: 0.36,
+    });
     const particles = new THREE.Points(pGeo, pMat);
     scene.add(particles);
 
-    // Recovered Illustrator 43.08 deg Lighting + Sweeping Specular Flash
-    scene.add(new THREE.AmbientLight(0xd9e6f2, 0.86));
-    scene.add(new THREE.HemisphereLight(0x6c90ab, 0x08131d, 0.65));
+    scene.add(new THREE.AmbientLight(new THREE.Color(DESIGN_TOKENS.color.sand['50']), 0.86));
+    scene.add(
+      new THREE.HemisphereLight(
+        new THREE.Color(DESIGN_TOKENS.color.navy['25']),
+        new THREE.Color(DESIGN_TOKENS.color.navy['900']),
+        0.65
+      )
+    );
 
-    const keyLight = new THREE.DirectionalLight(0xfff8f0, 1.95);
+    const keyLight = new THREE.DirectionalLight(new THREE.Color(DESIGN_TOKENS.color.sand['50']), 1.95);
     keyLight.position.set(-190, 175, 220);
     scene.add(keyLight);
 
-    const sweepLight = new THREE.PointLight(0xffffff, 0, 540, 1.4);
+    const sweepLight = new THREE.PointLight(new THREE.Color(DESIGN_TOKENS.color.neutral.white), 0, 540, 1.4);
     scene.add(sweepLight);
 
-    const orangeRim = new THREE.PointLight(0xff742e, 1.6, 680, 1.5);
+    const orangeRim = new THREE.PointLight(orangeColor, 1.6, 680, 1.5);
     orangeRim.position.set(170, -145, 130);
     scene.add(orangeRim);
 
@@ -285,13 +295,11 @@ export default function Hero3DStage() {
     };
     const ro = new ResizeObserver(onResize);
     ro.observe(container);
-    window.addEventListener('resize', onResize);
 
     return () => {
       cancelAnimationFrame(animId);
       obs.disconnect();
       ro.disconnect();
-      window.removeEventListener('resize', onResize);
       partMeshes.forEach((m) => {
         m.geo.dispose();
         m.mat.dispose();
@@ -311,104 +319,60 @@ export default function Hero3DStage() {
   const destVis = clamp((pClamped - 0.87) / 0.09);
 
   return (
-    <section id="hero" ref={sectionRef} className="hero-section">
-      {/* Subtle 24px (1u) Square Nuqta Backdrop */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage: 'radial-gradient(circle, rgba(232,222,205,0.08) 1.2px, transparent 1.7px)',
-          backgroundSize: '24px 24px',
-          pointerEvents: 'none',
-        }}
-      />
-
+    <section id="hero" ref={sectionRef} className="fleet-section fleet-section--hero">
       <div className="site-container">
         <div className="hero-grid">
-          {/* Right Column (38.1% Golden Proportion): Muscular Peyda Story & Tactile Actions */}
-          <div style={{ position: 'relative', zIndex: 3 }}>
-            <div className="eyebrow-kaf">
-              <Radio size={14} color="#FF742E" />
-              <span>سامانه هوشمند ردیابی ماهواره‌ای، GPS و فرماندهی ناوگان</span>
+          <div className="ds-stack-md">
+            <div>
+              <Capsule variant="eyebrow" pulse>
+                <Radio size={14} aria-hidden="true" />
+                <span>سامانه هوشمند ردیابی ماهواره‌ای، GPS و فرماندهی ناوگان</span>
+              </Capsule>
             </div>
 
-            <h1
-              style={{
-                fontWeight: 900,
-                fontSize: 'clamp(34px, 4.2vw, 56px)',
-                lineHeight: 1.24,
-                letterSpacing: '-0.015em',
-                marginBottom: 18,
-                textShadow:
-                  '0 1px 0 #264258, 0 2px 0 #1b3142, 0 3px 0 #11222f, 0 16px 34px rgba(0,0,0,0.65)',
-              }}
-            >
+            <h1 className="hero-headline">
               هر تپش جاده را،{' '}
-              <span style={{ color: '#FF742E' }}>زنده و سه‌بعدی</span>{' '}
+              <span className="ds-accent-text">زنده و سه‌بعدی</span>{' '}
               فرماندهی کنید.
             </h1>
 
-            <p
-              style={{
-                fontSize: 16.5,
-                fontWeight: 400,
-                lineHeight: 1.85,
-                color: 'rgba(232, 222, 205, 0.82)',
-                marginBottom: 28,
-              }}
-            >
-              از ردیابی میلی‌متری کشنده‌های ترانزیتی و پایش لحظه‌ای سوخت تا زنجیره سرد دارویی و تحلیل رفتار راننده؛ تمام ناوگان شما روی یک بوم زنده با تأخیر{' '}
-              <strong style={{ color: '#FF9861', fontWeight: 800 }}>۰.۰۲ ثانیه</strong> در دستان شماست.
+            <p className="hero-lead">
+              از ردیابی دقیق کشنده‌های ترانزیتی و پایش لحظه‌ای سوخت تا زنجیره سرد دارویی و تحلیل رفتار راننده؛ تمام ناوگان شما روی یک بوم یکپارچه با تأخیر{' '}
+              <strong className="ds-accent-soft-text">۰.۰۲ ثانیه</strong> در دسترس اتاق عملیات است.
             </p>
 
-            {/* Dual Tactile 3D CTAs */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14, marginBottom: 34 }}>
-              <a href="#radar-command" className="btn-3d-orange" style={{ textDecoration: 'none' }}>
-                <Navigation size={17} />
+            <div className="hero-cta-row">
+              <Button as="a" href="#radar-command" variant="primary" size="lg">
+                <Navigation size={17} aria-hidden="true" />
                 <span>ورود به رادار زنده ناوگان</span>
-              </a>
+              </Button>
 
-              <a href="#hardware-3d" className="btn-3d-navy" style={{ textDecoration: 'none' }}>
+              <Button as="a" href="#hardware-3d" variant="secondary" size="lg">
                 <span>کالبد سه‌بعدی ردیاب</span>
-                <ArrowLeft size={16} />
-              </a>
+                <ArrowLeft size={16} aria-hidden="true" />
+              </Button>
             </div>
 
-            {/* 3 Sculpted KPI Strip with 26.84 deg Kaf Sarkesh Dividers */}
-            <div
-              className="kpi-3-grid"
-              style={{
-                padding: '16px 18px',
-                borderRadius: 22,
-                background: 'rgba(16, 35, 51, 0.65)',
-                border: '1px solid rgba(232, 222, 205, 0.14)',
-                backdropFilter: 'blur(12px)',
-              }}
-            >
+            <Card variant="glass" compact className="kpi-3-grid">
               {[
-                { val: '۹۹.۹۸٪', label: 'پایداری سیگنال ماهواره' },
-                { val: '۱۸.۴٪', label: 'کاهش واقعی مصرف سوخت' },
-                { val: '+۱۲,۴۰۰', label: 'خودرو تحت پوشش زنده' },
+                { val: '۹۹.۹۸٪', label: 'پایداری سیگنال ماهواره', accent: true },
+                { val: '۱۸.۴٪', label: 'کاهش میانگین مصرف سوخت', accent: false },
+                { val: '+۱۲,۴۰۰', label: 'خودرو تحت پوشش زنده', accent: false },
               ].map((st, idx) => (
-                <div
-                  key={idx}
-                  style={{
-                    borderInlineEnd: idx < 2 ? '1px solid rgba(232,222,205,0.12)' : 'none',
-                    paddingInlineEnd: idx < 2 ? 10 : 0,
-                  }}
-                >
-                  <div style={{ fontSize: 23, fontWeight: 900, color: idx === 0 ? '#FF742E' : '#E8DECD' }}>
+                <div key={idx} className="ds-stack-xs">
+                  <div className={`hero-kpi-item__val ds-tabular ${st.accent ? 'ds-accent-text' : ''}`}>
                     {st.val}
                   </div>
-                  <div style={{ fontSize: 12.5, color: 'rgba(232,222,205,0.72)', fontWeight: 500 }}>{st.label}</div>
+                  <div className="hero-kpi-item__label">{st.label}</div>
                 </div>
               ))}
-            </div>
+            </Card>
           </div>
 
-          {/* Left Column (61.9% Golden Proportion): Interactive 3D Squircle Cinema Stage */}
-          <div style={{ position: 'relative' }}>
+          <div>
             <div
+              className="hero-stage-viewport"
+              style={{ '--stage-bg-pos': `${pClamped * 100}% ${pClamped * 100}%` }}
               onMouseMove={(e) => {
                 const r = e.currentTarget.getBoundingClientRect();
                 setPointer({
@@ -417,47 +381,21 @@ export default function Hero3DStage() {
                 });
               }}
               onMouseLeave={() => setPointer({ x: 0, y: 0 })}
-              style={{
-                position: 'relative',
-                width: '100%',
-                height: 500,
-                borderRadius: 68, // Echoing 31.25% squircle proportion!
-                overflow: 'hidden',
-                background: 'linear-gradient(140.24deg, #3D5768 0%, #112835 41.58%, #213D4F 78.61%, #132D3F 100%)',
-                backgroundSize: '165% 165%',
-                backgroundPosition: `${pClamped * 100}% ${pClamped * 100}%`,
-                border: '1px solid rgba(232, 222, 205, 0.24)',
-                boxShadow:
-                  '0 34px 80px rgba(0, 0, 0, 0.65), inset 0 2px 2px rgba(255, 255, 255, 0.24), inset 0 -4px 12px rgba(0,0,0,0.45)',
-              }}
             >
-              {/* Parallax Dot Layers */}
               <div
-                style={{
-                  position: 'absolute',
-                  inset: -40,
-                  backgroundImage: 'radial-gradient(circle, rgba(232,222,205,0.14) 1.3px, transparent 1.8px)',
-                  backgroundSize: '24px 24px',
-                  transform: `translate3d(${pClamped * 50 - pointer.x * 12}px, ${-pointer.y * 10}px, 0)`,
-                  pointerEvents: 'none',
-                }}
+                className="hero-parallax-fine"
+                style={{ '--px-x': `${pClamped * 50 - pointer.x * 12}px`, '--px-y': `${-pointer.y * 10}px` }}
               />
               <div
-                style={{
-                  position: 'absolute',
-                  inset: -60,
-                  backgroundImage: 'radial-gradient(circle, rgba(232,222,205,0.24) 2.2px, transparent 2.8px)',
-                  backgroundSize: '72px 72px',
-                  transform: `translate3d(${pClamped * 135 - pointer.x * 24}px, ${-pointer.y * 18}px, 0)`,
-                  pointerEvents: 'none',
-                }}
+                className="hero-parallax-coarse"
+                style={{ '--px-x': `${pClamped * 135 - pointer.x * 24}px`, '--px-y': `${-pointer.y * 18}px` }}
               />
 
-              {/* Clothoid GPS Highway Routes + Live Comet Signals */}
               <svg
                 viewBox="0 0 820 500"
                 preserveAspectRatio="xMidYMid slice"
-                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
+                className="radar-map-svg"
+                aria-hidden="true"
               >
                 <defs>
                   <filter id="heroCometGlow" x="-60%" y="-60%" width="220%" height="220%">
@@ -468,17 +406,17 @@ export default function Hero3DStage() {
                     </feMerge>
                   </filter>
                   <linearGradient id="heroRouteGrad" x1="1" y1="0" x2="0" y2="0">
-                    <stop offset="0%" stopColor="#E8DECD" stopOpacity="0.3" />
-                    <stop offset="70%" stopColor="#E8DECD" stopOpacity="0.95" />
-                    <stop offset="100%" stopColor="#FF742E" stopOpacity="1" />
+                    <stop offset="0%" stopColor="var(--ds-sand-300)" stopOpacity="0.3" />
+                    <stop offset="70%" stopColor="var(--ds-sand-300)" stopOpacity="0.95" />
+                    <stop offset="100%" stopColor="var(--ds-color-signal-orange)" stopOpacity="1" />
                   </linearGradient>
                 </defs>
 
-                {/* Secondary Branch Route */}
                 <path
                   d="M 595,296 H 468 Q 446,296 446,318 V 382 Q 446,404 424,404 H 255 C 190,404 148,358 148,298"
                   fill="none"
-                  stroke="rgba(232,222,205,0.14)"
+                  stroke="var(--ds-sand-300)"
+                  strokeOpacity="0.16"
                   strokeWidth="5"
                   strokeLinecap="round"
                   opacity={routeVis}
@@ -487,22 +425,21 @@ export default function Hero3DStage() {
                   ref={routeSecRef}
                   d="M 595,296 H 468 Q 446,296 446,318 V 382 Q 446,404 424,404 H 255 C 190,404 148,358 148,298"
                   fill="none"
-                  stroke="rgba(255,116,46,0.58)"
+                  stroke="var(--ds-color-signal-orange)"
+                  strokeOpacity="0.6"
                   strokeWidth="5"
                   strokeLinecap="round"
                   strokeDasharray="6 8"
                   pathLength="1"
-                  style={{
-                    strokeDashoffset: 1 - routeSecDraw,
-                    opacity: routeSecDraw > 0.01 ? 0.85 : 0,
-                  }}
+                  strokeDashoffset={1 - routeSecDraw}
+                  opacity={routeSecDraw > 0.01 ? 0.85 : 0}
                 />
 
-                {/* Primary Clothoid Highway Route */}
                 <path
                   d="M 595,296 H 442 Q 418,296 418,272 V 148 Q 418,124 394,124 H 258 C 170,124 102,198 102,306"
                   fill="none"
-                  stroke="rgba(16, 35, 51, 0.72)"
+                  stroke="var(--ds-navy-600)"
+                  strokeOpacity="0.72"
                   strokeWidth="12"
                   strokeLinecap="round"
                   opacity={routeVis}
@@ -521,193 +458,105 @@ export default function Hero3DStage() {
                   filter="url(#heroCometGlow)"
                 />
 
-                {/* Golden Turn Waypoint */}
                 {routeDraw > 0.35 && (
                   <g transform="translate(418, 148)">
-                    <rect x="-8" y="-8" width="16" height="16" rx="5" fill="#102333" stroke="#E8DECD" strokeWidth="2.5" />
-                    <rect x="-3" y="-3" width="6" height="6" rx="2" fill="#FF742E" />
+                    <rect x="-8" y="-8" width="16" height="16" rx="5" fill="var(--ds-navy-600)" stroke="var(--ds-sand-300)" strokeWidth="2.5" />
+                    <rect x="-3" y="-3" width="6" height="6" rx="2" fill="var(--ds-color-signal-orange)" />
                   </g>
                 )}
 
-                {/* Destination Squircle */}
                 <g transform="translate(102, 306)" opacity={destVis}>
-                  <rect x="-20" y="-20" width="40" height="40" rx="12.5" fill="rgba(255,116,46,0.16)" stroke="#E8DECD" strokeWidth="2.5" />
-                  <rect x="-9" y="-9" width="18" height="18" rx="5.6" fill="#FF742E" />
+                  <rect x="-20" y="-20" width="40" height="40" rx="12.5" fill="var(--ds-navy-600)" stroke="var(--ds-sand-300)" strokeWidth="2.5" />
+                  <rect x="-9" y="-9" width="18" height="18" rx="5.6" fill="var(--ds-color-signal-orange)" />
                 </g>
 
-                {/* Secondary Beacon */}
                 {routeSecDraw > 0.04 && (
                   <g transform={`translate(${secPt.x}, ${secPt.y})`}>
-                    <circle r="5.5" fill="#E8DECD" />
-                    <circle r="11" fill="none" stroke="#FF742E" strokeWidth="1.5" opacity="0.65" />
+                    <circle r="5.5" fill="var(--ds-sand-300)" />
+                    <circle r="11" fill="none" stroke="var(--ds-color-signal-orange)" strokeWidth="1.5" opacity="0.65" />
                   </g>
                 )}
 
-                {/* Primary Comet Arrow Beacon */}
                 {routeDraw > 0.01 && (
                   <g transform={`translate(${mainPt.x}, ${mainPt.y})`}>
-                    <rect
-                      x="-15"
-                      y="-15"
-                      width="30"
-                      height="30"
-                      rx="9.5"
-                      fill="none"
-                      stroke="#FF742E"
-                      strokeWidth="2.2"
-                      style={{
-                        transformBox: 'fill-box',
-                        transformOrigin: 'center',
-                        animation: 'svgPing 1.5s ease-out infinite',
-                      }}
-                    />
-                    <circle r="16" fill="rgba(255,116,46,0.28)" />
+                    <circle r="15" fill="var(--ds-color-signal-orange)" fillOpacity="0.28" />
                     <g transform={`rotate(${mainPt.angle})`}>
-                      <path d="M 10,0 L -7,-6.5 L -3.5,0 L -7,6.5 Z" fill="#FF742E" stroke="#FFF5EE" strokeWidth="1.4" />
+                      <path d="M 10,0 L -7,-6.5 L -3.5,0 L -7,6.5 Z" fill="var(--ds-color-signal-orange)" stroke="var(--ds-sand-50)" strokeWidth="1.4" />
                     </g>
                   </g>
                 )}
               </svg>
 
-              {/* Concentric Squircle Shockwaves on Lock */}
               <div
+                className="hero-shockwave"
                 style={{
-                  position: 'absolute',
-                  insetInlineStart: '50%',
-                  top: '50%',
-                  width: 150,
-                  height: 150,
-                  borderRadius: '31.25%',
-                  border: '2.5px solid #E8DECD',
-                  transform: `translate(50%, -50%) scale(${0.5 + 3.4 * shock1})`,
-                  opacity: shock1 > 0 && shock1 < 1 ? 0.85 * (1 - shock1) : 0,
-                  pointerEvents: 'none',
+                  '--shock-scale': 0.5 + 3.4 * shock1,
+                  '--shock-opacity': shock1 > 0 && shock1 < 1 ? 0.85 * (1 - shock1) : 0,
                 }}
               />
               <div
+                className="hero-shockwave hero-shockwave--accent"
                 style={{
-                  position: 'absolute',
-                  insetInlineStart: '50%',
-                  top: '50%',
-                  width: 120,
-                  height: 120,
-                  borderRadius: '31.25%',
-                  border: '2px solid #FF742E',
-                  boxShadow: '0 0 32px rgba(255,116,46,0.65)',
-                  transform: `translate(50%, -50%) scale(${0.4 + 3.8 * shock2})`,
-                  opacity: shock2 > 0 && shock2 < 1 ? 0.9 * (1 - shock2) : 0,
-                  pointerEvents: 'none',
+                  '--shock-scale': 0.4 + 3.8 * shock2,
+                  '--shock-opacity': shock2 > 0 && shock2 < 1 ? 0.9 * (1 - shock2) : 0,
                 }}
               />
 
-              {/* Three.js WebGL 4-Piece Extruded Canvas */}
-              <div ref={canvasWrapRef} style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }} />
-
-              {/* Floating Live Selected Vehicle Telemetry HUD */}
               <div
-                style={{
-                  position: 'absolute',
-                  top: 18,
-                  insetInlineEnd: 18,
-                  padding: '13px 15px',
-                  borderRadius: 20,
-                  background: 'rgba(8, 19, 29, 0.86)',
-                  border: '1px solid rgba(255, 116, 46, 0.42)',
-                  backdropFilter: 'blur(14px)',
-                  maxWidth: 'calc(100% - 36px)',
-                  boxShadow: '0 16px 36px rgba(0,0,0,0.45)',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, marginBlockEnd: 8 }}>
-                  <span style={{ fontSize: 13.5, fontWeight: 800, color: '#E8DECD' }}>{selectedVeh.name}</span>
-                  <span style={{ fontSize: 12, color: '#4ADE80', fontWeight: 700 }}>
-                    ● {toFa(selectedVeh.satellites)} ماهواره
-                  </span>
+                ref={canvasWrapRef}
+                className="hero-webgl-layer"
+                role="img"
+                aria-label="صحنه سه‌بعدی مونتاژ نشان برند و مسیر ناوگان"
+              />
+
+              <div className="hero-hud-card ds-stack-xs">
+                <div className="ds-between">
+                  <strong>{selectedVeh.name}</strong>
+                  <StatusChip status="moving" label={`${toFa(selectedVeh.satellites)} ماهواره`} />
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
-                  <div className="iran-plate">
-                    <div className="iran-plate-blue" aria-hidden="true">
-                      <svg width="12" height="22" viewBox="0 0 12 22">
-                        <rect x="1" y="2" width="10" height="2.5" fill="#22C55E" />
-                        <rect x="1" y="4.5" width="10" height="2.5" fill="#FFFFFF" />
-                        <rect x="1" y="7" width="10" height="2.5" fill="#EF4444" />
-                        <rect x="2" y="13" width="8" height="1.5" rx="0.7" fill="#FFFFFF" opacity="0.85" />
-                        <rect x="2" y="16.5" width="8" height="1.5" rx="0.7" fill="#FFFFFF" opacity="0.85" />
-                      </svg>
-                    </div>
-                    <div className="iran-plate-main">
-                      <span>{selectedVeh.plateLeft}</span>
-                      <span style={{ color: '#D94E14' }}>{selectedVeh.plateChar}</span>
-                      <span>{selectedVeh.plateRight}</span>
-                    </div>
-                    <div className="iran-plate-city">
-                      <strong>{selectedVeh.plateCity}</strong>
-                    </div>
-                  </div>
-
-                  <div style={{ textAlign: 'end' }}>
-                    <span style={{ fontSize: 22, fontWeight: 900, color: '#FF742E' }}>{toFa(selectedVeh.speed)}</span>
-                    <span style={{ fontSize: 12, color: 'rgba(232,222,205,0.75)', marginInlineStart: 3 }}>km/h</span>
+                <div className="ds-between">
+                  <IranPlate
+                    left2={selectedVeh.plateLeft}
+                    letter={selectedVeh.plateChar}
+                    mid3={selectedVeh.plateRight}
+                    iranCode={selectedVeh.plateCity}
+                  />
+                  <div className="ds-row">
+                    <strong className="hero-kpi-item__val ds-accent-text ds-tabular">{toFa(selectedVeh.speed)}</strong>
+                    <span className="ltr-code ds-muted">km/h</span>
                   </div>
                 </div>
 
-                <div style={{ fontSize: 12.5, color: 'rgba(232,222,205,0.76)', marginBlockStart: 8 }}>
+                <div className="hero-kpi-item__label">
                   {selectedVeh.cargo} {selectedVeh.temp ? `· دما: ${selectedVeh.temp}` : ''}
                 </div>
               </div>
 
-              {/* Bottom Interactive Controls Inside Stage */}
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: 14,
-                  insetInline: 14,
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  gap: 10,
-                  flexWrap: 'wrap',
-                  padding: '9px 14px',
-                  borderRadius: 18,
-                  background: 'rgba(8, 19, 29, 0.82)',
-                  border: '1px solid rgba(232, 222, 205, 0.15)',
-                  backdropFilter: 'blur(12px)',
-                }}
-              >
-                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+              <div className="hero-controls-dock">
+                <div className="ds-row-wrap">
                   {HERO_VEHICLES.map((v, i) => (
-                    <button
+                    <Button
                       key={v.id}
+                      variant="pill"
+                      size="sm"
+                      active={selectedVeh.id === v.id}
                       onClick={() => setSelectedVeh(v)}
-                      className={`chip-btn ${selectedVeh.id === v.id ? 'on' : ''}`}
-                      style={{ fontSize: 12.5 }}
                     >
                       واحد {toFa(i + 1)}: {v.name.split(' ')[0]}
-                    </button>
+                    </Button>
                   ))}
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 185, flex: 1, maxWidth: 280 }}>
-                  <button
+                <div className="hero-scrubber-group">
+                  <Button
+                    variant="primary"
+                    size="sm"
                     onClick={() => setIsPlaying(!isPlaying)}
-                    style={{
-                      width: 44,
-                      height: 44,
-                      borderRadius: 12,
-                      border: 'none',
-                      background: '#FF742E',
-                      color: '#060E16',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0,
-                    }}
                     aria-label={isPlaying ? 'توقف انیمیشن مسیر' : 'پخش انیمیشن مسیر'}
-                    title={isPlaying ? 'توقف' : 'پخش'}
                   >
-                    {isPlaying ? <Pause size={16} /> : <Play size={16} />}
-                  </button>
+                    {isPlaying ? <Pause size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}
+                  </Button>
                   <input
                     type="range"
                     className="cinema-range"
@@ -720,7 +569,7 @@ export default function Hero3DStage() {
                       setProgress(Number(e.target.value) / 1000);
                     }}
                   />
-                  <span style={{ fontSize: 12.5, fontWeight: 800, color: '#FF9861', minWidth: 36 }}>
+                  <span className="ds-accent-soft-text ds-tabular">
                     {toFa(Math.round(pClamped * 100))}٪
                   </span>
                 </div>

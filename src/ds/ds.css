@@ -1,0 +1,416 @@
+/* ============================================================================
+   DESIGN SYSTEM CORE STYLES (src/ds/ds.css)
+   100% Token-Driven — Zero Raw Hex / Zero Raw RGBA / Zero Raw Radius-Shadow PX
+   ============================================================================ */
+
+/* --- 1. Tactile 3D & Semantic Buttons (ds-btn) --- */
+.ds-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-space-0_5s);
+  min-block-size: 44px;
+  min-inline-size: 44px;
+  padding-block: var(--ds-space-0_5s);
+  padding-inline: var(--ds-space-1s);
+  border-radius: var(--ds-radius-capsule);
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-md);
+  font-weight: var(--ds-weight-bold);
+  line-height: 1.3;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition:
+    transform var(--ds-dur-tactile) var(--ds-ease-spring-lock),
+    box-shadow var(--ds-dur-tactile) var(--ds-ease-spring-lock),
+    background var(--ds-dur-tactile) var(--ds-ease-clothoid-cruise),
+    border-color var(--ds-dur-tactile) var(--ds-ease-clothoid-cruise),
+    color var(--ds-dur-tactile) var(--ds-ease-clothoid-cruise);
+}
+
+.ds-btn--sm {
+  padding-block: var(--ds-space-0_25s);
+  padding-inline: var(--ds-space-0_75s);
+  font-size: var(--ds-text-sm);
+}
+
+.ds-btn--lg {
+  padding-block: var(--ds-space-0_75s);
+  padding-inline: var(--ds-space-1_5s);
+  font-size: var(--ds-text-lg);
+  font-weight: var(--ds-weight-extrabold);
+}
+
+.ds-btn--full {
+  inline-size: 100%;
+}
+
+.ds-btn--primary {
+  background: var(--ds-grad-signal-flare);
+  color: var(--ds-on-accent);
+  font-weight: var(--ds-weight-extrabold);
+  box-shadow: var(--ds-shadow-btn-orange);
+}
+
+.ds-btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--ds-shadow-btn-orange-hover);
+}
+
+.ds-btn--primary:active {
+  transform: translateY(3px);
+  box-shadow: var(--ds-shadow-btn-orange-active);
+}
+
+.ds-btn--secondary {
+  background: var(--ds-grad-clearcoat);
+  color: var(--ds-sand-300);
+  border-color: color-mix(in srgb, var(--ds-sand-300) 24%, transparent);
+  box-shadow: var(--ds-shadow-btn-navy);
+}
+
+.ds-btn--secondary:hover {
+  transform: translateY(-2px);
+  border-color: var(--ds-border-strong);
+}
+
+.ds-btn--ghost {
+  background: var(--ds-surface-glass);
+  color: var(--ds-on-surface);
+  border-color: var(--ds-border);
+}
+
+.ds-btn--ghost:hover,
+.ds-btn--ghost.is-active {
+  border-color: var(--ds-accent);
+  background: color-mix(in srgb, var(--ds-accent) 16%, var(--ds-surface-glass));
+  color: var(--ds-on-surface);
+}
+
+.ds-btn--pill {
+  background: color-mix(in srgb, var(--ds-surface-raised) 76%, transparent);
+  color: var(--ds-on-surface-muted);
+  border-color: var(--ds-border);
+  font-size: var(--ds-text-sm);
+}
+
+.ds-btn--pill:hover {
+  color: var(--ds-on-surface);
+  border-color: var(--ds-border-strong);
+}
+
+.ds-btn--pill.is-active {
+  background: var(--ds-accent);
+  color: var(--ds-on-accent);
+  border-color: var(--ds-accent);
+  box-shadow: var(--ds-shadow-glow-accent);
+}
+
+/* --- 2. Semantic & Volumetric Cards (ds-card) --- */
+.ds-card {
+  position: relative;
+  border-radius: var(--ds-radius-card-lg);
+  padding: var(--ds-space-1_5s);
+  color: var(--ds-on-surface);
+  transition:
+    transform var(--ds-dur-morph) var(--ds-ease-tilt),
+    border-color var(--ds-dur-morph) var(--ds-ease-clothoid-cruise),
+    box-shadow var(--ds-dur-morph) var(--ds-ease-clothoid-cruise);
+}
+
+.ds-card--compact {
+  padding: var(--ds-space-1s);
+  border-radius: var(--ds-radius-card-md);
+}
+
+.ds-card--panel {
+  background: var(--ds-surface-raised);
+  border: 1px solid var(--ds-border);
+  box-shadow: var(--ds-shadow-card);
+}
+
+.ds-card--glass {
+  background: var(--ds-surface-glass);
+  border: 1px solid var(--ds-border);
+  backdrop-filter: blur(18px);
+  box-shadow: var(--ds-shadow-card);
+}
+
+.ds-card--cushion {
+  background: var(--ds-grad-cushion-light);
+  color: var(--ds-navy-600);
+  border: 1px solid color-mix(in srgb, var(--ds-neutral-white) 82%, transparent);
+  box-shadow: var(--ds-shadow-cushion-light);
+}
+
+.ds-card--chisel {
+  background: var(--ds-grad-clearcoat);
+  color: var(--ds-sand-300);
+  border: 1px solid color-mix(in srgb, var(--ds-sand-300) 20%, transparent);
+  box-shadow: var(--ds-shadow-chisel-navy);
+}
+
+.ds-card--accent-outline {
+  border-color: var(--ds-accent);
+}
+
+.ds-card--interactive:hover {
+  transform: translateY(-4px);
+  border-color: var(--ds-border-strong);
+}
+
+.ds-card--tilt {
+  transform: perspective(900px) rotateX(var(--ds-tilt-rx, 0deg)) rotateY(var(--ds-tilt-ry, 0deg));
+  transform-style: preserve-3d;
+}
+
+/* --- 3. Capsules & Eyebrows (ds-capsule) --- */
+.ds-capsule {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-space-0_5s);
+  padding-block: var(--ds-space-0_25s);
+  padding-inline: var(--ds-space-0_75s);
+  border-radius: var(--ds-radius-capsule);
+  font-size: var(--ds-text-xs);
+  font-weight: var(--ds-weight-bold);
+  line-height: 1.4;
+}
+
+.ds-capsule--eyebrow {
+  background: color-mix(in srgb, var(--ds-accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ds-accent) 38%, transparent);
+  color: var(--ds-accent-soft);
+}
+
+.ds-capsule--slash {
+  border-radius: var(--ds-radius-sm);
+  background: color-mix(in srgb, var(--ds-accent) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ds-accent) 36%, transparent);
+  color: var(--ds-accent-soft);
+}
+
+.ds-capsule--tag {
+  background: color-mix(in srgb, var(--ds-on-surface) 8%, transparent);
+  border: 1px solid var(--ds-border);
+  color: var(--ds-on-surface-muted);
+}
+
+.ds-pulse-dot {
+  inline-size: 8px;
+  block-size: 8px;
+  border-radius: var(--ds-radius-capsule);
+  background: var(--ds-accent);
+  box-shadow: var(--ds-shadow-glow-accent);
+  flex-shrink: 0;
+  animation: dsSignalPulse var(--ds-dur-sonar) var(--ds-ease-clothoid-cruise) infinite;
+}
+
+@keyframes dsSignalPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.38); opacity: 0.55; }
+}
+
+/* --- 4. Status Chip (ds-status-chip) --- */
+.ds-status-chip {
+  --chip-color: var(--ds-status-moving);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-space-0_25s);
+  padding-block: 4px;
+  padding-inline: var(--ds-space-0_5s);
+  border-radius: var(--ds-radius-capsule);
+  font-size: var(--ds-text-xs);
+  font-weight: var(--ds-weight-bold);
+  background: color-mix(in srgb, var(--chip-color) 15%, var(--ds-surface-sunken));
+  border: 1px solid color-mix(in srgb, var(--chip-color) 42%, transparent);
+  color: var(--chip-color);
+  white-space: nowrap;
+}
+
+.ds-status-chip[data-status="moving"]     { --chip-color: var(--ds-status-moving); }
+.ds-status-chip[data-status="signal"]     { --chip-color: var(--ds-status-signal); }
+.ds-status-chip[data-status="corridor"]   { --chip-color: var(--ds-status-corridor); }
+.ds-status-chip[data-status="cold-chain"] { --chip-color: var(--ds-status-cold-chain); }
+.ds-status-chip[data-status="idle"]       { --chip-color: var(--ds-status-idle); }
+.ds-status-chip[data-status="critical"]   { --chip-color: var(--ds-status-critical); }
+
+.ds-status-chip__marker {
+  inline-size: 8px;
+  block-size: 8px;
+  background: var(--chip-color);
+  flex-shrink: 0;
+}
+
+.ds-status-chip[data-status="moving"] .ds-status-chip__marker,
+.ds-status-chip[data-status="signal"] .ds-status-chip__marker {
+  border-radius: var(--ds-radius-capsule);
+}
+
+.ds-status-chip[data-status="corridor"] .ds-status-chip__marker,
+.ds-status-chip[data-status="cold-chain"] .ds-status-chip__marker {
+  border-radius: var(--ds-radius-nuqta);
+}
+
+.ds-status-chip[data-status="idle"] .ds-status-chip__marker {
+  border-radius: var(--ds-radius-nuqta);
+  transform: rotate(45deg);
+}
+
+.ds-status-chip[data-status="critical"] .ds-status-chip__marker {
+  border-radius: 0;
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+}
+
+/* --- 5. Authentic Iranian License Plate (ds-iran-plate) --- */
+.ds-iran-plate {
+  display: inline-flex;
+  align-items: stretch;
+  direction: ltr;
+  background: var(--ds-sand-50);
+  color: var(--ds-navy-900);
+  border: 2px solid var(--ds-navy-600);
+  border-radius: var(--ds-radius-plate);
+  overflow: hidden;
+  font-weight: var(--ds-weight-extrabold);
+  font-variant-numeric: tabular-nums;
+  box-shadow: var(--ds-shadow-card);
+  block-size: 36px;
+}
+
+.ds-iran-plate--public {
+  background: var(--ds-plate-yellow);
+}
+
+.ds-iran-plate__flag {
+  background: var(--ds-plate-blue);
+  color: var(--ds-neutral-white);
+  inline-size: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 4px;
+  padding-inline: 2px;
+}
+
+.ds-iran-plate__flag-svg {
+  inline-size: 12px;
+  block-size: 8px;
+  border-radius: var(--ds-radius-nuqta);
+  flex-shrink: 0;
+}
+
+.ds-iran-plate__ir-label {
+  font-family: var(--ds-font-mono);
+  font-size: 7px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.ds-iran-plate__body {
+  padding-inline: 9px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--ds-text-sm);
+  letter-spacing: 0.02em;
+}
+
+.ds-iran-plate__letter {
+  color: var(--ds-orange-700);
+  font-weight: var(--ds-weight-black);
+}
+
+.ds-iran-plate__code {
+  border-inline-start: 1.5px solid var(--ds-navy-600);
+  padding-inline: 7px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.05;
+}
+
+.ds-iran-plate__code-caption {
+  font-size: 8px;
+  font-weight: var(--ds-weight-bold);
+}
+
+.ds-iran-plate__code-num {
+  font-size: var(--ds-text-xs);
+  font-weight: var(--ds-weight-black);
+}
+
+/* --- 6. Kaf-Shear Telemetry Gauge (-26.84deg) --- */
+.ds-gauge {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-0_25s);
+}
+
+.ds-gauge__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-space-0_5s);
+  font-size: var(--ds-text-xs);
+}
+
+.ds-gauge__label {
+  color: var(--ds-on-surface-muted);
+}
+
+.ds-gauge__val {
+  font-weight: var(--ds-weight-extrabold);
+  color: var(--ds-on-surface);
+  font-variant-numeric: tabular-nums;
+}
+
+.ds-gauge__track {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding-inline: 4px;
+}
+
+.ds-gauge__seg {
+  --gauge-color: var(--ds-accent);
+  flex: 1;
+  min-inline-size: 6px;
+  block-size: 16px;
+  border-radius: var(--ds-radius-nuqta);
+  transform: skewX(var(--ds-geo-kaf-skew));
+  background: color-mix(in srgb, var(--ds-on-surface) 14%, transparent);
+  transition:
+    background var(--ds-dur-tactile) var(--ds-ease-clothoid-cruise),
+    box-shadow var(--ds-dur-tactile) var(--ds-ease-clothoid-cruise);
+}
+
+.ds-gauge[data-tone="moving"] .ds-gauge__seg     { --gauge-color: var(--ds-status-moving); }
+.ds-gauge[data-tone="cold-chain"] .ds-gauge__seg { --gauge-color: var(--ds-status-cold-chain); }
+.ds-gauge[data-tone="corridor"] .ds-gauge__seg   { --gauge-color: var(--ds-status-corridor); }
+
+.ds-gauge__seg.is-on {
+  background: var(--gauge-color);
+  box-shadow: var(--ds-shadow-glow-segment);
+}
+
+/* --- 7. Reusable Layout & Typography Primitives (replaces inline styles) --- */
+.ds-stack-xs { display: flex; flex-direction: column; gap: var(--ds-space-0_25s); }
+.ds-stack-sm { display: flex; flex-direction: column; gap: var(--ds-space-0_5s); }
+.ds-stack-md { display: flex; flex-direction: column; gap: var(--ds-space-1s); }
+.ds-stack-lg { display: flex; flex-direction: column; gap: var(--ds-space-1_5s); }
+
+.ds-row { display: flex; align-items: center; gap: var(--ds-space-0_5s); }
+.ds-row-md { display: flex; align-items: center; gap: var(--ds-space-1s); }
+.ds-row-wrap { display: flex; align-items: center; gap: var(--ds-space-0_5s); flex-wrap: wrap; }
+.ds-between { display: flex; align-items: center; justify-content: space-between; gap: var(--ds-space-0_5s); }
+.ds-between-wrap { display: flex; align-items: center; justify-content: space-between; gap: var(--ds-space-0_75s); flex-wrap: wrap; }
+
+.ds-tabular { font-variant-numeric: tabular-nums; }
+.ds-muted { color: var(--ds-on-surface-muted); }
+.ds-dim { color: var(--ds-on-surface-dim); }
+.ds-accent-text { color: var(--ds-accent); }
+.ds-accent-soft-text { color: var(--ds-accent-soft); }

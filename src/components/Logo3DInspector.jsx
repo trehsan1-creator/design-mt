@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { LOGO_PATH_D } from '../data/geometryData.js';
+import { DESIGN_TOKENS } from '../../tokens/tokens.js';
 
 export default function Logo3DInspector({ mode = 'inflate', showWireframe = false, showLightRig = true }) {
   const mountRef = useRef(null);
@@ -13,7 +14,7 @@ export default function Logo3DInspector({ mode = 'inflate', showWireframe = fals
     if (!container) return;
 
     const width = container.clientWidth || 520;
-    const height = 390;
+    const height = container.clientHeight || 360;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(32, width / height, 1, 2500);
@@ -65,10 +66,11 @@ export default function Logo3DInspector({ mode = 'inflate', showWireframe = fals
     });
     geoChisel.center();
 
+    const cOrange = new THREE.Color(DESIGN_TOKENS.color.signalOrange);
     const matMesh = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#132B3E'),
-      roughness: 0.4,
-      metalness: 0.04,
+      color: new THREE.Color(DESIGN_TOKENS.color.navy['400']),
+      roughness: DESIGN_TOKENS.material3d.pbr.roughness,
+      metalness: DESIGN_TOKENS.material3d.pbr.metalness,
     });
 
     const mesh = new THREE.Mesh(geoInflate, matMesh);
@@ -76,7 +78,7 @@ export default function Logo3DInspector({ mode = 'inflate', showWireframe = fals
     scene.add(mesh);
 
     const wireMat = new THREE.MeshBasicMaterial({
-      color: 0xff742e,
+      color: cOrange,
       wireframe: true,
       transparent: true,
       opacity: 0.34,
@@ -85,30 +87,33 @@ export default function Logo3DInspector({ mode = 'inflate', showWireframe = fals
     wireMesh.scale.set(1.003, -1.003, 1.003);
     scene.add(wireMesh);
 
-    const ambient = new THREE.AmbientLight(0xd8e4ee, 0.85);
+    const ambient = new THREE.AmbientLight(new THREE.Color(DESIGN_TOKENS.color.sand['50']), 0.85);
     scene.add(ambient);
 
-    const hemi = new THREE.HemisphereLight(0x6e8fa6, 0x09131c, 0.55);
+    const hemi = new THREE.HemisphereLight(
+      new THREE.Color(DESIGN_TOKENS.color.navy['25']),
+      new THREE.Color(DESIGN_TOKENS.color.navy['900']),
+      0.55
+    );
     scene.add(hemi);
 
-    const sun = new THREE.DirectionalLight(0xffffff, 2.2);
+    const sun = new THREE.DirectionalLight(new THREE.Color(DESIGN_TOKENS.color.neutral.white), 2.2);
     scene.add(sun);
 
-    const rim = new THREE.DirectionalLight(0xff742e, 0.3);
+    const rim = new THREE.DirectionalLight(cOrange, 0.3);
     rim.position.set(180, -190, -140);
     scene.add(rim);
 
     const rigGroup = new THREE.Group();
-    const arrowMat = new THREE.LineBasicMaterial({ color: 0xff742e });
+    const arrowMat = new THREE.LineBasicMaterial({ color: cOrange });
     const arrowGeo = new THREE.BufferGeometry().setFromPoints([
       new THREE.Vector3(0, 0, 0),
       new THREE.Vector3(0, 0, 1),
     ]);
     const arrowLine = new THREE.Line(arrowGeo, arrowMat);
-    const sunDot = new THREE.Mesh(
-      new THREE.SphereGeometry(7, 20, 20),
-      new THREE.MeshBasicMaterial({ color: 0xff742e })
-    );
+    const sunDotGeo = new THREE.SphereGeometry(7, 20, 20);
+    const sunDotMat = new THREE.MeshBasicMaterial({ color: cOrange });
+    const sunDot = new THREE.Mesh(sunDotGeo, sunDotMat);
     rigGroup.add(arrowLine);
     rigGroup.add(sunDot);
     scene.add(rigGroup);
@@ -137,24 +142,26 @@ export default function Logo3DInspector({ mode = 'inflate', showWireframe = fals
     const onResize = () => {
       if (!container) return;
       const w = container.clientWidth || 520;
-      const h = container.clientHeight || height;
+      const h = container.clientHeight || 360;
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
     };
     const ro = new ResizeObserver(onResize);
     ro.observe(container);
-    window.addEventListener('resize', onResize);
 
     return () => {
       cancelAnimationFrame(rafId);
       ro.disconnect();
-      window.removeEventListener('resize', onResize);
       controls.dispose();
       geoInflate.dispose();
       geoChisel.dispose();
       matMesh.dispose();
       wireMat.dispose();
+      arrowGeo.dispose();
+      arrowMat.dispose();
+      sunDotGeo.dispose();
+      sunDotMat.dispose();
       renderer.dispose();
     };
   }, []);
@@ -164,8 +171,12 @@ export default function Logo3DInspector({ mode = 'inflate', showWireframe = fals
     if (!s.mesh) return;
 
     const isInflate = mode === 'inflate';
-    const rotDeg = isInflate ? -124.7 : -149.74;
-    const elevDeg = isInflate ? 71.0 : 43.08;
+    const rotDeg = isInflate
+      ? DESIGN_TOKENS.material3d.modeACushion.azimuthDeg
+      : DESIGN_TOKENS.material3d.modeBChisel.azimuthDeg;
+    const elevDeg = isInflate
+      ? DESIGN_TOKENS.material3d.modeACushion.elevationDeg
+      : DESIGN_TOKENS.material3d.modeBChisel.elevationDeg;
 
     const azRad = (rotDeg * Math.PI) / 180;
     const elRad = (elevDeg * Math.PI) / 180;
@@ -180,8 +191,10 @@ export default function Logo3DInspector({ mode = 'inflate', showWireframe = fals
 
     s.mesh.geometry = isInflate ? s.geoInflate : s.geoChisel;
     s.wireMesh.geometry = isInflate ? s.geoInflate : s.geoChisel;
-    s.matMesh.color.set(isInflate ? '#153046' : '#ECEAE4');
-    s.matMesh.roughness = 0.4;
+    s.matMesh.color.set(
+      isInflate ? DESIGN_TOKENS.color.navy['400'] : DESIGN_TOKENS.color.sand['200']
+    );
+    s.matMesh.roughness = DESIGN_TOKENS.material3d.pbr.roughness;
     s.matMesh.needsUpdate = true;
 
     s.wireMesh.visible = showWireframe;
@@ -191,39 +204,19 @@ export default function Logo3DInspector({ mode = 'inflate', showWireframe = fals
   }, [mode, showWireframe, showLightRig]);
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div className="webgl-stage-shell">
       <div
         ref={mountRef}
-        style={{
-          width: '100%',
-          height: 390,
-          borderRadius: 18,
-          background:
-            mode === 'chisel'
-              ? 'linear-gradient(140.24deg, #3D5768 0%, #112835 41.58%, #213D4F 78.61%, #132D3F 100%)'
-              : 'radial-gradient(circle at 30% 25%, #1A354B 0%, #0A1520 80%)',
-          cursor: 'grab',
-        }}
+        className="lab-3d-canvas"
+        role="img"
+        aria-label="بازرس سه‌بعدی هندسه نشان برند در دو حالت بالشتکی و پخ‌خورده"
       />
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 12,
-          insetInline: 16,
-          display: 'flex',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: 8,
-          fontSize: 12.5,
-          color: 'rgba(232,222,205,0.84)',
-          pointerEvents: 'none',
-        }}
-      >
-        <span>با ماوس حجم سه‌بعدی را بچرخانید · بزرگ‌نمایی با اسکرول</span>
-        <span className="ltr-code" style={{ color: '#FFB085' }}>
+      <div className="webgl-hud-bottom ds-between-wrap">
+        <span className="ds-muted">چرخش ۳۶۰ درجه با ماوس · بزرگ‌نمایی با اسکرول</span>
+        <span className="ltr-code ds-accent-soft-text">
           {mode === 'inflate'
             ? 'Inflate 76% · El 71° · Az -124.7°'
-            : 'Extrude 175.5pt · Bevel 60% · El 43.1°'}
+            : 'Extrude 175.5pt · Bevel 60% · El 43.08°'}
         </span>
       </div>
     </div>

@@ -1,0 +1,201 @@
+/* ============================================================================
+   DESIGN SYSTEM PORTAL & GEOMETRY LAB STYLES (src/styles/lab.css)
+   100% Token-Driven — Replaces Static Inline Styles Across Portal & Lab
+   ============================================================================ */
+
+.portal-shell {
+  padding-block-end: var(--ds-space-3s);
+}
+
+.portal-hero {
+  background: var(--ds-grad-clearcoat);
+  border: 1px solid var(--ds-border-strong);
+  border-radius: var(--ds-radius-card-lg);
+  padding: var(--ds-space-1_5s);
+  margin-block-end: var(--ds-space-1s);
+  box-shadow: var(--ds-shadow-chisel-navy);
+}
+
+.portal-tab-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ds-space-0_5s);
+  margin-block-end: var(--ds-space-1_5s);
+}
+
+.portal-swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--ds-space-0_75s);
+}
+
+.portal-swatch-card {
+  border-radius: var(--ds-radius-card-md);
+  overflow: hidden;
+  background: var(--ds-surface-raised);
+  border: 1px solid var(--ds-border);
+  display: flex;
+  flex-direction: column;
+}
+
+.portal-swatch-preview {
+  block-size: 88px;
+  background: var(--swatch-bg, var(--ds-accent));
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: var(--ds-space-0_5s);
+}
+
+.portal-swatch-body {
+  padding: var(--ds-space-0_75s);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.portal-scale-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  gap: var(--ds-space-0_25s);
+}
+
+.portal-scale-chip {
+  min-block-size: 64px;
+  padding: var(--ds-space-0_5s);
+  border-radius: var(--ds-radius-cap);
+  background: var(--swatch-bg, var(--ds-navy-600));
+  border: 1px solid var(--ds-border);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.portal-input {
+  inline-size: 100%;
+  max-inline-size: 420px;
+  min-block-size: 44px;
+  padding-block: var(--ds-space-0_5s);
+  padding-inline: var(--ds-space-0_75s);
+  border-radius: var(--ds-radius-cap);
+  background: var(--ds-surface-sunken);
+  border: 1px solid var(--ds-border);
+  color: var(--ds-on-surface);
+  font-size: var(--ds-text-md);
+}
+
+.portal-code-box {
+  direction: ltr;
+  text-align: start;
+  font-family: var(--ds-font-mono);
+  font-size: var(--ds-text-xs);
+  line-height: 1.65;
+  padding: var(--ds-space-0_75s);
+  border-radius: var(--ds-radius-md);
+  background: var(--ds-surface-sunken);
+  border: 1px solid var(--ds-border);
+  color: var(--ds-on-surface);
+  overflow-x: auto;
+}
+
+.portal-dodont-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ds-space-1s);
+}
+
+.portal-do-card {
+  border-inline-start: 4px solid var(--ds-status-moving);
+}
+
+.portal-dont-card {
+  border-inline-start: 4px solid var(--ds-status-critical);
+}
+
+/* --- Lab Interactive Stages --- */
+.lab-svg-canvas {
+  inline-size: 100%;
+  block-size: auto;
+  max-block-size: 400px;
+  display: block;
+}
+
+.lab-3d-canvas {
+  inline-size: 100%;
+  block-size: 360px;
+  border-radius: var(--ds-radius-card-md);
+  overflow: hidden;
+}
+
+.lab-pattern-stage {
+  position: relative;
+  min-block-size: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.lab-radar-blip {
+  position: absolute;
+  direction: ltr;
+  inset-inline-start: var(--blip-x, 50%);
+  inset-block-start: var(--blip-y, 50%);
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lab-radar-blip__dot {
+  inline-size: 12px;
+  block-size: 12px;
+  border-radius: var(--ds-radius-nuqta);
+  background: var(--ds-sand-300);
+}
+
+.lab-radar-blip.is-active .lab-radar-blip__dot {
+  background: var(--ds-accent);
+  box-shadow: var(--ds-shadow-glow-dot);
+}
+
+.lab-radar-blip__label {
+  padding-block: 3px;
+  padding-inline: 8px;
+  border-radius: var(--ds-radius-sm);
+  font-size: var(--ds-text-xs);
+  font-weight: var(--ds-weight-bold);
+  background: var(--ds-surface-glass);
+  border: 1px solid var(--ds-border);
+  white-space: nowrap;
+}
+
+.lab-radar-blip.is-active .lab-radar-blip__label {
+  background: color-mix(in srgb, var(--ds-accent) 22%, var(--ds-surface));
+  border-color: var(--ds-accent);
+}
+
+.peyda-live-stage {
+  padding: var(--ds-space-1_5s);
+  border-radius: var(--ds-radius-card-lg);
+  background: var(--ds-surface);
+  color: var(--ds-on-surface);
+  border: 1px solid var(--ds-border);
+  transition:
+    background var(--ds-dur-morph) var(--ds-ease-clothoid-cruise),
+    color var(--ds-dur-morph) var(--ds-ease-clothoid-cruise);
+}
+
+.peyda-live-sample {
+  font-weight: var(--sample-weight, 700);
+  font-size: var(--sample-size, 42px);
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+@media (max-width: 1024px) {
+  .portal-swatch-grid,
+  .portal-dodont-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

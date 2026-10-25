@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Check, Sparkles, PhoneCall, Send, Layers } from 'lucide-react';
+import { Check, Sparkles, Send, Layers } from 'lucide-react';
+import { Button, Card, Capsule, StatusChip } from '../../ds/index.js';
 import { toFa } from '../../utils/faDigits.js';
 
 const PLANS = [
@@ -11,23 +12,23 @@ const PLANS = [
     featured: false,
     features: [
       'ردیابی زنده با نرخ نوسازی ۲ ثانیه',
-      'آرشیو کامل مسیرهای پیموده‌شده تا ۱ سال',
-      'تعریف ۲۰ حصار جغرافیایی اسکوئیرکل',
+      'آرشیو مسیرهای پیموده‌شده تا ۱ سال',
+      'تعریف ۲۰ حصار جغرافیایی چهارگوش‌نرم',
       'اپلیکیشن موبایل مدیر و راننده (اندروید و iOS)',
     ],
   },
   {
     name: 'فرماندهی حرفه‌ای ناوگان',
-    sub: 'پرفروش‌ترین بسته حمل‌ونقل و زنجیره سرد',
+    sub: 'بسته پیشنهادی حمل‌ونقل جاده‌ای و زنجیره سرد',
     price: '۴۸۰,۰۰۰',
     period: 'تومان / ماهانه به ازای هر خودرو',
     featured: true,
     features: [
-      'ردیابی فوق‌سریع با تأخیر ۰.۰۲ ثانیه و قفل ۳ منظومه ماهواره‌ای',
-      'پایش اولتراسونیک باک سوخت و هشدار آنی سرقت',
+      'ردیابی زنده با تأخیر ۰.۰۲ ثانیه و قفل ۳ منظومه ماهواره‌ای',
+      'پایش اولتراسونیک باک سوخت و هشدار تخلیه',
       'سنسور دمای یخچال، درب کانتینر و پلمپ دیجیتال',
-      'تحلیل هوشمند رفتار راننده و دیاگ از راه دور CAN-Bus',
-      'پشتیبانی اختصاصی ۲۴/۷ اتاق عملیات',
+      'تحلیل رفتار راننده و دیاگ از راه دور CAN-Bus',
+      'پشتیبانی ۲۴/۷ اتاق عملیات',
     ],
   },
   {
@@ -37,16 +38,16 @@ const PLANS = [
     period: 'استقرار روی سرور اختصاصی (On-Premise) یا ابری',
     featured: false,
     features: [
-      'رومینگ ماهواره‌ای برون‌مرزی بدون قطعی',
-      'وب‌سرویس و API کامل اتصال به ERP و سامانه بارنامه',
-      'داشبورد تحلیلی سفارشی و هوش مصنوعی بهینه‌سازی مسیر',
+      'رومینگ ماهواره‌ای برون‌مرزی پایدار',
+      'وب‌سرویس و API اتصال به ERP و سامانه بارنامه',
+      'داشبورد تحلیلی سفارشی و بهینه‌سازی مسیر',
       'نصب و کالیبراسیون حضوری در سراسر کشور',
     ],
   },
 ];
 
 export default function PricingAndFooter({ onOpenArch, onOpenDesignSystem, onSwitchToLab }) {
-  const [formState, setFormState] = useState({ name: '', phone: '', count: '۲۰ تا ۵۰ خودرو' });
+  const [formState, setFormState] = useState({ name: '', phone: '' });
   const [submitted, setSubmitted] = useState(false);
   const [cursor, setCursor] = useState({ col: -10, row: -10 });
 
@@ -57,249 +58,159 @@ export default function PricingAndFooter({ onOpenArch, onOpenDesignSystem, onSwi
 
   return (
     <>
-      {/* Pricing Plans */}
-      <section id="pricing" className="dark-section">
+      <section id="pricing" className="fleet-section">
         <div className="site-container">
-          <div style={{ textAlign: 'center', maxWidth: 680, margin: '0 auto 44px' }}>
-            <div className="eyebrow-kaf">
-              <Sparkles size={15} />
-              <span>تعرفه‌های شفاف سازمانی · بازگشت سرمایه از ماه اول</span>
-            </div>
-            <h2 style={{ fontSize: 'clamp(28px, 3.2vw, 42px)', fontWeight: 900 }}>
+          <div className="section-header-center">
+            <Capsule variant="eyebrow">
+              <Sparkles size={15} aria-hidden="true" />
+              <span>تعرفه‌های شفاف سازمانی · متناسب با ابعاد ناوگان</span>
+            </Capsule>
+            <h2 className="section-title-xl">
               بسته فرماندهی متناسب با ناوگان خود را انتخاب کنید
             </h2>
           </div>
 
           <div className="pricing-grid">
             {PLANS.map((pl) => (
-              <div
+              <Card
                 key={pl.name}
-                className="cad-card"
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  background: pl.featured
-                    ? 'linear-gradient(140.24deg, #3D5768 0%, #112835 41.58%, #213D4F 78.61%, #132D3F 100%)'
-                    : 'rgba(13, 28, 42, 0.78)',
-                  border: pl.featured ? '2px solid #FF742E' : '1px solid rgba(232,222,205,0.14)',
-                  transform: pl.featured ? 'translateY(-10px)' : 'none',
-                  boxShadow: pl.featured
-                    ? '0 30px 65px rgba(255,116,46,0.22), inset 0 2px 2px rgba(255,255,255,0.22)'
-                    : undefined,
-                }}
+                variant={pl.featured ? 'chisel' : 'panel'}
+                accentOutline={pl.featured}
+                interactive
+                className="pricing-card"
               >
-                <div>
+                <div className="ds-stack-md">
                   {pl.featured && (
-                    <span
-                      style={{
-                        display: 'inline-block',
-                        padding: '4px 12px',
-                        borderRadius: 999,
-                        background: '#FF742E',
-                        color: '#102333',
-                        fontSize: 12,
-                        fontWeight: 900,
-                        marginBlockEnd: 12,
-                      }}
-                    >
-                      پیشنهاد ویژه ناوگان حرفه‌ای
-                    </span>
-                  )}
-                  <h3 style={{ fontSize: 22, fontWeight: 900 }}>{pl.name}</h3>
-                  <p style={{ fontSize: 14, color: 'var(--beige-muted)', marginBlockStart: 4, marginBlockEnd: 18 }}>{pl.sub}</p>
-
-                  <div style={{ paddingBlockEnd: 18, marginBlockEnd: 18, borderBlockEnd: '1px solid rgba(232,222,205,0.12)' }}>
-                    <div style={{ fontSize: 34, fontWeight: 900, color: pl.featured ? '#FF742E' : '#E8DECD' }}>
-                      {pl.price}
+                    <div>
+                      <StatusChip status="signal" label="پیشنهاد ویژه ناوگان حرفه‌ای" />
                     </div>
-                    <div style={{ fontSize: 12.5, color: 'rgba(232,222,205,0.72)' }}>{pl.period}</div>
+                  )}
+                  <div className="ds-stack-xs">
+                    <h3>{pl.name}</h3>
+                    <p className="ds-muted">{pl.sub}</p>
                   </div>
 
-                  <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 11, marginBlockEnd: 26 }}>
+                  <div className="ds-stack-xs">
+                    <strong className={`section-title-xl ds-tabular ${pl.featured ? 'ds-accent-text' : ''}`}>
+                      {pl.price}
+                    </strong>
+                    <span className="ds-muted">{pl.period}</span>
+                  </div>
+
+                  <ul className="pricing-feature-list">
                     {pl.features.map((f, i) => (
-                      <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 9, fontSize: 14.5 }}>
-                        <span
-                          style={{
-                            width: 19,
-                            height: 19,
-                            borderRadius: 6,
-                            background: pl.featured ? 'rgba(255,116,46,0.22)' : 'rgba(232,222,205,0.1)',
-                            color: '#FF742E',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            flexShrink: 0,
-                            marginTop: 3,
-                          }}
-                        >
-                          <Check size={13} />
-                        </span>
+                      <li key={i} className="pricing-feature-item">
+                        <Check size={15} className="ds-accent-text" aria-hidden="true" />
                         <span>{f}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                <a
+                <Button
+                  as="a"
                   href="#demo-request"
-                  className={pl.featured ? 'btn-3d-orange' : 'btn-3d-navy'}
-                  style={{ width: '100%', justifyContent: 'center', textDecoration: 'none' }}
+                  variant={pl.featured ? 'primary' : 'secondary'}
+                  fullWidth
                 >
                   سفارش و دریافت پیش‌فاکتور
-                </a>
-              </div>
+                </Button>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Tactile Demo Request Section */}
-      <section id="demo-request" style={{ padding: '30px 0 90px' }}>
+      <section id="demo-request" className="fleet-section">
         <div className="site-container">
-          <div
-            className="cad-card"
-            style={{
-              padding: '42px 36px',
-              background: 'linear-gradient(140.24deg, rgba(255,116,46,0.18) 0%, #102333 46%, #132D3F 100%)',
-              borderColor: 'rgba(255, 116, 46, 0.45)',
-            }}
-          >
-            <div className="section-grid" style={{ marginBottom: 0, alignItems: 'center' }}>
-              <div>
-                <span className="kaf-slash-tag">تست رایگان ۱۴ روزه روی خودروهای واقعی شما</span>
-                <h2 style={{ fontSize: 'clamp(26px, 3vw, 38px)', fontWeight: 900, marginTop: 10, marginBottom: 12 }}>
-                  پنل فرماندهی سه‌بعدی را همین امروز روی ناوگان خود تجربه کنید
+          <Card variant="chisel" accentOutline>
+            <div className="section-grid">
+              <div className="ds-stack-md">
+                <div>
+                  <Capsule variant="slash">ارزیابی آزمایشی ۱۴ روزه روی ناوگان واقعی</Capsule>
+                </div>
+                <h2 className="section-title-xl">
+                  پنل فرماندهی سه‌بعدی را روی خودروهای ناوگان خود آزمایش کنید
                 </h2>
-                <p style={{ fontSize: 15, color: 'rgba(232,222,205,0.82)', lineHeight: 1.8 }}>
-                  کارشناسان فنی ما ظرف کمتر از ۱۵ دقیقه دسترسی دمو زنده به همراه دستگاه تستی رایگان را برای ناوگان شما فعال می‌کنند.
+                <p className="ds-muted">
+                  کارشناسان فنی ظرف کمتر از ۱۵ دقیقه دسترسی دمو زنده و هماهنگی نصب واحد آزمایشی را فعال می‌کنند.
                 </p>
               </div>
 
               <div>
                 {submitted ? (
-                  <div
-                    style={{
-                      padding: 28,
-                      borderRadius: 24,
-                      background: 'rgba(8, 19, 29, 0.85)',
-                      border: '1.5px solid #4ADE80',
-                      textAlign: 'center',
-                    }}
-                  >
-                    <div style={{ fontSize: 22, fontWeight: 900, color: '#4ADE80', marginBottom: 8 }}>
-                      درخواست شما با موفقیت ثبت شد!
-                    </div>
-                    <p style={{ fontSize: 14, color: 'var(--beige-muted)', marginBottom: 16 }}>
-                      تیم مهندسی فروش ما تا دقایقی دیگر برای هماهنگی دمو زنده با شما تماس می‌گیرند.
+                  <Card variant="panel" className="ds-stack-md">
+                    <StatusChip status="moving" label="درخواست شما ثبت شد" />
+                    <p className="ds-muted">
+                      تیم مهندسی فروش برای هماهنگی دسترسی دمو زنده با شما تماس می‌گیرد.
                     </p>
-                    <button className="chip-btn on" onClick={() => setSubmitted(false)}>
-                      ثبت درخواست جدید
-                    </button>
-                  </div>
+                    <div>
+                      <Button variant="pill" active onClick={() => setSubmitted(false)}>
+                        ثبت درخواست جدید
+                      </Button>
+                    </div>
+                  </Card>
                 ) : (
-                  <form
-                    onSubmit={handleSubmit}
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: 12,
-                      background: 'rgba(7, 17, 26, 0.78)',
-                      padding: 24,
-                      borderRadius: 24,
-                      border: '1px solid rgba(232,222,205,0.14)',
-                    }}
-                  >
-                    <input
-                      required
-                      type="text"
-                      placeholder="نام و نام خانوادگی / نام شرکت"
-                      value={formState.name}
-                      onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-                      style={{
-                        padding: '13px 16px',
-                        borderRadius: 14,
-                        border: '1px solid rgba(232,222,205,0.2)',
-                        background: 'rgba(16,35,51,0.7)',
-                        color: '#E8DECD',
-                        fontSize: 14,
-                        outline: 'none',
-                      }}
-                    />
-                    <input
-                      required
-                      type="tel"
-                      placeholder="شماره موبایل جهت ارسال لینک دمو (مثلاً ۰۹۱۲...)"
-                      value={formState.phone}
-                      onChange={(e) => setFormState({ ...formState, phone: e.target.value })}
-                      style={{
-                        padding: '13px 16px',
-                        borderRadius: 14,
-                        border: '1px solid rgba(232,222,205,0.2)',
-                        background: 'rgba(16,35,51,0.7)',
-                        color: '#E8DECD',
-                        fontSize: 14,
-                        outline: 'none',
-                      }}
-                    />
-                    <button type="submit" className="btn-3d-orange" style={{ justifyContent: 'center', marginTop: 4 }}>
-                      <Send size={16} />
-                      <span>دریافت آنی پنل دمو و مشاوره رایگان</span>
-                    </button>
+                  <form onSubmit={handleSubmit} className="demo-form">
+                    <div className="ds-stack-xs">
+                      <label htmlFor="demo-company-name">نام و نام خانوادگی یا نام سازمان</label>
+                      <input
+                        id="demo-company-name"
+                        required
+                        type="text"
+                        className="demo-input"
+                        placeholder="مثلاً شرکت حمل‌ونقل پارس"
+                        value={formState.name}
+                        onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+                      />
+                    </div>
+                    <div className="ds-stack-xs">
+                      <label htmlFor="demo-phone-number">شماره همراه جهت ارسال لینک دمو</label>
+                      <input
+                        id="demo-phone-number"
+                        required
+                        type="tel"
+                        className="demo-input"
+                        placeholder="۰۹۱۲..."
+                        value={formState.phone}
+                        onChange={(e) => setFormState({ ...formState, phone: e.target.value })}
+                      />
+                    </div>
+                    <Button type="submit" variant="primary" fullWidth>
+                      <Send size={16} aria-hidden="true" />
+                      <span>دریافت دسترسی دمو و مشاوره فنی</span>
+                    </Button>
                   </form>
                 )}
               </div>
             </div>
-          </div>
+          </Card>
         </div>
       </section>
 
-      {/* Interactive Magnetic Nuqta-to-Capsule Footer */}
       <footer
+        className="fleet-footer"
         onMouseMove={(e) => {
           const r = e.currentTarget.getBoundingClientRect();
           setCursor({
             col: ((e.clientX - r.left) / r.width) * 18,
-            row: ((e.clientY - r.top) / r.height) * 4,
+            row: ((e.clientY - r.top) / r.height) * 3,
           });
         }}
         onMouseLeave={() => setCursor({ col: -10, row: -10 })}
-        style={{
-          position: 'relative',
-          padding: '54px 0 42px',
-          background: '#050B12',
-          borderTop: '1px solid rgba(232,222,205,0.12)',
-          overflow: 'hidden',
-        }}
       >
-        {/* Subtle Live Magnetic Nuqta Matrix Strip */}
-        <div
-          style={{
-            maxWidth: 1300,
-            margin: '0 auto 34px',
-            padding: '0 24px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 12,
-            direction: 'ltr',
-            opacity: 0.72,
-          }}
-        >
+        <div className="footer-nuqta-matrix" aria-hidden="true">
           {Array.from({ length: 3 }).map((_, rIdx) => (
-            <div key={rIdx} style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div key={rIdx} className="footer-nuqta-row">
               {Array.from({ length: 18 }).map((__, cIdx) => {
                 const d = Math.hypot(cIdx - cursor.col, rIdx - cursor.row);
                 const prox = Math.max(0, Math.min(1, 1 - d / 3.2));
+                const widthPx = Math.round(6 + prox * 16);
                 return (
                   <div
                     key={cIdx}
-                    style={{
-                      width: 6 + prox * 16,
-                      height: 6,
-                      borderRadius: prox > 0.25 ? 999 : 2,
-                      background: prox > 0.3 ? '#FF742E' : 'rgba(232,222,205,0.16)',
-                      transition: 'all 0.18s ease',
-                    }}
+                    className={`footer-nuqta-dot ${prox > 0.3 ? 'is-near' : ''}`}
+                    style={{ '--dot-w': `${widthPx}px` }}
                   />
                 );
               })}
@@ -307,27 +218,35 @@ export default function PricingAndFooter({ onOpenArch, onOpenDesignSystem, onSwi
           ))}
         </div>
 
-        <div className="site-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 20 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <img src="/brand-clean/logo-clean.svg" alt="لوگو" style={{ height: 34, filter: 'brightness(0) invert(0.92)' }} />
-            <img src="/brand-clean/typography-clean.svg" alt="لوگوتایپ" style={{ height: 24, filter: 'brightness(0) invert(0.92)' }} />
-            <span style={{ fontSize: 13.5, color: 'rgba(232,222,205,0.68)', marginInlineStart: 8 }}>
+        <div className="site-container ds-between-wrap">
+          <div className="ds-row-wrap">
+            <img src="/brand-clean/logo-clean.svg" alt="نشان برند" className="nav-logo-badge__img brand-svg-light" />
+            <img src="/brand-clean/typography-clean.svg" alt="نام تجاری برند" className="nav-typography-img brand-svg-light" />
+            <span className="ds-muted">
               © {toFa(1405)} · سامانه هوشمند ردیابی خودرو، GPS و مدیریت ناوگان
             </span>
           </div>
 
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            <button onClick={onOpenDesignSystem} className="chip-btn on">
-              پورتال دیزاین سیستم و توکن‌ها
-            </button>
-            <button onClick={onOpenArch} className="chip-btn">
-              <Layers size={14} style={{ verticalAlign: 'middle', marginInlineEnd: 5 }} />
-              نقشه معماری سه‌بعدی سایت
-            </button>
-            <button onClick={onSwitchToLab} className="chip-btn">
-              آزمایشگاه کالبدشکافی و پترن‌ها
-            </button>
-          </div>
+          {(onOpenDesignSystem || onOpenArch || onSwitchToLab) && (
+            <div className="ds-row-wrap">
+              {onOpenDesignSystem && (
+                <Button variant="pill" size="sm" active onClick={onOpenDesignSystem}>
+                  پورتال دیزاین سیستم
+                </Button>
+              )}
+              {onOpenArch && (
+                <Button variant="ghost" size="sm" onClick={onOpenArch}>
+                  <Layers size={14} aria-hidden="true" />
+                  <span>معماری سه‌بعدی</span>
+                </Button>
+              )}
+              {onSwitchToLab && (
+                <Button variant="ghost" size="sm" onClick={onSwitchToLab}>
+                  آزمایشگاه هندسه
+                </Button>
+              )}
+            </div>
+          )}
         </div>
       </footer>
     </>

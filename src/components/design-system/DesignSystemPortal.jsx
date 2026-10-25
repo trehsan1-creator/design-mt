@@ -10,61 +10,61 @@ import {
   Check,
   Sparkles,
   Compass,
-  ShieldCheck,
-  Fuel,
-  Send,
+  Sun,
+  Moon,
+  Thermometer,
+  Navigation,
 } from 'lucide-react';
-import DESIGN_TOKENS from '../../../tokens/tokens.js';
+import { DESIGN_TOKENS } from '../../../tokens/tokens.js';
 import { PEYDA_WEIGHTS } from '../../data/geometryData.js';
+import { Button, Card, Capsule, Gauge, IranPlate, StatusChip } from '../../ds/index.js';
 import { toFa } from '../../utils/faDigits.js';
 
 const CORE_SWATCHES = [
   {
     name: 'نارنجی سیگنال زنده',
     token: '--ds-color-signal-orange',
-    hex: '#FF742E',
+    hex: DESIGN_TOKENS.color.signalOrange,
     spec: 'HSL(20.1°, 100%, 59%) · OKLCH(71.6%, 0.187, 43.8°)',
-    usage: 'پالس زنده GPS، دکمه اصلی سه‌بعدی، هشدار انحراف و سوخت',
-    textCol: '#102333',
+    usage: 'سیگنال فعال GPS، دکمه اصلی و هشدار انحراف',
   },
   {
     name: 'سرمه‌ای راداری عمیق',
     token: '--ds-color-deep-navy',
-    hex: '#102333',
+    hex: DESIGN_TOKENS.color.deepNavy,
     spec: 'HSL(207.4°, 52.2%, 13.1%) · OKLCH(24.8%, 0.040, 245.7°)',
-    usage: 'بدنه پنل‌های فرماندهی، پس‌زمینه رادار و تایپوگرافی روی بژ گرم',
-    textCol: '#E8DECD',
+    usage: 'پنل‌های اتاق فرمان و تایپوگرافی روی بژ گرم',
   },
   {
     name: 'بژ گرم روز شنی',
     token: '--ds-color-warm-sand',
-    hex: '#E8DECD',
+    hex: DESIGN_TOKENS.color.warmSand,
     spec: 'HSL(37.8°, 37%, 85.7%) · OKLCH(90.4%, 0.025, 81.1°)',
-    usage: 'تایپوگرافی روشن روی سرمه‌ای و بوم بخش‌های روزانه با کنتراست ۱۲.۰۳:۱',
-    textCol: '#102333',
+    usage: 'تایپوگرافی روشن روی سرمه‌ای و بوم قطبیت روز (۱۲.۰۳:۱)',
   },
 ];
 
 const TELEMETRY_SWATCHES = [
-  { label: 'در حرکت پایدار', token: '--ds-status-moving', hex: '#4ADE80' },
-  { label: 'سیگنال فعال / هشدار باک', token: '--ds-status-signal', hex: '#FF742E' },
-  { label: 'کریدور ترانزیتی', token: '--ds-status-corridor', hex: '#38BDF8' },
-  { label: 'زنجیره سرد یخچالی', token: '--ds-status-cold-chain', hex: '#22D3EE' },
-  { label: 'توقف درجا (Idle)', token: '--ds-status-idle', hex: '#FACC15' },
-  { label: 'خروج اضطراری ژئوفنس', token: '--ds-status-critical', hex: '#EF4444' },
+  { status: 'moving', label: 'در حرکت پایدار', token: '--ds-status-moving', hex: DESIGN_TOKENS.color.telemetry.moving },
+  { status: 'signal', label: 'سیگنال فعال / هشدار باک', token: '--ds-status-signal', hex: DESIGN_TOKENS.color.telemetry.signal },
+  { status: 'corridor', label: 'کریدور ترانزیتی', token: '--ds-status-corridor', hex: DESIGN_TOKENS.color.telemetry.corridor },
+  { status: 'cold-chain', label: 'زنجیره سرد یخچالی', token: '--ds-status-cold-chain', hex: DESIGN_TOKENS.color.telemetry['cold-chain'] },
+  { status: 'idle', label: 'توقف درجا (Idle)', token: '--ds-status-idle', hex: DESIGN_TOKENS.color.telemetry.idle },
+  { status: 'critical', label: 'خروج از ژئوفنس', token: '--ds-status-critical', hex: DESIGN_TOKENS.color.telemetry.critical },
 ];
 
 const GEOMETRY_TOKENS = [
-  { token: '--ds-geo-stroke-s', value: '23.145px', title: 'مدول ضخامت نوار لوگو (S)', desc: 'واحد پایه هندسه نشان و لوگوتایپ (U = 23.86px ≈ S)' },
-  { token: '--ds-geo-golden-fillet', value: '14.54px', title: 'فیلت طلایی داخلی (S / φ)', desc: 'شعاع گوشه دکمه‌های سه‌بعدی و اتصالات لوگو' },
-  { token: '--ds-geo-squircle', value: '31.25%', title: 'اسکوئیرکل اختصاصی ۵/۱۶', desc: 'قاب آیکن‌ها، نودهای رادار و پوسته سخت‌افزار GPS' },
-  { token: '--ds-geo-golden-split', value: '38.06%', title: 'نسبت زین طلایی (۱/φ²)', desc: 'تقسیم‌بندی ۳۸.۱٪ به ۶۱.۹٪ در بخش قهرمان و کارت‌های Bento' },
-  { token: '--ds-geo-kaf-skew', value: '-26.84deg', title: 'برش سرعت سرکش «ک» پیدا', desc: 'زاویه تیغه‌های گیج سوخت، دور موتور و امتیاز راننده' },
-  { token: '--ds-geo-radar-cone', value: '30.6deg', title: 'دهانه مخروط رادار رقم «۷»', desc: 'زاویه دید پرتو اسکن رادار زنده ناوگان' },
+  { token: '--ds-geo-stroke-s', value: DESIGN_TOKENS.geometry['stroke-s'], title: 'مدول ضخامت نوار لوگو (S)', desc: 'واحد پایه هندسه نشان و مقیاس فاصله‌گذاری (S = 23.145px)' },
+  { token: '--ds-geo-golden-fillet', value: DESIGN_TOKENS.geometry['golden-fillet'], title: 'فیلت داخلی اتصالات', desc: 'شعاع گوشه داخلی در چهار قطعه نشان برند' },
+  { token: '--ds-geo-squircle', value: DESIGN_TOKENS.geometry.squircle, title: 'چهارگوش‌نرم ۳۱.۲۵٪', desc: 'قاب آیکن‌ها، نودهای رادار و پوسته سخت‌افزار GPS' },
+  { token: '--ds-geo-pin-blade', value: DESIGN_TOKENS.geometry['pin-blade'], title: 'تیغه مکان‌نما ۱۳۶.۵۴°', desc: 'زاویه رأس پایینی قطعه چهارم لوگو در پین نقشه' },
+  { token: '--ds-geo-kaf-skew', value: DESIGN_TOKENS.geometry['kaf-skew'], title: 'برش مورب سرکش «ک» پیدا', desc: 'زاویه سگمنت‌های گیج سوخت و شاخص‌های سرعت' },
+  { token: '--ds-geo-radar-cone', value: DESIGN_TOKENS.geometry['radar-cone'], title: 'دهانه مخروط رادار ۳۰.۶°', desc: 'مشتق از شیب ۷۴.۷° بازوهای رقم «۷» فونت پیدا' },
 ];
 
 export default function DesignSystemPortal({ onBackToWebsite, onOpenLab }) {
   const [activeTab, setActiveTab] = useState('all');
+  const [polarity, setPolarity] = useState('nocturnal');
   const [copiedKey, setCopiedKey] = useState(null);
   const [sampleText, setSampleText] = useState(
     'کشنده ولوو FH500 در محور تهران به بندرعباس با سرعت ۸۶ کیلومتر بر ساعت و دمای یخچال ۴.۲- درجه در حرکت پایدار است.'
@@ -79,476 +79,330 @@ export default function DesignSystemPortal({ onBackToWebsite, onOpenLab }) {
     setTimeout(() => setCopiedKey(null), 1600);
   };
 
+  const showSection = (id) => activeTab === 'all' || activeTab === id;
+
   return (
-    <div className="site-root" style={{ minHeight: '100vh', paddingBottom: 80 }}>
-      {/* Top Sticky Portal Header */}
-      <div
-        style={{
-          position: 'sticky',
-          top: 0,
-          zIndex: 70,
-          background: 'rgba(6, 14, 22, 0.88)',
-          backdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(232, 222, 205, 0.14)',
-          padding: '14px 0',
-        }}
-      >
-        <div
-          className="site-container"
-          style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 14 }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <button onClick={onBackToWebsite} className="btn-3d-orange" style={{ padding: '9px 18px', fontSize: 13.5 }}>
-              <ArrowRight size={16} />
-              <span>بازگشت به وب‌سایت اصلی</span>
-            </button>
-            <div>
-              <div style={{ fontSize: 17, fontWeight: 900 }}>پورتال جامع دیزاین سیستم و توکن‌های ناوگان</div>
-              <div style={{ fontSize: 12.5, color: 'rgba(232,222,205,0.72)' }}>
-                مستندات زنده DESIGN.md · tokens/design-tokens.json · tokens/tokens.css · ۹ وزن فونت پیدا
-              </div>
+    <div className="fleet-site portal-shell" data-polarity={polarity}>
+      <div className="lab-shell">
+        <header className="topbar">
+          <div className="ds-row-wrap">
+            {onBackToWebsite && (
+              <Button variant="primary" size="sm" onClick={onBackToWebsite}>
+                <ArrowRight size={16} aria-hidden="true" />
+                <span>بازگشت به وب‌سایت</span>
+              </Button>
+            )}
+            <div className="brand-title">
+              <h1>پورتال جامع دیزاین سیستم و توکن‌های ناوگان</h1>
+              <p>تک‌منبع حقیقت: tokens/design-tokens.json · کامپوننت‌های مشترک src/ds/</p>
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            {[
-              { id: 'all', label: 'همه بخش‌ها', icon: Sparkles },
-              { id: 'colors', label: 'رنگ و قطبیت', icon: Palette },
-              { id: 'typography', label: 'تایپوگرافی پیدا', icon: Type },
-              { id: 'geometry', label: 'هندسه و مواد 3D', icon: Box },
-              { id: 'components', label: 'کامپوننت‌های ناوگان', icon: Cpu },
-              { id: 'tokens', label: 'کد توکن‌ها', icon: Code2 },
-            ].map((tab) => {
-              const Icon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`chip-btn ${activeTab === tab.id ? 'on' : ''}`}
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}
-                >
-                  <Icon size={14} />
-                  <span>{tab.label}</span>
-                </button>
-              );
-            })}
-            <button onClick={onOpenLab} className="chip-btn" title="مشاهده آزمایشگاه کالبدشکافی هندسه">
-              <Compass size={14} style={{ verticalAlign: 'middle', marginInlineEnd: 5 }} />
-              آزمایشگاه هندسه
-            </button>
+          <div className="ds-row-wrap">
+            <Button
+              variant="pill"
+              size="sm"
+              active={polarity === 'nocturnal'}
+              onClick={() => setPolarity('nocturnal')}
+            >
+              <Moon size={14} aria-hidden="true" />
+              <span>قطبیت شب راداری</span>
+            </Button>
+            <Button
+              variant="pill"
+              size="sm"
+              active={polarity === 'daylight'}
+              onClick={() => setPolarity('daylight')}
+            >
+              <Sun size={14} aria-hidden="true" />
+              <span>قطبیت روز شنی</span>
+            </Button>
+            {onOpenLab && (
+              <Button variant="ghost" size="sm" onClick={onOpenLab}>
+                <Compass size={14} aria-hidden="true" />
+                <span>آزمایشگاه هندسه</span>
+              </Button>
+            )}
           </div>
-        </div>
-      </div>
+        </header>
 
-      <div className="site-container" style={{ paddingTop: 40, display: 'flex', flexDirection: 'column', gap: 40 }}>
-        {/* Hero Banner of Design System */}
-        <div
-          className="cad-card"
-          style={{
-            padding: '34px 32px',
-            background: 'linear-gradient(140.24deg, #3D5768 0%, #112835 41.58%, #213D4F 78.61%, #132D3F 100%)',
-            borderColor: 'rgba(255, 116, 46, 0.4)',
-          }}
-        >
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 20 }}>
-            <div style={{ maxWidth: 780 }}>
-              <span className="kaf-slash-tag">نسخه ۱.۰.۰ · استاندارد W3C DTCG + CSS Custom Properties + Three.js PBR</span>
-              <h1 style={{ fontSize: 'clamp(26px, 3.2vw, 40px)', fontWeight: 900, marginTop: 10, marginBottom: 10 }}>
-                دیزاین سیستم مهندسی‌شده از هسته هندسی برند
-              </h1>
-              <p style={{ fontSize: 15, color: 'rgba(232,222,205,0.86)', lineHeight: 1.85 }}>
-                تک‌تک توکن‌ها، زوایا، شعاع‌های اسکوئیرکل، گرادیان‌های چهارمرحله‌ای بدنه خودرو و کامپوننت‌های ردیابی ناوگان در این سامانه از کالبدشکافی ریاضی فایل‌های اصلی برند و ۹ وزن فونت فارسی <strong>«پیدا»</strong> استخراج شده‌اند.
-              </p>
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16, background: 'rgba(6,14,22,0.58)', padding: '18px 24px', borderRadius: 24, border: '1px solid rgba(232,222,205,0.16)' }}>
-              <img src="/brand-clean/logo-clean.svg" alt="نشان تمیز" style={{ height: 52, filter: 'brightness(0) invert(0.95)' }} />
-              <img src="/brand-clean/typography-clean.svg" alt="لوگوتایپ تمیز" style={{ height: 34, filter: 'brightness(0) invert(0.95)' }} />
-            </div>
-          </div>
-        </div>
-
-        {/* ۱. رنگ‌ها، گرادیان بدنه خودرو و کنتراست WCAG */}
-        {(activeTab === 'all' || activeTab === 'colors') && (
-          <section className="cad-card">
-            <div style={{ marginBottom: 22 }}>
-              <span className="kaf-slash-tag">۰۱ · سیستم رنگ، گرادیان ۱۴۰.۲۴° و قطبیت شب/روز</span>
-              <h2 style={{ fontSize: 25, fontWeight: 900, marginTop: 8 }}>قطب‌های مکمل ۱۸۷.۳° و طیف‌های معنایی تله‌متری</h2>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 18, marginBottom: 24 }}>
-              {CORE_SWATCHES.map((sw) => (
-                <div
-                  key={sw.token}
-                  style={{
-                    borderRadius: 24,
-                    overflow: 'hidden',
-                    border: '1px solid rgba(232,222,205,0.16)',
-                    background: 'rgba(8, 19, 29, 0.8)',
-                  }}
-                >
-                  <div
-                    style={{
-                      height: 112,
-                      background: sw.hex,
-                      color: sw.textCol,
-                      padding: 18,
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'flex-end',
-                    }}
-                  >
-                    <span style={{ fontWeight: 900, fontSize: 18 }}>{sw.name}</span>
-                    <button
-                      onClick={() => copyValue(sw.token, sw.hex)}
-                      style={{
-                        minHeight: 44,
-                        minWidth: 44,
-                        padding: '8px 12px',
-                        borderRadius: 10,
-                        border: 'none',
-                        background: 'rgba(16,35,51,0.18)',
-                        color: sw.textCol,
-                        fontWeight: 800,
-                        fontSize: 12.5,
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: 5,
-                      }}
-                    >
-                      {copiedKey === sw.token ? <Check size={14} /> : <Copy size={14} />}
-                      <span className="ltr-code">{sw.hex}</span>
-                    </button>
-                  </div>
-                  <div style={{ padding: 16 }}>
-                    <div className="ltr-code" style={{ fontSize: 12.5, color: '#FF9861', marginBlockEnd: 4 }}>{sw.token}</div>
-                    <div className="ltr-code" style={{ fontSize: 12, color: 'rgba(232,222,205,0.68)', marginBlockEnd: 8 }}>{sw.spec}</div>
-                    <div style={{ fontSize: 13.5, color: 'rgba(232,222,205,0.84)' }}>{sw.usage}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* 140.24deg Clearcoat Gradient Bar + WCAG Matrix */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 18, marginBottom: 22 }}>
-              <div
-                style={{
-                  borderRadius: 22,
-                  padding: 22,
-                  background: DESIGN_TOKENS.gradients.clearcoatHorizon,
-                  border: '1px solid rgba(232,222,205,0.22)',
-                }}
+        <div className="portal-tab-bar" role="tablist" aria-label="بخش‌های پورتال دیزاین سیستم">
+          {[
+            { id: 'all', label: 'همه بخش‌ها', icon: Sparkles },
+            { id: 'colors', label: 'رنگ و قطبیت معنایی', icon: Palette },
+            { id: 'typography', label: 'تایپوگرافی پیدا', icon: Type },
+            { id: 'geometry', label: 'هندسه، فاصله S و مواد 3D', icon: Box },
+            { id: 'components', label: 'کامپوننت‌های زنده src/ds', icon: Cpu },
+            { id: 'tokens', label: 'خروجی خودکار توکن‌ها', icon: Code2 },
+          ].map((tab) => {
+            const Icon = tab.icon;
+            const isSel = activeTab === tab.id;
+            return (
+              <Button
+                key={tab.id}
+                variant="pill"
+                size="sm"
+                role="tab"
+                aria-selected={isSel}
+                active={isSel}
+                onClick={() => setActiveTab(tab.id)}
               >
-                <div style={{ fontSize: 13, fontWeight: 800, color: '#FFB085' }}>گرادیان بدنه خودرو (--ds-grad-clearcoat)</div>
-                <div style={{ fontSize: 18, fontWeight: 900, margin: '6px 0' }}>زاویه دقیق ۱۴۰.۲۴ درجه با منحنی S-Curve</div>
-                <div className="ltr-code" style={{ fontSize: 12, color: 'rgba(232,222,205,0.84)' }}>
-                  0% #3D5768 → 41.58% #112835 → 78.61% #213D4F → 100% #132D3F
+                <Icon size={14} aria-hidden="true" />
+                <span>{tab.label}</span>
+              </Button>
+            );
+          })}
+        </div>
+
+        <main className="ds-stack-lg">
+          {showSection('colors') && (
+            <Card variant="panel" className="ds-stack-md">
+              <div className="ds-between-wrap">
+                <div className="ds-stack-xs">
+                  <Capsule variant="eyebrow">لایه اول و دوم · رنگ‌های مادر و توکن‌های معنایی</Capsule>
+                  <h2>پالت برند، مقیاس‌ها و وضعیت‌های تله‌متری</h2>
                 </div>
-              </div>
-
-              <div style={{ borderRadius: 22, padding: 20, background: 'rgba(7,17,26,0.75)', border: '1px solid rgba(232,222,205,0.12)' }}>
-                <div style={{ fontSize: 14, fontWeight: 800, marginBottom: 10 }}>ماتریس استاندارد کنتراست (WCAG 2.1)</div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: 13 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span>سرمه‌ای `#102333` روی بژ `#E8DECD`</span>
-                    <strong style={{ color: '#4ADE80' }}>۱۲.۰۳ : ۱ (AAA عالی)</strong>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span>نارنجی `#FF742E` روی سرمه‌ای `#102333`</span>
-                    <strong style={{ color: '#38BDF8' }}>۵.۹۵ : ۱ (AA استاندارد)</strong>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span>نارنجی `#FF742E` روی بژ `#E8DECD`</span>
-                    <strong style={{ color: '#FACC15' }}>۲.۰۲ : ۱ (فقط حجم سه‌بعدی)</strong>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Telemetry Status Tokens */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(185px, 1fr))', gap: 12 }}>
-              {TELEMETRY_SWATCHES.map((st) => (
-                <div
-                  key={st.token}
-                  onClick={() => copyValue(st.token, `var(${st.token})`)}
-                  style={{
-                    padding: '12px 14px',
-                    borderRadius: 16,
-                    background: 'rgba(7,17,26,0.78)',
-                    border: '1px solid rgba(232,222,205,0.12)',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 10,
-                  }}
-                >
-                  <span style={{ width: 16, height: 16, borderRadius: 5, background: st.hex, boxShadow: `0 0 12px ${st.hex}` }} />
-                  <div>
-                    <div style={{ fontSize: 13, fontWeight: 800 }}>{st.label}</div>
-                    <div className="ltr-code" style={{ fontSize: 12, color: 'rgba(232,222,205,0.68)' }}>{st.token}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {(activeTab === 'all' || activeTab === 'typography') && (
-          <section className="cad-card">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 14, marginBlockEnd: 20 }}>
-              <div>
-                <span className="kaf-slash-tag">۰۲ · سیستم تایپوگرافی فارسی «پیدا» (Peyda v2.000)</span>
-                <h2 style={{ fontSize: 25, fontWeight: 900, marginBlockStart: 8 }}>آزمایش زنده وزن‌ها و مقیاس سلسله‌مراتب متن</h2>
-              </div>
-
-              <input
-                type="text"
-                aria-label="متن آزمایشی فونت پیدا"
-                value={sampleText}
-                onChange={(e) => setSampleText(e.target.value)}
-                placeholder="متن دلخواه خود را برای تست فونت پیدا بنویسید..."
-                style={{
-                  width: 'min(100%, 360px)',
-                  padding: '10px 14px',
-                  borderRadius: 12,
-                  border: '1px solid rgba(255,116,46,0.4)',
-                  background: 'rgba(8,19,29,0.9)',
-                  color: '#E8DECD',
-                  fontSize: 14,
-                }}
-              />
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {PEYDA_WEIGHTS.map((pw) => (
-                <div
-                  key={pw.weight}
-                  className="type-specimen-row"
-                  style={{
-                    padding: '14px 18px',
-                    borderRadius: 18,
-                    background: pw.weight >= 800 ? 'rgba(255,116,46,0.08)' : 'rgba(7,17,26,0.68)',
-                    border: pw.weight === 900 ? '1px solid rgba(255,116,46,0.4)' : '1px solid rgba(232,222,205,0.1)',
-                  }}
-                >
-                  <div>
-                    <div style={{ fontWeight: 800, fontSize: 14, color: pw.weight >= 800 ? '#FF742E' : '#E8DECD' }}>
-                      وزن {toFa(pw.weight)} · {pw.faName}
-                    </div>
-                    <div className="ltr-code" style={{ fontSize: 12, color: 'rgba(232,222,205,0.65)' }}>
-                      --ds-weight-{pw.name.toLowerCase()}
-                    </div>
-                  </div>
-                  <div style={{ fontWeight: pw.weight, fontSize: 19, lineHeight: 1.65 }}>
-                    {sampleText}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* ۳. ثوابت هندسی، مواد سه‌بعدی و منحنی‌های حرکت */}
-        {(activeTab === 'all' || activeTab === 'geometry') && (
-          <section className="cad-card">
-            <div style={{ marginBottom: 22 }}>
-              <span className="kaf-slash-tag">۰۳ · توکن‌های هندسی CAD و مواد سه‌بعدی دوحالته</span>
-              <h2 style={{ fontSize: 25, fontWeight: 900, marginTop: 8 }}>ثوابت استخراج‌شده از لوگو، حروف پیدا و فایل‌های سه‌بعدی</h2>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 14 }}>
-              {GEOMETRY_TOKENS.map((gt) => (
-                <div
-                  key={gt.token}
-                  style={{
-                    padding: 18,
-                    borderRadius: 20,
-                    background: 'rgba(7,17,26,0.75)',
-                    border: '1px solid rgba(232,222,205,0.12)',
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                    <span className="ltr-code" style={{ fontSize: 12, color: '#38BDF8' }}>{gt.token}</span>
-                    <span className="ltr-code" style={{ fontSize: 15, fontWeight: 900, color: '#FF742E' }}>{gt.value}</span>
-                  </div>
-                  <div style={{ fontSize: 15, fontWeight: 800, marginBlockEnd: 4 }}>{gt.title}</div>
-                  <div style={{ fontSize: 13, color: 'rgba(232,222,205,0.76)' }}>{gt.desc}</div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* ۴. کتابخانه زنده کامپوننت‌های عملیاتی ناوگان */}
-        {(activeTab === 'all' || activeTab === 'components') && (
-          <section className="cad-card">
-            <div style={{ marginBottom: 22 }}>
-              <span className="kaf-slash-tag">۰۴ · کتابخانه کامپوننت‌های عملیاتی ناوگان و GPS</span>
-              <h2 style={{ fontSize: 25, fontWeight: 900, marginTop: 8 }}>اجزای لمسی سه‌بعدی آماده استفاده در محصول</h2>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: 20 }}>
-              <div style={{ padding: 22, borderRadius: 22, background: 'rgba(7,17,26,0.75)', border: '1px solid rgba(232,222,205,0.12)' }}>
-                <div style={{ fontSize: 15, fontWeight: 800, marginBlockEnd: 14 }}>دکمه‌های سه‌بعدی لبه‌دار و چیپ‌های فیلتر</div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginBlockEnd: 18 }}>
-                  <button className="btn-3d-orange">
-                    <Send size={15} />
-                    <span>فراخوان اصلی (.btn-3d-orange)</span>
-                  </button>
-                  <button className="btn-3d-navy">
-                    <ShieldCheck size={15} />
-                    <span>دکمه بدنه (.btn-3d-navy)</span>
-                  </button>
-                </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                  <span className="chip-btn on">چیپ فعال ناوگان</span>
-                  <span className="chip-btn">فیلتر زنجیره سرد</span>
-                  <span className="kaf-slash-tag">برچسب سرکش ک</span>
-                </div>
-              </div>
-
-              <div style={{ padding: 22, borderRadius: 22, background: 'rgba(7,17,26,0.75)', border: '1px solid rgba(232,222,205,0.12)' }}>
-                <div style={{ fontSize: 15, fontWeight: 800, marginBlockEnd: 14 }}>پلاک استاندارد ایران (.iran-plate)</div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14, alignItems: 'center', marginBlockEnd: 16 }}>
-                  <div className="iran-plate">
-                    <div className="iran-plate-blue" aria-hidden="true">
-                      <svg width="12" height="22" viewBox="0 0 12 22">
-                        <rect x="1" y="2" width="10" height="2.5" fill="#22C55E" />
-                        <rect x="1" y="4.5" width="10" height="2.5" fill="#FFFFFF" />
-                        <rect x="1" y="7" width="10" height="2.5" fill="#EF4444" />
-                        <rect x="2" y="13" width="8" height="1.5" rx="0.7" fill="#FFFFFF" opacity="0.85" />
-                        <rect x="2" y="16.5" width="8" height="1.5" rx="0.7" fill="#FFFFFF" opacity="0.85" />
-                      </svg>
-                    </div>
-                    <div className="iran-plate-main" style={{ background: '#FACC15' }}>
-                      <span>۴۸</span><span style={{ color: '#102333' }}>ع</span><span>۷۹۲</span>
-                    </div>
-                    <div className="iran-plate-city" style={{ background: '#FACC15' }}><strong>۱۱</strong></div>
-                  </div>
-
-                  <div className="iran-plate">
-                    <div className="iran-plate-blue" aria-hidden="true">
-                      <svg width="12" height="22" viewBox="0 0 12 22">
-                        <rect x="1" y="2" width="10" height="2.5" fill="#22C55E" />
-                        <rect x="1" y="4.5" width="10" height="2.5" fill="#FFFFFF" />
-                        <rect x="1" y="7" width="10" height="2.5" fill="#EF4444" />
-                        <rect x="2" y="13" width="8" height="1.5" rx="0.7" fill="#FFFFFF" opacity="0.85" />
-                        <rect x="2" y="16.5" width="8" height="1.5" rx="0.7" fill="#FFFFFF" opacity="0.85" />
-                      </svg>
-                    </div>
-                    <div className="iran-plate-main">
-                      <span>۷۳</span><span style={{ color: '#FF742E' }}>ط</span><span>۱۶۹</span>
-                    </div>
-                    <div className="iran-plate-city"><strong>۲۲</strong></div>
-                  </div>
-                </div>
-                <div style={{ fontSize: 13, color: 'rgba(232,222,205,0.76)' }}>
-                  پشتیبانی از پلاک زرد ناوگان عمومی/سنگین و پلاک سفید سازمانی با فونت پیدا وزن ۸۰۰.
-                </div>
-              </div>
-
-              {/* Kaf-Slash Fuel Gauge + Squircle Slider */}
-              <div style={{ padding: 22, borderRadius: 22, background: 'rgba(7,17,26,0.75)', border: '1px solid rgba(232,222,205,0.12)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                  <span style={{ fontSize: 15, fontWeight: 800 }}>گیج سوخت مورب ۲۶.۸۴° + اسلایدر اسکوئیرکل</span>
-                  <strong style={{ color: demoFuel < 30 ? '#FF742E' : '#4ADE80' }}>{toFa(demoFuel)}٪</strong>
-                </div>
-                <div style={{ display: 'flex', gap: 5, marginBottom: 16, padding: '0 4px' }}>
-                  {Array.from({ length: 16 }).map((_, i) => {
-                    const lit = i < Math.round((demoFuel / 100) * 16);
-                    return (
-                      <div
-                        key={i}
-                        style={{
-                          flex: 1,
-                          height: 16,
-                          borderRadius: 3,
-                          transform: 'skewX(-26.84deg)',
-                          background: lit ? (demoFuel < 30 ? '#FF742E' : '#4ADE80') : 'rgba(232,222,205,0.12)',
-                        }}
-                      />
-                    );
-                  })}
-                </div>
-                <input
-                  type="range"
-                  className="cinema-range"
-                  min="5"
-                  max="100"
-                  value={demoFuel}
-                  onChange={(e) => setDemoFuel(Number(e.target.value))}
+                <StatusChip
+                  status="moving"
+                  label={polarity === 'daylight' ? 'نمایش زنده در قطبیت روز شنی' : 'نمایش زنده در قطبیت شب راداری'}
                 />
               </div>
 
-              {/* Dual Polarity Card Comparison */}
-              <div
-                className="cushion-card-light"
-                style={{ padding: 22, color: '#102333', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
-              >
-                <span style={{ fontSize: 12, fontWeight: 800, color: '#FF742E', background: '#102333', alignSelf: 'flex-start', padding: '3px 10px', borderRadius: 999, marginBottom: 8 }}>
-                  کارت بالشتکی روز (.cushion-card-light)
-                </span>
-                <div style={{ fontSize: 17, fontWeight: 900, marginBottom: 4 }}>قطبیت روز شنی با کنتراست ۱۲.۰۳:۱</div>
-                <p style={{ fontSize: 14, color: 'rgba(16,35,51,0.78)' }}>
-                  مشتق از مد Inflate 76% فایل سه‌بعدی برند برای بخش‌های تحلیلی روشن.
-                </p>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {(activeTab === 'all' || activeTab === 'tokens') && (
-          <section className="cad-card">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginBlockEnd: 16 }}>
-              <div>
-                <span className="kaf-slash-tag">۰۵ · فایل‌های رسمی توکن در مخزن گیت‌هاب</span>
-                <h2 style={{ fontSize: 23, fontWeight: 900, marginBlockStart: 8 }}>
-                  آماده ایمپورت در CSS، React، Three.js، Tailwind و Figma
-                </h2>
+              <div className="portal-swatch-grid">
+                {CORE_SWATCHES.map((sw) => (
+                  <div key={sw.token} className="portal-swatch-card">
+                    <div className="portal-swatch-preview" style={{ '--swatch-bg': `var(${sw.token})` }}>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => copyValue(sw.token, `var(${sw.token})`)}
+                        aria-label={`کپی متغیر ${sw.token}`}
+                      >
+                        {copiedKey === sw.token ? <Check size={14} aria-hidden="true" /> : <Copy size={14} aria-hidden="true" />}
+                        <span className="ltr-code">{sw.hex}</span>
+                      </Button>
+                    </div>
+                    <div className="portal-swatch-body">
+                      <strong>{sw.name}</strong>
+                      <span className="ltr-code ds-accent-soft-text">{sw.token}</span>
+                      <span className="ltr-code ds-muted">{sw.spec}</span>
+                      <p className="ds-muted">{sw.usage}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
 
-              <button
-                onClick={() => copyValue('json-all', JSON.stringify(DESIGN_TOKENS, null, 2))}
-                className="btn-3d-navy"
-              >
-                {copiedKey === 'json-all' ? <Check size={15} color="#4ADE80" /> : <Copy size={15} />}
-                <span>کپی کل شیء توکن‌ها (JSON)</span>
-              </button>
-            </div>
+              <div className="ds-stack-xs">
+                <h3>طیف تله‌متری ناوگان (با شکل و برچسب غیررنگی)</h3>
+                <div className="ds-row-wrap">
+                  {TELEMETRY_SWATCHES.map((ts) => (
+                    <StatusChip key={ts.token} status={ts.status} label={`${ts.label} (${ts.hex})`} />
+                  ))}
+                </div>
+              </div>
+            </Card>
+          )}
 
-            <div className="scroll-x-wrap">
-              <pre
-                className="ltr-code"
-                style={{
-                  width: '100%',
-                  background: '#050B12',
-                  padding: 20,
-                  borderRadius: 18,
-                  border: '1px solid rgba(232,222,205,0.14)',
-                  overflowX: 'auto',
-                  fontSize: 12.5,
-                  lineHeight: 1.65,
-                  color: '#E8DECD',
-                }}
-              >
-{`/* tokens/tokens.css */
-:root {
-  --ds-color-signal-orange: #FF742E;
-  --ds-color-deep-navy:     #102333;
-  --ds-color-warm-sand:     #E8DECD;
-  --ds-grad-clearcoat:      linear-gradient(140.24deg, #3D5768 0%, #112835 41.58%, #213D4F 78.61%, #132D3F 100%);
-  --ds-font-sans:           'Peyda', Tahoma, sans-serif;
-  --ds-geo-stroke-s:        23.145px;
-  --ds-geo-golden-fillet:   14.54px;
-  --ds-geo-squircle:        31.25%;
-  --ds-geo-kaf-skew:        -26.84deg;
-  --ds-geo-radar-cone:      30.6deg;
-  --ds-ease-spring-lock:    cubic-bezier(0.34, 1.45, 0.64, 1);
-}`}
+          {showSection('typography') && (
+            <Card variant="panel" className="ds-stack-md">
+              <div className="ds-between-wrap">
+                <div className="ds-stack-xs">
+                  <Capsule variant="eyebrow">خانواده تایپوگرافی فارسی · Peyda</Capsule>
+                  <h2>مقیاس تایپی و ارقام هم‌عرض (Tabular Numerals)</h2>
+                </div>
+
+                <div className="ds-stack-xs">
+                  <label htmlFor="portal-sample-input" className="ds-muted">متن آزمایشی زنده:</label>
+                  <input
+                    id="portal-sample-input"
+                    type="text"
+                    className="portal-input"
+                    value={sampleText}
+                    onChange={(e) => setSampleText(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="ds-stack-sm">
+                {PEYDA_WEIGHTS.map((w) => (
+                  <Card key={w.weight} variant="glass" compact className="type-specimen-row">
+                    <div className="ds-stack-xs">
+                      <strong className="ds-accent-text">
+                        {toFa(w.weight)} · {w.faName}
+                      </strong>
+                      <span className="ds-muted">{w.usage}</span>
+                    </div>
+                    <div
+                      className="peyda-live-sample ds-tabular"
+                      style={{ '--sample-weight': w.weight, '--sample-size': '20px' }}
+                    >
+                      {sampleText}
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </Card>
+          )}
+
+          {showSection('geometry') && (
+            <Card variant="panel" className="ds-stack-md">
+              <div className="ds-stack-xs">
+                <Capsule variant="eyebrow">هندسه استخراج‌شده و مقیاس فاصله S = 23.145px</Capsule>
+                <h2>ضرایب هندسی، مقیاس فاصله‌گذاری و پارامترهای فیزیکی سه‌بعدی</h2>
+              </div>
+
+              <div className="portal-swatch-grid">
+                {GEOMETRY_TOKENS.map((g) => (
+                  <Card key={g.token} variant="glass" compact className="ds-stack-xs">
+                    <div className="ds-between">
+                      <strong>{g.title}</strong>
+                      <span className="ltr-code ds-accent-text">{g.value}</span>
+                    </div>
+                    <span className="ltr-code ds-muted">{g.token}</span>
+                    <p className="ds-muted">{g.desc}</p>
+                  </Card>
+                ))}
+              </div>
+
+              <div className="ds-stack-xs">
+                <h3>مقیاس فاصله‌گذاری مبتنی بر مدول S</h3>
+                <div className="portal-scale-strip">
+                  {Object.entries(DESIGN_TOKENS.spacing).map(([key, val]) => (
+                    <Card key={key} variant="glass" compact className="ds-stack-xs">
+                      <strong className="ltr-code ds-accent-text">--ds-space-{key}</strong>
+                      <span className="ltr-code ds-muted">{val}</span>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </Card>
+          )}
+
+          {showSection('components') && (
+            <Card variant="panel" className="ds-stack-md">
+              <div className="ds-stack-xs">
+                <Capsule variant="eyebrow">کتابخانه مشترک src/ds/ · بدون تکرار کد</Capsule>
+                <h2>کامپوننت‌های اجرایی مشترک وب‌سایت و پورتال</h2>
+              </div>
+
+              <div className="section-grid">
+                <Card variant="glass" className="ds-stack-md">
+                  <h3>۱. دکمه‌ها (Button) و کپسول‌ها (Capsule)</h3>
+                  <div className="ds-row-wrap">
+                    <Button variant="primary">
+                      <Navigation size={16} aria-hidden="true" />
+                      <span>دکمه اصلی ناوگان</span>
+                    </Button>
+                    <Button variant="secondary">دکمه ثانویه افق</Button>
+                    <Button variant="ghost">دکمه شیشه‌ای</Button>
+                    <Button variant="pill" active>فیلتر فعال</Button>
+                  </div>
+                  <div className="ds-row-wrap">
+                    <Capsule variant="eyebrow" pulse>سیگنال زنده ۰.۰۲ ثانیه</Capsule>
+                    <Capsule variant="slash">برچسب فنی سرکش</Capsule>
+                    <Capsule variant="tag">تگ اطلاعاتی</Capsule>
+                  </div>
+                </Card>
+
+                <Card variant="glass" className="ds-stack-md">
+                  <h3>۲. پلاک ملی ایران (IranPlate) و وضعیت‌ها (StatusChip)</h3>
+                  <div className="ds-row-wrap">
+                    <IranPlate left2="۴۸" letter="ع" mid3="۷۹۲" iranCode="۱۱" variant="public" />
+                    <IranPlate left2="۷۳" letter="ط" mid3="۱۶۹" iranCode="۲۲" variant="private" />
+                  </div>
+                  <div className="ds-row-wrap">
+                    <StatusChip status="moving" label="در حرکت پایدار" />
+                    <StatusChip status="cold-chain" icon={Thermometer} label="سردخانه ۴.۲- درجه" />
+                    <StatusChip status="idle" label="توقف درجا" />
+                    <StatusChip status="critical" label="خروج از مرز" />
+                  </div>
+                </Card>
+              </div>
+
+              <div className="section-grid">
+                <Card variant="chisel" polarity="nocturnal" tilt className="ds-stack-md">
+                  <h3>۳. کارت پخ‌خورده (Card variant=&quot;chisel&quot;) + گیج مورب (Gauge)</h3>
+                  <Gauge
+                    segments={14}
+                    activeCount={Math.round((demoFuel / 100) * 14)}
+                    label="سطح سوخت باک (برش ۲۶.۸۴- درجه)"
+                    value={`${toFa(demoFuel)}٪`}
+                    tone={demoFuel < 40 ? 'accent' : 'moving'}
+                  />
+                  <div className="ds-row-md">
+                    <label htmlFor="portal-fuel-slider" className="ds-muted">تغییر مقدار گیج:</label>
+                    <input
+                      id="portal-fuel-slider"
+                      type="range"
+                      className="cinema-range"
+                      min="0"
+                      max="100"
+                      value={demoFuel}
+                      onChange={(e) => setDemoFuel(Number(e.target.value))}
+                    />
+                  </div>
+                </Card>
+
+                <Card variant="cushion" tilt className="ds-stack-md">
+                  <h3>۴. کارت بالشتکی روشن (Card variant=&quot;cushion&quot;)</h3>
+                  <p>
+                    سطح روشن با سایه نرم دوطرفه و کنتراست ۱۲.۰۳:۱ برای پنل‌های تحلیلی روزانه و امتیازدهی رانندگان.
+                  </p>
+                  <div>
+                    <StatusChip status="moving" label="تست‌شده با حرکت سه‌بعدی ماوس (Tilt)" />
+                  </div>
+                </Card>
+              </div>
+
+              <div className="portal-dodont-grid">
+                <Card variant="glass" compact className="portal-do-card ds-stack-xs">
+                  <StatusChip status="moving" label="انجام دهید (Do)" />
+                  <p>
+                    در تمام کامپوننت‌ها فقط از توکن‌های معنایی مانند <span className="ltr-code">var(--ds-surface)</span> و <span className="ltr-code">var(--ds-on-surface)</span> استفاده کنید تا تغییر قطبیت خودکار عمل کند.
+                  </p>
+                </Card>
+                <Card variant="glass" compact className="portal-dont-card ds-stack-xs">
+                  <StatusChip status="critical" label="انجام ندهید (Don't)" />
+                  <p>
+                    از کدهای هگز خام، توابع رنگ شفاف دستی یا متن سفید روی دکمه نارنجی استفاده نکنید؛ گیت <span className="ltr-code">npm run lint:tokens</span> بیلد را متوقف می‌کند.
+                  </p>
+                </Card>
+              </div>
+            </Card>
+          )}
+
+          {showSection('tokens') && (
+            <Card variant="panel" className="ds-stack-md">
+              <div className="ds-between-wrap">
+                <div className="ds-stack-xs">
+                  <Capsule variant="eyebrow">زنجیره تولید خودکار · scripts/build-tokens.mjs</Capsule>
+                  <h2>نمونه خروجی زنده از tokens/design-tokens.json</h2>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => copyValue('json', JSON.stringify(DESIGN_TOKENS, null, 2))}
+                >
+                  {copiedKey === 'json' ? <Check size={14} aria-hidden="true" /> : <Copy size={14} aria-hidden="true" />}
+                  <span>کپی کل توکن‌های JS</span>
+                </Button>
+              </div>
+
+              <pre className="portal-code-box">
+                {JSON.stringify(
+                  {
+                    semantic: 'tokens/tokens.css ([data-polarity="daylight"])',
+                    spacing: DESIGN_TOKENS.spacing,
+                    geometry: DESIGN_TOKENS.geometry,
+                    material3d: DESIGN_TOKENS.material3d.pbr,
+                  },
+                  null,
+                  2
+                )}
               </pre>
-            </div>
-          </section>
-        )}
+            </Card>
+          )}
+        </main>
       </div>
     </div>
   );

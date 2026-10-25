@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowRight, Compass, Layers, Radar, Type, Palette } from 'lucide-react';
-import './styles/website.css';
+import { Button } from './ds/index.js';
 
 import Navbar3D from './components/website/Navbar3D.jsx';
 import Hero3DStage from './components/website/Hero3DStage.jsx';
@@ -19,8 +19,8 @@ import PeydaShowcase from './components/PeydaShowcase.jsx';
 import DerivedPatternsLab from './components/DerivedPatternsLab.jsx';
 import CoreGeometryStep1 from './components/CoreGeometryStep1.jsx';
 
-export default function App() {
-  const [viewMode, setViewMode] = useState('website'); // 'website' | 'design-system' | 'lab'
+export default function App({ initialView = 'website' }) {
+  const [viewMode, setViewMode] = useState(initialView);
   const [archOpen, setArchOpen] = useState(false);
   const [labTab, setLabTab] = useState('overview');
 
@@ -40,59 +40,61 @@ export default function App() {
 
   if (viewMode === 'lab') {
     return (
-      <div className="cad-backdrop">
-        <div className="shell">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
-            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-              <button className="btn-3d-orange" onClick={() => goTopAndSet('website')}>
-                <ArrowRight size={16} />
-                <span>بازگشت به وب‌سایت اصلی ناوگان</span>
-              </button>
-              <button className="btn-3d-navy" onClick={() => goTopAndSet('design-system')}>
-                <Palette size={15} />
-                <span>پورتال دیزاین سیستم و توکن‌ها</span>
-              </button>
-            </div>
-
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              {[
-                { id: 'overview', label: 'نمای کلی پترن‌ها و فونت پیدا', icon: Layers },
-                { id: 'peyda', label: 'تایپوگرافی پیدا (۹ وزن)', icon: Type },
-                { id: 'patterns', label: '۶ پترن حرکتی مشتق‌شده', icon: Radar },
-                { id: 'geometry', label: 'کالبدشکافی هندسه مادر', icon: Compass },
-              ].map((t) => {
-                const Icon = t.icon;
-                return (
-                  <button
-                    key={t.id}
-                    className={`mat-tab ${labTab === t.id ? 'selected' : ''}`}
-                    onClick={() => setLabTab(t.id)}
-                  >
-                    <Icon size={15} />
-                    <span>{t.label}</span>
-                  </button>
-                );
-              })}
-            </div>
+      <div className="lab-shell">
+        <header className="topbar">
+          <div className="ds-row-wrap">
+            <Button variant="primary" size="sm" onClick={() => goTopAndSet('website')}>
+              <ArrowRight size={16} aria-hidden="true" />
+              <span>بازگشت به وب‌سایت ناوگان</span>
+            </Button>
+            <Button variant="secondary" size="sm" onClick={() => goTopAndSet('design-system')}>
+              <Palette size={15} aria-hidden="true" />
+              <span>پورتال دیزاین سیستم</span>
+            </Button>
           </div>
 
-          <ScrollFilmStage />
-          {labTab === 'overview' && (
-            <>
-              <PeydaShowcase />
-              <DerivedPatternsLab />
-            </>
-          )}
-          {labTab === 'peyda' && <PeydaShowcase />}
-          {labTab === 'patterns' && <DerivedPatternsLab />}
-          {labTab === 'geometry' && <CoreGeometryStep1 />}
-        </div>
+          <div className="step-tabs" role="tablist" aria-label="بخش‌های آزمایشگاه هندسه">
+            {[
+              { id: 'overview', label: 'نمای کلی پترن‌ها و فونت پیدا', icon: Layers },
+              { id: 'peyda', label: 'تایپوگرافی پیدا', icon: Type },
+              { id: 'patterns', label: '۶ پترن مشتق‌شده', icon: Radar },
+              { id: 'geometry', label: 'کالبدشکافی هندسه مادر', icon: Compass },
+            ].map((t) => {
+              const Icon = t.icon;
+              const isSelected = labTab === t.id;
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={isSelected}
+                  className={`step-tab ${isSelected ? 'active' : ''}`}
+                  onClick={() => setLabTab(t.id)}
+                >
+                  <Icon size={15} aria-hidden="true" />
+                  <span>{t.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </header>
+
+        <ScrollFilmStage />
+        {labTab === 'overview' && (
+          <>
+            <PeydaShowcase />
+            <DerivedPatternsLab />
+          </>
+        )}
+        {labTab === 'peyda' && <PeydaShowcase />}
+        {labTab === 'patterns' && <DerivedPatternsLab />}
+        {labTab === 'geometry' && <CoreGeometryStep1 />}
       </div>
     );
   }
 
   return (
-    <div className="site-root">
+    <div className="fleet-site nuqta-ambient-bg">
       <Navbar3D
         onOpenArch={() => setArchOpen(true)}
         onOpenDesignSystem={() => goTopAndSet('design-system')}

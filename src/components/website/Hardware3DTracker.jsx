@@ -4,36 +4,37 @@ import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Cpu, Layers, ShieldCheck, BatteryCharging, Wifi } from 'lucide-react';
 import { LOGO_PATH_D } from '../../data/geometryData.js';
+import { DESIGN_TOKENS } from '../../../tokens/tokens.js';
+import { Button, Card, Capsule } from '../../ds/index.js';
 import { toFa } from '../../utils/faDigits.js';
 
 const HARDWARE_LAYERS = [
   {
     id: 0,
     title: '۱. پوسته پلیمر ضدضربه کابین (IP68)',
-    spec: 'فرم اسکوئیرکل ۳۱.۲۵٪ با پخ ۶۰٪ و زبری ابریشمی ۰.۴۰ + نشان برجسته سه‌بعدی برند',
+    spec: 'فرم چهارگوش‌نرم ۳۱.۲۵٪ با پخ ۶۰٪ و زبری ابریشمی ۰.۴۰ به همراه نشان برجسته برند',
     icon: ShieldCheck,
   },
   {
     id: 1,
     title: '۲. آنتن سرامیکی چندبانده ماهواره‌ای',
-    spec: 'دریافت هم‌زمان GPS + GLONASS + Galileo با خطای کمتر از ۱.۲ متر در تونل و جاده کوهستانی',
+    spec: 'دریافت هم‌زمان GPS + GLONASS + Galileo با خطای کمتر از ۱.۲ متر در مسیرهای کوهستانی',
     icon: Wifi,
   },
   {
     id: 2,
     title: '۳. برد پردازش تله‌متری و شتاب‌سنج ۶ محوره',
-    spec: 'اتصال مستقیم به CAN-Bus خودرو، پایش لحظه‌ای سوخت، دمای سردخانه و تشخیص تصادف یا سرقت',
+    spec: 'اتصال مستقیم به CAN-Bus خودرو، پایش لحظه‌ای سوخت، دمای سردخانه و تشخیص ضربه',
     icon: Cpu,
   },
   {
     id: 3,
     title: '۴. شاسی آلومینیومی و باتری پشتیبان اضطراری',
-    spec: 'ذخیره تا ۷۲ ساعت ارسال موقعیت مخفی حتی در صورت قطع کامل برق سرقتی باتری خودرو',
+    spec: 'ذخیره تا ۷۲ ساعت ارسال موقعیت در صورت قطع برق باتری اصلی خودرو',
     icon: BatteryCharging,
   },
 ];
 
-// Create a rounded squircle-like shape in Three.js with R = 31.25% of size!
 function createSquircleShape(size, radiusRatio = 0.3125) {
   const s = new THREE.Shape();
   const half = size / 2;
@@ -52,7 +53,7 @@ function createSquircleShape(size, radiusRatio = 0.3125) {
 
 export default function Hardware3DTracker() {
   const mountRef = useRef(null);
-  const [explode, setExplode] = useState(0.55); // Start slightly exploded so user immediately sees 3D layers!
+  const [explode, setExplode] = useState(0.55);
   const [activeLayer, setActiveLayer] = useState(0);
   const explodeRef = useRef(0.55);
   const inViewRef = useRef(true);
@@ -74,7 +75,7 @@ export default function Hardware3DTracker() {
     obs.observe(container);
 
     const width = container.clientWidth || 640;
-    const height = 470;
+    const height = container.clientHeight || 460;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(34, width / height, 1, 2500);
@@ -100,8 +101,9 @@ export default function Hardware3DTracker() {
     scene.add(deviceGroup);
 
     const disposables = [];
+    const cOrange = new THREE.Color(DESIGN_TOKENS.color.signalOrange);
+    const cSand = new THREE.Color(DESIGN_TOKENS.color.warmSand);
 
-    // --- LAYER 0 (TOP): Satin Deep Navy Chiseled Squircle Shell + Embossed Brand Logo + Orange LED ---
     const topLayer = new THREE.Group();
     const shellShape = createSquircleShape(176, 0.3125);
     const shellGeo = new THREE.ExtrudeGeometry(shellShape, {
@@ -114,14 +116,13 @@ export default function Hardware3DTracker() {
     });
     shellGeo.rotateX(Math.PI / 2);
     const shellMat = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#132C40'),
-      roughness: 0.38, // Recovered 40% tactile polymer!
-      metalness: 0.08,
+      color: new THREE.Color(DESIGN_TOKENS.color.navy['400']),
+      roughness: DESIGN_TOKENS.material3d.pbr.roughness,
+      metalness: DESIGN_TOKENS.material3d.pbr.metalness,
     });
     topLayer.add(new THREE.Mesh(shellGeo, shellMat));
     disposables.push(shellGeo, shellMat);
 
-    // Embossed 3D Brand Logo on Top of Shell!
     const loader = new SVGLoader();
     const parsedLogo = loader.parse(
       `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 234.21 324.76"><path d="${LOGO_PATH_D}"/></svg>`
@@ -140,7 +141,7 @@ export default function Hardware3DTracker() {
     });
     logoGeo.center();
     const logoMat = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#E8DECD'),
+      color: cSand,
       roughness: 0.32,
       metalness: 0.12,
     });
@@ -151,12 +152,11 @@ export default function Hardware3DTracker() {
     topLayer.add(logoMesh);
     disposables.push(logoGeo, logoMat);
 
-    // Glowing Orange Telemetry LED Capsule Bar on Front Flank
     const ledGeo = new THREE.CapsuleGeometry(2.6, 36, 8, 16);
     ledGeo.rotateZ(Math.PI / 2);
     const ledMat = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#FF742E'),
-      emissive: new THREE.Color('#FF742E'),
+      color: cOrange,
+      emissive: cOrange,
       emissiveIntensity: 2.2,
       roughness: 0.2,
     });
@@ -166,7 +166,6 @@ export default function Hardware3DTracker() {
     disposables.push(ledGeo, ledMat);
     deviceGroup.add(topLayer);
 
-    // --- LAYER 1: Warm Beige Ceramic Multi-Band GNSS Patch Antenna ---
     const antLayer = new THREE.Group();
     const antShape = createSquircleShape(132, 0.26);
     const antGeo = new THREE.ExtrudeGeometry(antShape, {
@@ -178,7 +177,7 @@ export default function Hardware3DTracker() {
     });
     antGeo.rotateX(Math.PI / 2);
     const antMat = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#E8DECD'),
+      color: cSand,
       roughness: 0.35,
       metalness: 0.15,
     });
@@ -186,7 +185,7 @@ export default function Hardware3DTracker() {
 
     const goldPatchGeo = new THREE.BoxGeometry(74, 3, 74);
     const goldPatchMat = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#FF8C4B'),
+      color: new THREE.Color(DESIGN_TOKENS.color.orange['400']),
       roughness: 0.25,
       metalness: 0.65,
     });
@@ -196,33 +195,35 @@ export default function Hardware3DTracker() {
     disposables.push(antGeo, antMat, goldPatchGeo, goldPatchMat);
     deviceGroup.add(antLayer);
 
-    // --- LAYER 2: Telemetry PCB + MCU Chipset ---
     const pcbLayer = new THREE.Group();
     const pcbShape = createSquircleShape(156, 0.28);
     const pcbGeo = new THREE.ExtrudeGeometry(pcbShape, { depth: 5, bevelEnabled: false });
     pcbGeo.rotateX(Math.PI / 2);
     const pcbMat = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#0E3B33'),
+      color: new THREE.Color(DESIGN_TOKENS.color.neutral.pcb),
       roughness: 0.42,
       metalness: 0.25,
     });
     pcbLayer.add(new THREE.Mesh(pcbGeo, pcbMat));
 
     const chipGeo = new THREE.BoxGeometry(42, 6, 42);
-    const chipMat = new THREE.MeshStandardMaterial({ color: 0x111922, roughness: 0.3, metalness: 0.4 });
+    const chipMat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color(DESIGN_TOKENS.color.navy['900']),
+      roughness: 0.3,
+      metalness: 0.4,
+    });
     const chip = new THREE.Mesh(chipGeo, chipMat);
     chip.position.set(-18, 3, 10);
     pcbLayer.add(chip);
 
     const simGeo = new THREE.BoxGeometry(28, 4.5, 22);
-    const simMat = new THREE.MeshStandardMaterial({ color: 0xff742e, roughness: 0.35, metalness: 0.3 });
+    const simMat = new THREE.MeshStandardMaterial({ color: cOrange, roughness: 0.35, metalness: 0.3 });
     const sim = new THREE.Mesh(simGeo, simMat);
     sim.position.set(30, 2.5, -16);
     pcbLayer.add(sim);
     disposables.push(pcbGeo, pcbMat, chipGeo, chipMat, simGeo, simMat);
     deviceGroup.add(pcbLayer);
 
-    // --- LAYER 3 (BOTTOM): Chiseled Anodized Base & Li-Po Industrial Backup Cell ---
     const baseLayer = new THREE.Group();
     const baseShape = createSquircleShape(174, 0.3125);
     const baseGeo = new THREE.ExtrudeGeometry(baseShape, {
@@ -234,7 +235,7 @@ export default function Hardware3DTracker() {
     });
     baseGeo.rotateX(Math.PI / 2);
     const baseMat = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#273E50'),
+      color: new THREE.Color(DESIGN_TOKENS.color.navy['200']),
       roughness: 0.36,
       metalness: 0.35,
     });
@@ -242,13 +243,12 @@ export default function Hardware3DTracker() {
     disposables.push(baseGeo, baseMat);
     deviceGroup.add(baseLayer);
 
-    // Lighting
-    scene.add(new THREE.AmbientLight(0xdbe8f4, 0.9));
-    const sun = new THREE.DirectionalLight(0xfff7ee, 2.3);
+    scene.add(new THREE.AmbientLight(new THREE.Color(DESIGN_TOKENS.color.sand['50']), 0.9));
+    const sun = new THREE.DirectionalLight(new THREE.Color(DESIGN_TOKENS.color.sand['50']), 2.3);
     sun.position.set(-180, 260, 210);
     scene.add(sun);
 
-    const orangeGlow = new THREE.PointLight(0xff742e, 1.8, 460);
+    const orangeGlow = new THREE.PointLight(cOrange, 1.8, 460);
     orangeGlow.position.set(110, 40, 170);
     scene.add(orangeGlow);
 
@@ -285,20 +285,18 @@ export default function Hardware3DTracker() {
     const onResize = () => {
       if (!container) return;
       const w = container.clientWidth || 640;
-      const h = container.clientHeight || height;
+      const h = container.clientHeight || 460;
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
     };
     const ro = new ResizeObserver(onResize);
     ro.observe(container);
-    window.addEventListener('resize', onResize);
 
     return () => {
       cancelAnimationFrame(rafId);
       obs.disconnect();
       ro.disconnect();
-      window.removeEventListener('resize', onResize);
       controls.dispose();
       disposables.forEach((d) => d.dispose());
       renderer.dispose();
@@ -306,41 +304,38 @@ export default function Hardware3DTracker() {
   }, []);
 
   return (
-    <section id="hardware-3d" className="dark-section" style={{ paddingTop: 40 }}>
+    <section id="hardware-3d" className="fleet-section">
       <div className="site-container">
-        <div className="hardware-grid">
-          {/* Right/Main 3D Interactive Hardware Stage */}
-          <div className="cad-card" style={{ padding: 22 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 12 }}>
-              <span className="kaf-slash-tag">کالبدشکافی سه‌بعدی سخت‌افزار ردیاب صنعتی برند</span>
-              <div style={{ display: 'flex', gap: 8 }}>
-                <button
-                  className={`chip-btn ${explode > 0.5 ? 'on' : ''}`}
-                  onClick={() => setExplode(explode > 0.5 ? 0 : 1)}
-                >
-                  <Layers size={14} style={{ verticalAlign: 'middle', marginInlineEnd: 5 }} />
-                  {explode > 0.5 ? 'بستن و قفل بدنه' : 'نمای انفجاری ۴ لایه'}
-                </button>
-              </div>
+        <div className="section-grid">
+          <Card variant="panel" className="ds-stack-md">
+            <div className="ds-between-wrap">
+              <Capsule variant="slash">کالبدشکافی سه‌بعدی سخت‌افزار ردیاب صنعتی</Capsule>
+              <Button
+                variant="pill"
+                size="sm"
+                active={explode > 0.5}
+                onClick={() => setExplode(explode > 0.5 ? 0 : 1)}
+              >
+                <Layers size={14} aria-hidden="true" />
+                <span>{explode > 0.5 ? 'بستن و قفل بدنه' : 'نمای انفجاری ۴ لایه'}</span>
+              </Button>
             </div>
 
-            <div
-              ref={mountRef}
-              style={{
-                width: '100%',
-                height: 470,
-                borderRadius: 24,
-                background: 'linear-gradient(140.24deg, #3D5768 0%, #112835 41.58%, #213D4F 78.61%, #132D3F 100%)',
-                cursor: 'grab',
-                position: 'relative',
-              }}
-            />
+            <div className="webgl-stage-shell">
+              <div
+                ref={mountRef}
+                className="webgl-canvas-mount webgl-canvas-mount--tracker"
+                role="img"
+                aria-label="مدل سه‌بعدی تعاملی چهار لایه ردیاب سخت‌افزاری ناوگان"
+              />
+            </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginTop: 14 }}>
-              <span style={{ fontSize: 12.5, color: 'rgba(232,222,205,0.78)', whiteSpace: 'nowrap' }}>
-                اسلایدر انفجار لایه‌ها:
-              </span>
+            <div className="ds-row-md">
+              <label htmlFor="hardware-explode-range" className="ds-muted">
+                فاصله لایه‌ها:
+              </label>
               <input
+                id="hardware-explode-range"
                 type="range"
                 className="cinema-range"
                 min="0"
@@ -348,70 +343,55 @@ export default function Hardware3DTracker() {
                 value={Math.round(explode * 100)}
                 onChange={(e) => setExplode(Number(e.target.value) / 100)}
               />
-              <span style={{ fontSize: 13.5, fontWeight: 800, color: '#FF742E', minWidth: 42 }}>
+              <strong className="ds-accent-text ds-tabular">
                 {toFa(Math.round(explode * 100))}٪
-              </span>
+              </strong>
             </div>
-          </div>
+          </Card>
 
-          {/* Left: Engineering Story & 4 Clickable Layers */}
-          <div>
-            <div className="eyebrow-kaf">
-              <Cpu size={15} />
-              <span>مهندسی سخت‌افزار بر پایه اسکوئیرکل ۳۱.۲۵٪ و پخ ۶۰٪</span>
+          <div className="ds-stack-md">
+            <div>
+              <Capsule variant="eyebrow">
+                <Cpu size={15} aria-hidden="true" />
+                <span>مهندسی سخت‌افزار بر پایه چهارگوش‌نرم ۳۱.۲۵٪ و پخ ۶۰٪</span>
+              </Capsule>
             </div>
 
-            <h2 style={{ fontSize: 'clamp(26px, 2.9vw, 38px)', fontWeight: 900, lineHeight: 1.3, marginBottom: 14 }}>
-              سخت‌افزاری که مثل ساعت سوئیسی چفت می‌شود
+            <h2 className="section-title-xl">
+              سخت‌افزار صنعتی منطبق بر استاندارد کابین خودروهای سنگین
             </h2>
 
-            <p style={{ fontSize: 15, color: 'rgba(232,222,205,0.78)', lineHeight: 1.85, marginBottom: 22 }}>
-              بدنه ردیاب دقیقاً از هندسه استخراج‌شده فایل‌های سه‌بعدی شما (پلیمر مات-ابریشمی با زبری ۴۰٪ و لبه‌های پخ‌خورده) طراحی شده است. دستگاه را با ماوس ۳۶۰ درجه بچرخانید و هر لایه را بررسی کنید:
+            <p className="section-subtitle">
+              بدنه ردیاب بر اساس پارامترهای استخراج‌شده از فایل‌های سه‌بعدی مرجع (پلیمر مات-ابریشمی با زبری ۴۰٪ و لبه‌های پخ‌خورده) شبیه‌سازی شده است. مدل را با ماوس بچرخانید و هر لایه را بررسی کنید:
             </p>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div className="ds-stack-sm">
               {HARDWARE_LAYERS.map((ly, i) => {
                 const Icon = ly.icon;
                 const sel = activeLayer === i;
                 return (
-                  <div
+                  <Card
                     key={ly.id}
+                    as="button"
+                    type="button"
+                    variant="panel"
+                    compact
+                    interactive
+                    accentOutline={sel}
+                    className="hardware-spec-card"
                     onClick={() => {
                       setActiveLayer(i);
                       if (explode < 0.4) setExplode(0.85);
                     }}
-                    style={{
-                      padding: '15px 18px',
-                      borderRadius: 20,
-                      cursor: 'pointer',
-                      background: sel ? 'rgba(255, 116, 46, 0.14)' : 'rgba(14, 30, 44, 0.72)',
-                      border: sel ? '1px solid #FF742E' : '1px solid rgba(232, 222, 205, 0.12)',
-                      display: 'flex',
-                      gap: 14,
-                      alignItems: 'flex-start',
-                      transition: 'all 0.22s ease',
-                    }}
                   >
-                    <div
-                      style={{
-                        width: 38,
-                        height: 38,
-                        borderRadius: '31.25%',
-                        background: sel ? '#FF742E' : 'rgba(232,222,205,0.1)',
-                        color: sel ? '#102333' : '#FF9861',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0,
-                      }}
-                    >
-                      <Icon size={18} />
+                    <div className="hardware-spec-icon">
+                      <Icon size={18} aria-hidden="true" />
                     </div>
-                    <div>
-                      <div style={{ fontWeight: 800, fontSize: 15, marginBottom: 3 }}>{ly.title}</div>
-                      <div style={{ fontSize: 13.5, color: 'rgba(232,222,205,0.78)', lineHeight: 1.65 }}>{ly.spec}</div>
+                    <div className="ds-stack-xs">
+                      <strong>{ly.title}</strong>
+                      <span className="ds-muted">{ly.spec}</span>
                     </div>
-                  </div>
+                  </Card>
                 );
               })}
             </div>
