@@ -6,6 +6,7 @@ import LiveFleetRadarSection from './components/website/LiveFleetRadarSection.js
 import Hardware3DTracker from './components/website/Hardware3DTracker.jsx';
 import DaylightBentoSection from './components/website/DaylightBentoSection.jsx';
 import JourneyTimelineSection from './components/website/JourneyTimelineSection.jsx';
+import FleetOperationsSection from './components/website/FleetOperationsSection.jsx';
 import RoiCalculatorSection from './components/website/RoiCalculatorSection.jsx';
 import PricingAndFooter from './components/website/PricingAndFooter.jsx';
 
@@ -22,6 +23,7 @@ export default function App() {
         <Hardware3DTracker />
         <DaylightBentoSection />
         <JourneyTimelineSection />
+        <FleetOperationsSection />
         <RoiCalculatorSection />
         <PricingAndFooter />
       </main>

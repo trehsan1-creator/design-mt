@@ -516,6 +516,457 @@
   }
 }
 
+/* ───────────────────────────────────────────────────────────────
+   Phase 6 — Unified Signal Motion & Persian Fleet Operations Suite
+   ─────────────────────────────────────────────────────────────── */
+.ds-signal-svg {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  max-block-size: 54px;
+  overflow: visible;
+}
+
+.ds-signal-svg__rail {
+  fill: none;
+  stroke: var(--ds-navy-200);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.ds-signal-svg__trace {
+  fill: none;
+  stroke: var(--ds-color-signal-orange);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 28 72;
+  animation: ds-signal-flow var(--ds-dur-cruise) linear infinite;
+}
+
+.ds-signal-svg__trace.is-static {
+  stroke-dasharray: none;
+  animation: none;
+  opacity: 0.72;
+}
+
+.ds-signal-svg__halo {
+  fill: color-mix(in srgb, var(--ds-color-signal-orange) 26%, transparent);
+}
+
+.ds-signal-svg__dot {
+  fill: var(--ds-color-signal-orange);
+  stroke: var(--ds-sand-50);
+  stroke-width: 1.5;
+}
+
+@keyframes ds-signal-flow {
+  from { stroke-dashoffset: 100; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* Jalali Range Picker */
+.ds-jalali {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-0_5s);
+  padding: var(--ds-space-0_75s);
+  border-radius: var(--ds-radius-card-sm);
+  background: var(--ds-surface-raised);
+  border: 1px solid var(--ds-border);
+}
+
+.ds-jalali__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-space-0_5s);
+  flex-wrap: wrap;
+  font-size: var(--ds-text-sm);
+}
+
+.ds-jalali__count {
+  font-size: var(--ds-text-xs);
+  font-weight: 700;
+  color: var(--ds-accent-soft);
+  padding-block: 4px;
+  padding-inline: 10px;
+  border-radius: var(--ds-radius-pill);
+  background: color-mix(in srgb, var(--ds-accent) 14%, var(--ds-surface));
+}
+
+.ds-jalali__presets {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.ds-jalali__preset {
+  min-block-size: 44px;
+  padding-inline: 8px;
+  border-radius: var(--ds-radius-xs);
+  border: 1px solid var(--ds-border);
+  background: color-mix(in srgb, var(--ds-surface) 60%, transparent);
+  color: var(--ds-on-surface);
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-xs);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ds-jalali__preset.is-active {
+  border-color: var(--ds-border-strong);
+  background: color-mix(in srgb, var(--ds-accent) 18%, var(--ds-surface));
+  color: var(--ds-accent-soft);
+}
+
+.ds-jalali__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-space-0_5s);
+}
+
+.ds-jalali__nav-btn {
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--ds-radius-xs);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-surface);
+  color: var(--ds-on-surface);
+  cursor: pointer;
+}
+
+.ds-jalali__month {
+  font-size: var(--ds-text-base);
+  font-weight: 800;
+}
+
+.ds-jalali__weekdays,
+.ds-jalali__grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+  text-align: center;
+}
+
+.ds-jalali__weekday {
+  font-size: var(--ds-text-xs);
+  font-weight: 700;
+  color: var(--ds-on-surface-muted);
+  padding-block: 4px;
+}
+
+.ds-jalali__day {
+  min-block-size: 44px;
+  min-inline-size: 38px;
+  border-radius: var(--ds-radius-xs);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ds-on-surface);
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ds-jalali__day:hover {
+  border-color: var(--ds-border);
+  background: color-mix(in srgb, var(--ds-on-surface) 8%, transparent);
+}
+
+.ds-jalali__day.is-in-range {
+  background: color-mix(in srgb, var(--ds-accent) 16%, var(--ds-surface));
+  color: var(--ds-on-surface);
+}
+
+.ds-jalali__day.is-edge {
+  background: var(--ds-grad-signal-flare);
+  color: var(--ds-on-accent);
+  font-weight: 800;
+}
+
+/* Telemetry Table */
+.ds-telemetry-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-0_75s);
+}
+
+.ds-telemetry-block__toolbar {
+  padding-block-end: var(--ds-space-0_25s);
+}
+
+.ds-filter-chip {
+  min-block-size: 44px;
+  padding-inline: 14px;
+  border-radius: var(--ds-radius-pill);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-surface-raised);
+  color: var(--ds-on-surface);
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-xs);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ds-filter-chip.is-active {
+  border-color: var(--ds-border-strong);
+  background: color-mix(in srgb, var(--ds-accent) 18%, var(--ds-surface-raised));
+  color: var(--ds-accent-soft);
+}
+
+.ds-table-scroll {
+  inline-size: 100%;
+  overflow-x: auto;
+  border-radius: var(--ds-radius-card-sm);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-surface-raised);
+}
+
+.ds-telemetry-table {
+  inline-size: 100%;
+  min-inline-size: 680px;
+  border-collapse: collapse;
+  text-align: start;
+  font-size: var(--ds-text-sm);
+}
+
+.ds-telemetry-table th,
+.ds-telemetry-table td {
+  padding-block: 12px;
+  padding-inline: 14px;
+  border-block-end: 1px solid var(--ds-border);
+  vertical-align: middle;
+}
+
+.ds-telemetry-table th {
+  font-size: var(--ds-text-xs);
+  font-weight: 800;
+  color: var(--ds-on-surface-muted);
+  background: color-mix(in srgb, var(--ds-surface) 55%, var(--ds-surface-raised));
+}
+
+.ds-telemetry-table tbody tr:last-child td {
+  border-block-end: none;
+}
+
+.ds-th-sort {
+  min-block-size: 44px;
+  padding-inline: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  border-radius: var(--ds-radius-xs);
+  background: transparent;
+  color: inherit;
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-xs);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.ds-telemetry-table__corridor {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.ds-telemetry-table__num {
+  white-space: nowrap;
+}
+
+/* RTL Telemetry Chart */
+.ds-rtl-chart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-0_5s);
+  padding: var(--ds-space-0_75s);
+  border-radius: var(--ds-radius-card-sm);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-surface-raised);
+}
+
+.ds-rtl-chart__head {
+  font-size: var(--ds-text-sm);
+}
+
+.ds-rtl-chart__readout {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding-block: 6px;
+  padding-inline: 12px;
+  border-radius: var(--ds-radius-pill);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-surface);
+  font-size: var(--ds-text-xs);
+  font-weight: 700;
+}
+
+.ds-rtl-chart__svg {
+  inline-size: 100%;
+  block-size: auto;
+  overflow: visible;
+}
+
+.ds-rtl-chart__limit-line {
+  stroke: var(--ds-status-critical);
+  stroke-width: 1.25;
+  stroke-dasharray: 5 5;
+  opacity: 0.78;
+}
+
+.ds-rtl-chart__limit-label {
+  fill: var(--ds-status-critical);
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-xs);
+  font-weight: 700;
+}
+
+.ds-rtl-chart__bar {
+  fill: color-mix(in srgb, var(--ds-status-corridor) 26%, transparent);
+  transition: fill var(--ds-dur-fast) var(--ds-ease-smooth);
+}
+
+.ds-rtl-chart__bar.is-selected {
+  fill: color-mix(in srgb, var(--ds-status-corridor) 56%, transparent);
+}
+
+.ds-rtl-chart__area {
+  fill: color-mix(in srgb, var(--ds-color-signal-orange) 14%, transparent);
+}
+
+.ds-rtl-chart__line {
+  fill: none;
+  stroke: var(--ds-color-signal-orange);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ds-rtl-chart__point {
+  fill: var(--ds-surface);
+  stroke: var(--ds-color-signal-orange);
+  stroke-width: 2.5;
+}
+
+.ds-rtl-chart__point.is-over {
+  stroke: var(--ds-status-critical);
+  fill: var(--ds-status-critical);
+}
+
+.ds-rtl-chart__axis-label {
+  fill: var(--ds-on-surface-muted);
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-xs);
+}
+
+.ds-rtl-chart__slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ds-rtl-chart__slot {
+  min-block-size: 44px;
+  min-inline-size: 56px;
+  padding-inline: 10px;
+  border-radius: var(--ds-radius-xs);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-surface);
+  color: var(--ds-on-surface);
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-xs);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ds-rtl-chart__slot.is-active {
+  border-color: var(--ds-border-strong);
+  color: var(--ds-accent-soft);
+  background: color-mix(in srgb, var(--ds-accent) 16%, var(--ds-surface));
+}
+
+/* Operational Alert Banner */
+.ds-alert-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-0_5s);
+}
+
+.ds-alert-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-space-0_75s);
+  flex-wrap: wrap;
+  padding: var(--ds-space-0_75s);
+  border-radius: var(--ds-radius-card-sm);
+  border: 1px solid var(--ds-border);
+  border-inline-start-width: 4px;
+  background: var(--ds-surface-raised);
+}
+
+.ds-alert-card--critical { border-inline-start-color: var(--ds-status-critical); }
+.ds-alert-card--idle { border-inline-start-color: var(--ds-status-idle); }
+.ds-alert-card--cold-chain { border-inline-start-color: var(--ds-status-cold-chain); }
+.ds-alert-card--moving { border-inline-start-color: var(--ds-status-moving); }
+
+.ds-alert-card.is-acked {
+  opacity: 0.74;
+}
+
+.ds-alert-card__body {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ds-space-0_5s);
+  flex: 1 1 280px;
+}
+
+.ds-alert-card__icon {
+  inline-size: 36px;
+  block-size: 36px;
+  border-radius: var(--ds-radius-xs);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: color-mix(in srgb, var(--ds-surface) 72%, transparent);
+  color: var(--ds-accent-soft);
+}
+
+.ds-alert-card--critical .ds-alert-card__icon { color: var(--ds-status-critical); }
+.ds-alert-card--idle .ds-alert-card__icon { color: var(--ds-status-idle); }
+.ds-alert-card--cold-chain .ds-alert-card__icon { color: var(--ds-status-cold-chain); }
+.ds-alert-card--moving .ds-alert-card__icon { color: var(--ds-status-moving); }
+
+.ds-alert-card__title {
+  display: block;
+  font-size: var(--ds-text-sm);
+  margin-block-end: 2px;
+}
+
+.ds-alert-card__meta {
+  font-size: var(--ds-text-xs);
+  color: var(--ds-on-surface-muted);
+}
+
+.ops-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.35fr);
+  gap: var(--ds-space-1s);
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .ops-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .ds-tabular { font-variant-numeric: tabular-nums; }
 .ds-muted { color: var(--ds-on-surface-muted); }
 .ds-dim { color: var(--ds-on-surface-dim); }

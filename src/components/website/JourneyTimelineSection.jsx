@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { PackageCheck, Lock, Route, BellRing } from 'lucide-react';
-import { Card, Capsule, StatusChip } from '../../ds/index.js';
+import { Card, Capsule, SignalPath, StatusChip } from '../../ds/index.js';
 
 const STAGES = [
   {
@@ -55,6 +55,7 @@ export default function JourneyTimelineSection() {
         </div>
 
         <Card variant="panel">
+          <SignalPath label="مسیر پیوسته انتقال سیگنال در چهار مرحله سفر محموله" />
           <div className="journey-progress-track" aria-hidden="true">
             <div className="journey-progress-fill" style={{ '--journey-pct': pct }} />
           </div>

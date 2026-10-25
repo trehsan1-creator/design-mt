@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-25T10:07:14.452Z",
+  "timestamp": "2026-10-25T10:11:32.816Z",
   "totalPairs": 24,
   "passedPairs": 24,
   "failedPairs": 0,
@@ -169,10 +169,10 @@
     {
       "id": "status-moving",
       "label": "چیپ وضعیت (moving) روی پس‌زمینه کپسول تیره",
-      "fg": "#4ADE80",
-      "bg": "#0F2921",
+      "fg": "#45C06A",
+      "bg": "#0E241E",
       "min": 4.5,
-      "ratio": 8.86,
+      "ratio": 6.98,
       "pass": true
     },
     {
@@ -187,37 +187,37 @@
     {
       "id": "status-corridor",
       "label": "چیپ وضعیت (corridor) روی پس‌زمینه کپسول تیره",
-      "fg": "#38BDF8",
-      "bg": "#0C2432",
+      "fg": "#00B4EC",
+      "bg": "#042331",
       "min": 4.5,
-      "ratio": 7.46,
+      "ratio": 6.78,
       "pass": true
     },
     {
       "id": "status-cold-chain",
       "label": "چیپ وضعیت (cold-chain) روی پس‌زمینه کپسول تیره",
-      "fg": "#22D3EE",
-      "bg": "#092731",
+      "fg": "#00BBC0",
+      "bg": "#04242A",
       "min": 4.5,
-      "ratio": 8.63,
+      "ratio": 6.87,
       "pass": true
     },
     {
       "id": "status-idle",
       "label": "چیپ وضعیت (idle) روی پس‌زمینه کپسول تیره",
-      "fg": "#FACC15",
-      "bg": "#272612",
+      "fg": "#D0A500",
+      "bg": "#21210F",
       "min": 4.5,
-      "ratio": 9.99,
+      "ratio": 7.03,
       "pass": true
     },
     {
       "id": "status-critical",
       "label": "چیپ وضعیت (critical) روی پس‌زمینه کپسول تیره",
-      "fg": "#EF4444",
-      "bg": "#261319",
+      "fg": "#FF6F69",
+      "bg": "#28191E",
       "min": 4.5,
-      "ratio": 4.69,
+      "ratio": 6.19,
       "pass": true
     }
   ]

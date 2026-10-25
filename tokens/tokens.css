@@ -37,12 +37,12 @@
   --ds-plate-yellow: #FACC15;
   --ds-plate-green: #22C55E;
   --ds-plate-red: #EF4444;
-  --ds-status-moving: #4ADE80;
+  --ds-status-moving: #45C06A;
   --ds-status-signal: #FF742E;
-  --ds-status-corridor: #38BDF8;
-  --ds-status-cold-chain: #22D3EE;
-  --ds-status-idle: #FACC15;
-  --ds-status-critical: #EF4444;
+  --ds-status-corridor: #00B4EC;
+  --ds-status-cold-chain: #00BBC0;
+  --ds-status-idle: #D0A500;
+  --ds-status-critical: #FF6F69;
   --ds-space-0_25s: 5.79px;
   --ds-space-0_5s: 11.57px;
   --ds-space-0_75s: 17.36px;

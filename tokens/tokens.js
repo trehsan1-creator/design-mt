@@ -49,12 +49,12 @@ export const DESIGN_TOKENS = {
       "red": "#EF4444"
     },
     "telemetry": {
-      "moving": "#4ADE80",
+      "moving": "#45C06A",
       "signal": "#FF742E",
-      "corridor": "#38BDF8",
-      "cold-chain": "#22D3EE",
-      "idle": "#FACC15",
-      "critical": "#EF4444"
+      "corridor": "#00B4EC",
+      "cold-chain": "#00BBC0",
+      "idle": "#D0A500",
+      "critical": "#FF6F69"
     }
   },
   "spacing": {
@@ -228,12 +228,12 @@ export const tailwindFleetPreset = {
           "500": "#C8B89E"
         },
         "telemetry": {
-          "moving": "#4ADE80",
+          "moving": "#45C06A",
           "signal": "#FF742E",
-          "corridor": "#38BDF8",
-          "cold-chain": "#22D3EE",
-          "idle": "#FACC15",
-          "critical": "#EF4444"
+          "corridor": "#00B4EC",
+          "cold-chain": "#00BBC0",
+          "idle": "#D0A500",
+          "critical": "#FF6F69"
         }
       },
       "spacing": {

@@ -17,7 +17,20 @@ import {
 } from 'lucide-react';
 import { DESIGN_TOKENS } from '../../../tokens/tokens.js';
 import { PEYDA_WEIGHTS } from '../../data/geometryData.js';
-import { Button, Card, Capsule, Gauge, IranPlate, MapPin, StatusChip } from '../../ds/index.js';
+import {
+  Button,
+  Card,
+  Capsule,
+  FleetAlertBanner,
+  Gauge,
+  IranPlate,
+  JalaliRangePicker,
+  MapPin,
+  RtlTelemetryChart,
+  SignalPath,
+  StatusChip,
+  TelemetryTable,
+} from '../../ds/index.js';
 import { toFa } from '../../utils/faDigits.js';
 
 const CORE_SWATCHES = [
@@ -379,6 +392,17 @@ export default function DesignSystemPortal({ onBackToWebsite, onOpenLab, onOpenA
                     <StatusChip status="moving" label="تست‌شده با حرکت سه‌بعدی ماوس (Tilt)" />
                   </div>
                 </Card>
+              </div>
+
+              <div className="ds-stack-md">
+                <h3>۵. زبان حرکتی واحد (SignalPath) و کامپوننت‌های عملیاتی ناوگان فارسی</h3>
+                <SignalPath label="نمایش زبان حرکتی سیگنال در پورتال دیزاین سیستم" />
+                <div className="ops-grid">
+                  <JalaliRangePicker />
+                  <RtlTelemetryChart />
+                </div>
+                <FleetAlertBanner />
+                <TelemetryTable />
               </div>
 
               <div className="portal-dodont-grid">

@@ -72,12 +72,12 @@
       "red":    { "$value": "#EF4444", "$type": "color", "$description": "قرمز پرچم پلاک" }
     },
     "telemetry": {
-      "moving":     { "$value": "#4ADE80", "$type": "color", "$description": "خودرو در حرکت پایدار" },
-      "signal":     { "$value": "#FF742E", "$type": "color", "$description": "پالس فعال GPS و هشدار انحراف" },
-      "corridor":   { "$value": "#38BDF8", "$type": "color", "$description": "کریدور ترانزیتی فعال" },
-      "cold-chain": { "$value": "#22D3EE", "$type": "color", "$description": "سنسور زنجیره سرد یخچالی" },
-      "idle":       { "$value": "#FACC15", "$type": "color", "$description": "توقف با موتور روشن" },
-      "critical":   { "$value": "#EF4444", "$type": "color", "$description": "خروج اضطراری از ژئوفنس" }
+      "moving":     { "$value": "#45C06A", "$type": "color", "$description": "حرکت فعال ناوگان — OKLCH(72.0%, 0.165, 150°)" },
+      "signal":     { "$value": "#FF742E", "$type": "color", "$description": "پالس فعال GPS و سیگنال مادر — OKLCH(71.6%, 0.187, 43.8°)" },
+      "corridor":   { "$value": "#00B4EC", "$type": "color", "$description": "کریدور ترانزیتی فعال — OKLCH(72.0%, 0.143, 230°)" },
+      "cold-chain": { "$value": "#00BBC0", "$type": "color", "$description": "سنسور زنجیره سرد یخچالی — OKLCH(72.0%, 0.122, 198°)" },
+      "idle":       { "$value": "#D0A500", "$type": "color", "$description": "توقف با موتور روشن — OKLCH(74.0%, 0.151, 90°)" },
+      "critical":   { "$value": "#FF6F69", "$type": "color", "$description": "خروج اضطراری از ژئوفنس — OKLCH(71.6%, 0.177, 25°)" }
     }
   },
   "semantic": {
