@@ -656,6 +656,23 @@
 }
 
 /* --- Additional Component Classes (Zero Static Inline Styles) --- */
+.nav-logo-badge,
+.brand-mark-pill,
+.hardware-spec-icon,
+.timeline-step-num {
+  clip-path: url(#ds-superellipse-clip);
+}
+
+@supports (corner-shape: squircle) {
+  .nav-logo-badge,
+  .brand-mark-pill,
+  .hardware-spec-icon,
+  .timeline-step-num,
+  .radar-ring {
+    corner-shape: squircle;
+  }
+}
+
 .brand-svg-light {
   filter: brightness(0) invert(0.94);
 }

@@ -5,3 +5,4 @@ export { Gauge } from './Gauge.jsx';
 export { StatusChip } from './StatusChip.jsx';
 export { Capsule } from './Capsule.jsx';
 export { MapPin } from './MapPin.jsx';
+export { SquircleClipDefs, SUPERELLIPSE_OBJECT_PATH } from './Squircle.jsx';

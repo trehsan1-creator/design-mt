@@ -497,6 +497,25 @@
 .ds-between { display: flex; align-items: center; justify-content: space-between; gap: var(--ds-space-0_5s); }
 .ds-between-wrap { display: flex; align-items: center; justify-content: space-between; gap: var(--ds-space-0_75s); flex-wrap: wrap; }
 
+.ds-sr-defs {
+  position: absolute;
+  inline-size: 0;
+  block-size: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ds-squircle {
+  border-radius: var(--ds-radius-squircle);
+  clip-path: url(#ds-superellipse-clip);
+}
+
+@supports (corner-shape: squircle) {
+  .ds-squircle {
+    corner-shape: squircle;
+  }
+}
+
 .ds-tabular { font-variant-numeric: tabular-nums; }
 .ds-muted { color: var(--ds-on-surface-muted); }
 .ds-dim { color: var(--ds-on-surface-dim); }

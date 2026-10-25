@@ -62,7 +62,7 @@ const GEOMETRY_TOKENS = [
   { token: '--ds-geo-radar-cone', value: DESIGN_TOKENS.geometry['radar-cone'], title: 'دهانه مخروط رادار ۳۰.۶°', desc: 'مشتق از شیب ۷۴.۷° بازوهای رقم «۷» فونت پیدا' },
 ];
 
-export default function DesignSystemPortal({ onBackToWebsite, onOpenLab }) {
+export default function DesignSystemPortal({ onBackToWebsite, onOpenLab, onOpenArch }) {
   const [activeTab, setActiveTab] = useState('all');
   const [polarity, setPolarity] = useState('nocturnal');
   const [copiedKey, setCopiedKey] = useState(null);
@@ -131,6 +131,12 @@ export default function DesignSystemPortal({ onBackToWebsite, onOpenLab }) {
               <Button variant="ghost" size="sm" onClick={onOpenLab}>
                 <Compass size={14} aria-hidden="true" />
                 <span>آزمایشگاه هندسه</span>
+              </Button>
+            )}
+            {onOpenArch && (
+              <Button variant="ghost" size="sm" onClick={onOpenArch}>
+                <Box size={14} aria-hidden="true" />
+                <span>لایه‌های عمق</span>
               </Button>
             )}
           </div>

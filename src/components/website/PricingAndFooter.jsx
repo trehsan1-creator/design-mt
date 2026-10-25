@@ -227,26 +227,12 @@ export default function PricingAndFooter({ onOpenArch, onOpenDesignSystem, onSwi
             </span>
           </div>
 
-          {(onOpenDesignSystem || onOpenArch || onSwitchToLab) && (
-            <div className="ds-row-wrap">
-              {onOpenDesignSystem && (
-                <Button variant="pill" size="sm" active onClick={onOpenDesignSystem}>
-                  پورتال دیزاین سیستم
-                </Button>
-              )}
-              {onOpenArch && (
-                <Button variant="ghost" size="sm" onClick={onOpenArch}>
-                  <Layers size={14} aria-hidden="true" />
-                  <span>معماری سه‌بعدی</span>
-                </Button>
-              )}
-              {onSwitchToLab && (
-                <Button variant="ghost" size="sm" onClick={onSwitchToLab}>
-                  آزمایشگاه هندسه
-                </Button>
-              )}
-            </div>
-          )}
+          <nav className="ds-row-wrap" aria-label="لینک‌های پایانی">
+            <a href="#radar-command" className="footer-link">رادار زنده</a>
+            <a href="#hardware-3d" className="footer-link">سخت‌افزار GPS</a>
+            <a href="#roi-calc" className="footer-link">محاسبه بازگشت سرمایه</a>
+            <a href="#pricing" className="footer-link">تعرفه‌های سازمانی</a>
+          </nav>
         </div>
       </footer>
     </>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Layers, Sparkles, Palette, Menu, X, ChevronLeft } from 'lucide-react';
+import { Sparkles, Menu, X, ChevronLeft } from 'lucide-react';
 import { Button, StatusChip } from '../../ds/index.js';
 import { useModalFocusTrap } from '../../utils/useModalFocusTrap.js';
 import { toFa } from '../../utils/faDigits.js';
@@ -11,9 +11,10 @@ const NAV_ITEMS = [
   { href: '#journey', label: 'سفر هوشمند بار' },
   { href: '#roi-calc', label: 'بازگشت سرمایه' },
   { href: '#pricing', label: 'تعرفه‌ها' },
+  { href: '#telemetry-ops', label: 'گزارش عملیات' },
 ];
 
-export default function Navbar3D({ onOpenArch, onOpenDesignSystem, activeFleetCount = 12486 }) {
+export default function Navbar3D({ activeFleetCount = 12486 }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const drawerRef = useModalFocusTrap(drawerOpen, () => setDrawerOpen(false));
 
@@ -24,7 +25,7 @@ export default function Navbar3D({ onOpenArch, onOpenDesignSystem, activeFleetCo
       <div className="fleet-navbar-wrap">
         <header className="fleet-navbar">
           <a href="#hero" className="nav-brand-link" aria-label="صفحه نخست سامانه ناوگان">
-            <div className="nav-logo-badge">
+            <div className="nav-logo-badge ds-squircle">
               <img src="/brand-clean/logo-clean.svg" alt="" className="nav-logo-badge__img brand-svg-light" />
             </div>
             <img src="/brand-clean/typography-clean.svg" alt="نام برند ناوگان" className="nav-typography-img brand-svg-light" />
@@ -40,33 +41,6 @@ export default function Navbar3D({ onOpenArch, onOpenDesignSystem, activeFleetCo
 
           <div className="nav-actions">
             <StatusChip status="moving" label={fleetLabel} className="nav-desktop-only" />
-
-            {onOpenDesignSystem && (
-              <Button
-                variant="pill"
-                size="sm"
-                active
-                className="nav-desktop-only"
-                onClick={onOpenDesignSystem}
-                title="پورتال دیزاین سیستم و توکن‌ها"
-              >
-                <Palette size={14} aria-hidden="true" />
-                <span>دیزاین سیستم</span>
-              </Button>
-            )}
-
-            {onOpenArch && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="nav-desktop-only"
-                onClick={onOpenArch}
-                title="معماری سه‌بعدی بخش‌ها"
-              >
-                <Layers size={14} aria-hidden="true" />
-                <span>معماری سه‌بعدی</span>
-              </Button>
-            )}
 
             <Button as="a" href="#demo-request" variant="primary" size="sm">
               <Sparkles size={15} aria-hidden="true" />
@@ -123,37 +97,17 @@ export default function Navbar3D({ onOpenArch, onOpenDesignSystem, activeFleetCo
               ))}
             </nav>
 
-            {(onOpenDesignSystem || onOpenArch) && (
-              <div className="ds-stack-sm">
-                {onOpenDesignSystem && (
-                  <Button
-                    variant="pill"
-                    active
-                    fullWidth
-                    onClick={() => {
-                      setDrawerOpen(false);
-                      onOpenDesignSystem();
-                    }}
-                  >
-                    <Palette size={15} aria-hidden="true" />
-                    <span>پورتال دیزاین سیستم</span>
-                  </Button>
-                )}
-                {onOpenArch && (
-                  <Button
-                    variant="ghost"
-                    fullWidth
-                    onClick={() => {
-                      setDrawerOpen(false);
-                      onOpenArch();
-                    }}
-                  >
-                    <Layers size={15} aria-hidden="true" />
-                    <span>معماری سه‌بعدی سایت</span>
-                  </Button>
-                )}
-              </div>
-            )}
+            <Button
+              as="a"
+              href="#demo-request"
+              variant="primary"
+              size="md"
+              className="ds-full-w"
+              onClick={() => setDrawerOpen(false)}
+            >
+              <Sparkles size={15} aria-hidden="true" />
+              <span>درخواست دمو رایگان</span>
+            </Button>
           </aside>
         </div>
       )}
